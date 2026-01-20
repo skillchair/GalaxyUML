@@ -1,0 +1,82 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="29.3.3">
+  <diagram name="Page-1" id="VEVinOYZnqbWukt_-mOz">
+    <mxGraphModel dx="786" dy="469" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nfFsDaYKT-JomLalKHqp-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="100" width="120" x="240" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Desktop Client&lt;div&gt;(WPF)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="100" x="250" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-4" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="240" y="149" as="sourcePoint" />
+            <mxPoint x="360" y="149" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;View&lt;/span&gt;&lt;/div&gt;&lt;div&gt;ViewModel&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="250" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-7" edge="1" parent="1" source="nfFsDaYKT-JomLalKHqp-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="nfFsDaYKT-JomLalKHqp-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Communication Layer&lt;div&gt;(Pub/Sub, Push)&lt;/div&gt;&lt;div&gt;ZeroMQ / RabbitMQ&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="120" width="120" x="240" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Collaboration Server" vertex="1">
+          <mxGeometry height="30" width="100" x="250" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-11" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="240" y="469" as="sourcePoint" />
+            <mxPoint x="360" y="469" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;spacingTop=0;spacing=2;spacingBottom=0;" value="&lt;div style=&quot;text-align: left;&quot;&gt;Session Management&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Access Control&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Board State Manager&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="120" x="240" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-13" edge="1" parent="1" source="nfFsDaYKT-JomLalKHqp-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="nfFsDaYKT-JomLalKHqp-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Persistence Module&lt;div&gt;Repository / DB&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="240" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-15" edge="1" parent="1" source="nfFsDaYKT-JomLalKHqp-9" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="nfFsDaYKT-JomLalKHqp-8" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="370" as="sourcePoint" />
+            <mxPoint x="430" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Messages" vertex="1">
+          <mxGeometry height="30" width="60" x="310" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-17" edge="1" parent="1" source="nfFsDaYKT-JomLalKHqp-8" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="nfFsDaYKT-JomLalKHqp-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="370" as="sourcePoint" />
+            <mxPoint x="430" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Events / Command" vertex="1">
+          <mxGeometry height="30" width="110" x="310" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-19" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="nfFsDaYKT-JomLalKHqp-14" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="300" y="540" as="sourcePoint" />
+            <mxPoint x="430" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-20" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Persist / Load" vertex="1">
+          <mxGeometry height="30" width="80" x="300" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="nfFsDaYKT-JomLalKHqp-21" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;General Arch.&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="140" x="60" y="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
