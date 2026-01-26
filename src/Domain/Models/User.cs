@@ -18,18 +18,15 @@ namespace GalaxyUML.Models
             Username = username;
             Email = email;
             Password = password;
+            Teams = new List<>();
         }
 
         public Team CreateTeam(string teamName) { return Team(teamName, IdUser); }
         
-        //treba doraditi
-        public bool JoinTeam(string teamCode)
+        public bool JoinTeam(Team team)
         {
-            int idTeam = Team.FindTeamWithCode(teamCode);
-            // perzistencija
-            // ...
-            //
-            TeamsIds.Add(idTeam);
+            Teams.Add(team);
+            team.AddMember(this);
         }
     }
 }

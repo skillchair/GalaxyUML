@@ -1,6 +1,3 @@
-using System.Reflection.PortableExecutable;
-using System.Runtime.InteropServices;
-
 namespace GalaxyUML.Models
 {
     public class Board
@@ -12,7 +9,7 @@ namespace GalaxyUML.Models
         public Board()
         {
             IdBoard = Guid.NewGuid();
-            // chat = new chat()
+            Chat = new Chat();
         }
     }
 }

@@ -1,40 +1,44 @@
 namespace GalaxyUML.Models
 {
-    public class RoleOrganizer: IRole
+    public class RoleOrganizer : IRole
     {
         public Meeting Meeting { get; set; }
 
-        public RoleOrganizer(RoleEnum role, Meeting meeting)
+        public RoleOrganizer()
         {
-            IRole(role);
-
-            Meeting = meeting;
+            base.role = RoleEnum.Organizer;
         }
 
         public Meeting OrganizeMeeting()
         {
-            //
+            if (Meeting == null)
+                throw new Exception("You already organized a meeting.");
+
+            return Meeting = new Meeting(new Board(), new Chat());
         }
 
-        public GivePermissionResult GivePermission(Guid idParticipant)
+        public void GiveControl(Guid idParticipant)
         {
-            //
-            return 0;
+            Meeting.ActiveMemberId = idParticipant;
         }
 
-        public TakePermissionResult TakePermission(Guid idParticipant)
+        public void TakeControl()
         {
-            return 0;
+            Meeting.ReleaseBoard();
         }
 
-        public GetParticipantResult KickParticipant(Guid idParticipant)
+        public void KickParticipant(Guid idParticipant)
         {
-            return 0;
+            var participant = Meeting.Participants.FirstOrDefault(p => p.idParticipant == idParticipant);
+            if (participant == null)
+                throw new Exception("Participant not in the meeting.");
+
+            Meeting.Participants.Remove(participant);
         }
 
-        public GetMeetingResult EndMeeting()
+        public void EndMeeting()
         {
-            return 0;
+            Meeting.EndMeeting();
         }
     }
 }

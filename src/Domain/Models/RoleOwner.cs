@@ -2,9 +2,9 @@ namespace GalaxyUML.Models
 {
     public class RoleOwner: RoleOrganizer
     {
-        public RoleOwner(RoleEnum role)
+        public RoleOwner()
         {
-            RoleOrganizer(role);
+            base.role = RoleEnum.Owner;
         }
 
         public GetTeamResult DeleteTeam(Guid idTeam)

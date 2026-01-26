@@ -7,54 +7,26 @@ namespace GalaxyUML.Models
         Owner
     }
 
-    public enum GetTeamResult
+    public enum TeamResult
     {
         Success,
         InvalidTeamCode,
         Error
     }
 
-    public enum GetMemberResult
+    public enum MemberResult
     {
         Success,
+        AlreadyAMember,
         NotAMember,
         Error
     }
 
-    public enum GetParticipantResult
+    public enum MeetingResult
     {
         Success,
-        NotAParticipant,
-        Error
-    }
-
-    public enum GetMeetingResult
-    {
-        Success,
-        NotAMeeting,
-        Error
-    }
-
-    public enum GetBoardResult
-    {
-        Success,
-        NotABoard,
-        Error
-    }
-    
-    public enum GivePermissionResult
-    {
-        Success,
-        PermissionAlreadyGiven,
-        NotAParticipant,
-        Error
-    }
-
-    public enum TakePermissionResult
-    {
-        Success,
-        PermissionAlreadyTaken,
-        NotAParticipant,
+        AlreadyInMeet,
+        AlreadyOrganized,
         Error
     }
 

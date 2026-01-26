@@ -4,9 +4,8 @@ namespace GalaxyUML.Models
     {
         public RoleEnum Role { get; set; }
 
-        public IRole(RoleEnum role)
+        public IRole()
         {
-            Role = role;
         }
 
         public void RaiseHand()
