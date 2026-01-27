@@ -29,22 +29,36 @@ namespace GalaxyUML.Core
             team.AddMember(this);
         }
 
-        public void LeaveMeeting()
-        {
-            if (Meeting == null)
-                throw new Exception("User not in a meeting.");
-                
-            Meeting.RemoveParticipant(this);
-            Meeting = null;
-        }
-
         public void LeaveTeam(Team team)
         {
             var teamInAList = Teams.FirstOrDefault(t => t.IdTeam == team.IdTeam);
             if (teamInAList == null)
                 throw new Exception("User is not this team's member.");
-            
+
             Teams.Remove(teamInAList);
+        }
+
+        public void JoinMeeting(Team team, Meeting meeting)
+        {
+
+            if (Meeting != null)
+                throw new Exception("User is already in a meeting.");
+                
+            var teamInAList = Teams.FirstOrDefault(t => t.IdTeam == team.IdTeam);
+            if (teamInAList == null)
+                throw new Exception("User is not this team's member.");
+
+            Meeting = meeting;
+            Meeting.AddParticipant(this);
+        }
+
+        public void LeaveMeeting()
+        {
+            if (Meeting == null)
+                throw new Exception("User not in a meeting.");
+
+            Meeting.RemoveParticipant(this);
+            Meeting = null;
         }
     }
 }

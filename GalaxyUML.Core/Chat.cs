@@ -9,5 +9,14 @@ namespace GalaxyUML.Core
         {
             Messages = new List<Message>();
         }
+
+        public void AddMessage(Message message)
+        {
+            var msg = Messages.FirstOrDefault(m => m.IdMessage == message.IdMessage);
+            if (msg != null)
+                throw new Exception("This message is already in this chat.");
+                
+            Messages.Add(message);
+        }
     }
 }

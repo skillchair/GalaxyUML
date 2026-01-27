@@ -25,6 +25,15 @@ namespace GalaxyUML.Core
             IsActive = true;
         }
 
+        public void AddParticipant(User member)
+        {
+            var memberInAList = Participants.FirstOrDefault(p => p.IdMeetingParticipant == member.IdUser);
+            if (memberInAList != null)
+                throw new Exception("User already in a meeting.");
+
+            Participants.Add(new MeetingParticipant(this, member));
+        }
+
         public void RemoveParticipant(User participant)
         {
             var participantInAList = Participants.FirstOrDefault(p => p.IdMeetingParticipant == participant.IdUser);

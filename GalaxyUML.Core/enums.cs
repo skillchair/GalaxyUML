@@ -10,6 +10,7 @@ namespace GalaxyUML.Core
     public enum DrawableType
     {
         Text,
+        Box,
         ClassBox,
         Line,
         Association,

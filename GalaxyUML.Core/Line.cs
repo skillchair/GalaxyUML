@@ -11,9 +11,10 @@ namespace GalaxyUML.Core
         public string Text2 { get; private set; }
         public string MiddleText { get; private set; }
 
-        public Line(DrawableType type, Point startingPoint, Point endingPoint, ClassBox class1, ClassBox class2, string text1, string text2, string middleText)
-            : base(type, startingPoint, endingPoint)
+        public Line(Point startingPoint, Point endingPoint, ClassBox class1, ClassBox class2, string text1, string text2, string middleText)
+            : base(startingPoint, endingPoint)
         {
+            base.Type = DrawableType.Line;
             Class1 = class1;
             Class2 = class2;
             Text1 = text1;

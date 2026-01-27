@@ -10,8 +10,9 @@ namespace GalaxyUML.Core
         public List<string> AttributeRows { get; private set; }
         public List<string> MethodRows { get; private set; }
 
-        public ClassBox(DrawableType type, Point startingPoint, Point endingPoint, double textSize) : base(type, startingPoint, endingPoint)
+        public ClassBox(Point startingPoint, Point endingPoint, double textSize) : base(startingPoint, endingPoint)
         {
+            base.Type = DrawableType.ClassBox;
             ClassName = "Class";
             Stereotype = "";
             TextSize = textSize;

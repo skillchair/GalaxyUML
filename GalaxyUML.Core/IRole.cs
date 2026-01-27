@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GalaxyUML.Core
 {
     public abstract class IRole
     {
-        public RoleEnum Role { get; set; }
+        public RoleEnum Role { get; protected set; }
 
         public IRole()
         {
