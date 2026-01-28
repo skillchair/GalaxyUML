@@ -21,4 +21,24 @@ namespace GalaxyUML.Core
         Generalization,
         Realization
     }
+
+    public enum TeamEventType
+    {
+        UserJoined,
+        MemberLeft,
+        MemberRoleChange
+    }
+
+    public enum MeetingEventType
+    {
+        MemberJoined,
+        ParticipantLeft,
+        DrawableAdded,
+        DrawableRemoved,
+        DrawableEdited,
+        DiagramAdded,
+        DiagramRemoved,
+        DiagramEditted,
+        MessageSent
+    }
 }

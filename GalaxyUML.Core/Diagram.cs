@@ -24,7 +24,8 @@ namespace GalaxyUML.Core
             var drawableInAList = Drawables.FirstOrDefault(d => d.IdDrawable == drawable.IdDrawable);
             if (drawableInAList == null)
                 throw new Exception("Drawable object not on this diagram.");
-                
+
+            drawable.RemoveSelf();  // da se unlinkuje ako je linija ili kutija                
             Drawables.Remove(drawable);
         }
     }

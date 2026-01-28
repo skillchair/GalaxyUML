@@ -1,6 +1,6 @@
 namespace GalaxyUML.Core
 {
-    public class MeetingParticipant
+    public class MeetingParticipant: IMeetingObserver
     {
         public Guid IdMeetingParticipant { get; private set; }
         public Meeting Meeting { get; private set; }
@@ -17,6 +17,11 @@ namespace GalaxyUML.Core
         {
             Meeting.RemoveParticipant(TeamMember);
             TeamMember.LeaveMeeting();
+        }
+
+        public void Update(MeetingEventType meetingEvent)
+        {
+            throw new NotImplementedException();
         }
     }
 }

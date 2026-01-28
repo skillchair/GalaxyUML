@@ -1,6 +1,6 @@
 namespace GalaxyUML.Core
 {
-    public class TeamMember
+    public class TeamMember: ITeamObserver
     {
         public Guid IdTeamMember { get; set; }
         public Team Team { get; private set; }

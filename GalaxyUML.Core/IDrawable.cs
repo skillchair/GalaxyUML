@@ -27,5 +27,10 @@ namespace GalaxyUML.Core
             StartingPoint = newStartingPoint;
             EndingPoint = newEndingPoint;
         }
+
+        public virtual void RemoveSelf()
+        {
+            return;
+        }
     }
 }

@@ -50,7 +50,13 @@ namespace GalaxyUML.Core
         }
 
         public void ChangeTextSize(double newTextSize) { TextSize = newTextSize; }
-        public void AddAttribute(string content, char privacy = '+') { AttributeRows.Add(privacy + content); }
+        public void AddAttribute(string content, char privacy = '+')
+        {
+            if (Stereotype == "interface")
+                throw new Exception("Cannot add attributes to an interface.");
+
+            AttributeRows.Add(privacy + content);
+        }
         public void RemoveAttribute(int row) { AttributeRows.RemoveAt(row); }
         public void AddMethod(string content, char privacy = '+')
         {

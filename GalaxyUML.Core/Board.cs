@@ -49,5 +49,47 @@ namespace GalaxyUML.Core
 
             Drawables.Remove(drawable);
         }
+
+        public void AddDrawableToADiagram(IDrawable drawable, Diagram diagram)
+        {
+            var drawableInAList = diagram.Drawables.FirstOrDefault(d => d.IdDrawable == drawable.IdDrawable);
+            if (drawableInAList != null)
+                throw new Exception("This object is already on this board.");
+
+            diagram.AddDrawable(drawable);
+        }
+
+        public void RemoveDrawableFromADiagram(IDrawable drawable, Diagram diagram)
+        {
+            var drawableInAList = diagram.Drawables.FirstOrDefault(d => d.IdDrawable == drawable.IdDrawable);
+            if (drawableInAList == null)
+                throw new Exception("This object isn't on this board.");
+
+            diagram.RemoveDrawable(drawable);
+        }
+
+        public void EditDrawable(IDrawable drawable, IDrawable newDrawable)
+        {
+            var drawableInAList = Drawables.FirstOrDefault(d => d.IdDrawable == drawable.IdDrawable);
+            if (drawableInAList == null)
+                throw new Exception("This object isn't on this board.");
+
+            Drawables.Remove(drawableInAList);
+            Drawables.Add(newDrawable);
+        }
+
+        public void EditDrawableOnADiagram(IDrawable drawable, IDrawable newDrawable, Diagram diagram)
+        {
+            var drawableInAList = Drawables.FirstOrDefault(d => d.IdDrawable == drawable.IdDrawable);
+            if (drawableInAList == null)
+                throw new Exception("This object isn't on this board.");
+
+            var diagramInAList = Diagrams.FirstOrDefault(d => d.IdDiagram == diagram.IdDiagram);
+            if (diagramInAList == null)
+                throw new Exception("Diagram not on this board.");
+
+            diagram.RemoveDrawable(drawable);
+            diagram.AddDrawable(newDrawable);
+        }
     }
 }

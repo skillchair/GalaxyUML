@@ -1,6 +1,6 @@
 namespace GalaxyUML.Core
 {
-    public class Meeting
+    public class Meeting: IMeetingObservable
     {
         public Guid IdMeeting { get; private set; }
         public DateTime StartingTime { get; private set; }
