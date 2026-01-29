@@ -13,5 +13,3 @@ ZAVRSI IMPLEMENTACIJU OBSERVER
 IMPLEMENTIRAJ COMMAND ZA UNDO I REDO!!!
 
 treba kad se brise team da se prekine meeting il da kaze prvo zavrsi meeting
-
-treba da se koriguje model baze zbog composite pattern-a
