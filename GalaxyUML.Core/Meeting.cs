@@ -53,5 +53,21 @@ namespace GalaxyUML.Core
             EndingTime = DateTime.Now;
             IsActive = false;
         }
+
+        void IMeetingObservable.Attach(IMeetingObserver meetingObserver)
+        {
+            throw new NotImplementedException();
+            
+        }
+
+        void IMeetingObservable.Detach(IMeetingObserver meetingObserver)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Notify()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

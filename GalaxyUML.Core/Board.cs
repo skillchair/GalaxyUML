@@ -1,4 +1,5 @@
 using System.Diagnostics.Contracts;
+using System.Drawing;
 
 namespace GalaxyUML.Core
 {
@@ -90,6 +91,21 @@ namespace GalaxyUML.Core
 
             diagram.RemoveDrawable(drawable);
             diagram.AddDrawable(newDrawable);
+        }
+
+        public void MoveDrawable(IDrawable drawable, Point newStartingPoint)
+        {
+            
+        }
+
+        public void MoveDiagram(Diagram diagram, Point newStartingPoint)
+        {
+            
+        }
+
+        public void MoveDrawableOnADiagram(IDrawable drawable, Diagram diagram, Point newStartingPoint)
+        {
+            
         }
     }
 }

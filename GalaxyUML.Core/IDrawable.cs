@@ -19,13 +19,16 @@ namespace GalaxyUML.Core
             EndingPoint = endingPoint;
         }
 
-        public void Resize(Point newendingPoint) { EndingPoint = newendingPoint; }
+        public void Resize(Point newEndingPoint) { EndingPoint = newEndingPoint; }
 
-        // moze i da se racuna, nisam siguran sta je bolja praksa
-        public void Move(Point newStartingPoint, Point newEndingPoint)
+        // UNESE SE GORNJA LEVA TACKA A DONJA DESNA SE RACUNA
+        public void Move(Point newStartingPoint)
         {
+            int deltaX = newStartingPoint.X -  StartingPoint.X;
+            int deltaY = newStartingPoint.Y - StartingPoint.Y;
+
+            EndingPoint = new Point(EndingPoint.X + deltaX, EndingPoint.Y + deltaY);
             StartingPoint = newStartingPoint;
-            EndingPoint = newEndingPoint;
         }
 
         public virtual void RemoveSelf()
