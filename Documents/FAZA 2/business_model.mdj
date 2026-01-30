@@ -10404,7 +10404,7 @@
 											"parentStyle": true,
 											"left": 2133,
 											"top": 309,
-											"width": 131.43798828125,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "«enumeration»"
 										},
@@ -10418,7 +10418,7 @@
 											"parentStyle": true,
 											"left": 2133,
 											"top": 324,
-											"width": 131.43798828125,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "MeetingEventType"
 										},
@@ -10456,7 +10456,7 @@
 									"parentStyle": true,
 									"left": 2128,
 									"top": 304,
-									"width": 141.43798828125,
+									"width": 124.8896484375,
 									"height": 38,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGcBZwg5h4pSq0="
@@ -10494,7 +10494,7 @@
 											"parentStyle": true,
 											"left": 2133,
 											"top": 347,
-											"width": 131.43798828125,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "+MemberJoined",
 											"horizontalAlignment": 0
@@ -10512,7 +10512,7 @@
 											"parentStyle": true,
 											"left": 2133,
 											"top": 362,
-											"width": 131.43798828125,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "+ParticipantLeft",
 											"horizontalAlignment": 0
@@ -10530,7 +10530,7 @@
 											"parentStyle": true,
 											"left": 2133,
 											"top": 377,
-											"width": 131.43798828125,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "+DiagramAdded",
 											"horizontalAlignment": 0
@@ -10548,27 +10548,9 @@
 											"parentStyle": true,
 											"left": 2133,
 											"top": 392,
-											"width": 131.43798828125,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "+DiagramRemoved",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLAttributeView",
-											"_id": "AAAAAAGcCp7LclotCdc=",
-											"_parent": {
-												"$ref": "AAAAAAGcBZwg5h4tQmw="
-											},
-											"model": {
-												"$ref": "AAAAAAGcCp7LWloG9dc="
-											},
-											"font": "Arial;13;0",
-											"parentStyle": true,
-											"left": 2133,
-											"top": 407,
-											"width": 131.43798828125,
-											"height": 13,
-											"text": "+DiagramMoved",
 											"horizontalAlignment": 0
 										},
 										{
@@ -10583,8 +10565,8 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 2133,
-											"top": 422,
-											"width": 131.43798828125,
+											"top": 407,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "+DiagramEdited",
 											"horizontalAlignment": 0
@@ -10601,8 +10583,8 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 2133,
-											"top": 437,
-											"width": 131.43798828125,
+											"top": 422,
+											"width": 114.8896484375,
 											"height": 13,
 											"text": "+MessageSent",
 											"horizontalAlignment": 0
@@ -10612,8 +10594,8 @@
 									"parentStyle": true,
 									"left": 2128,
 									"top": 342,
-									"width": 141.43798828125,
-									"height": 113
+									"width": 124.8896484375,
+									"height": 98
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -10627,8 +10609,8 @@
 									"font": "Arial;13;0",
 									"parentStyle": true,
 									"left": 2128,
-									"top": 455,
-									"width": 141.43798828125,
+									"top": 440,
+									"width": 124.8896484375,
 									"height": 10
 								},
 								{
@@ -10671,8 +10653,8 @@
 							"containerChangeable": true,
 							"left": 2128,
 							"top": 304,
-							"width": 140.43798828125,
-							"height": 161,
+							"width": 123.8896484375,
+							"height": 146,
 							"nameCompartment": {
 								"$ref": "AAAAAAGcBZwg5h4o8bA="
 							},
@@ -10711,8 +10693,8 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2109,
-									"top": 370,
+									"left": 2108,
+									"top": 364,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -10733,8 +10715,8 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2108,
-									"top": 355,
+									"left": 2106,
+									"top": 349,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -10755,8 +10737,8 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2110,
-									"top": 399,
+									"left": 2111,
+									"top": 393,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -10775,7 +10757,7 @@
 								"$ref": "AAAAAAGcBXHWIMN7hfQ="
 							},
 							"lineStyle": 1,
-							"points": "2093:392;2127:390",
+							"points": "2093:387;2127:383",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGcBZynbDNyEzs="
@@ -11992,8 +11974,8 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2376,
-									"top": 479,
+									"left": 2368,
+									"top": 474,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -12014,8 +11996,8 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2370,
-									"top": 493,
+									"left": 2361,
+									"top": 488,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -12036,8 +12018,8 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2389,
-									"top": 452,
+									"left": 2381,
+									"top": 447,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -12056,7 +12038,7 @@
 								"$ref": "AAAAAAGcBgAyi3wBnrI="
 							},
 							"lineStyle": 1,
-							"points": "2497:527;2269:418",
+							"points": "2498:527;2253:408",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGcBgeIgj0HAG8="
@@ -20354,15 +20336,6 @@
 								"$ref": "AAAAAAGcBZwg5h4l4qU="
 							},
 							"name": "DiagramRemoved",
-							"type": ""
-						},
-						{
-							"_type": "UMLAttribute",
-							"_id": "AAAAAAGcCp7LWloG9dc=",
-							"_parent": {
-								"$ref": "AAAAAAGcBZwg5h4l4qU="
-							},
-							"name": "DiagramMoved",
 							"type": ""
 						},
 						{
