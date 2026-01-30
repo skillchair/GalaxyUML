@@ -1,4 +1,4 @@
-using System.Diagnostics.Contracts;
+// NEPOTREBAN
 using System.Drawing;
 
 namespace GalaxyUML.Core

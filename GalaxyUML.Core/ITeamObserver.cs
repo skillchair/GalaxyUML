@@ -1,7 +1,7 @@
 namespace GalaxyUML.Core
 {
-    interface ITeamObserver
+    interface ITeamObserver<T>
     {
-        public abstract void Update(TeamEventType eventType);
+        public abstract void Update(TeamEvent<T> teamEvent);
     }
 }
