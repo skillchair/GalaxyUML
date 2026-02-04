@@ -9,9 +9,15 @@ namespace GalaxyUML.Data
         [Key]
         public Guid Id { get; set; }
 
+        [Required]
         [ForeignKey("Meeting")]
         public Guid IdMeeting { get; set; }
 
-        public MeetingEntity Meeting { get; set; }
+        [Required]
+        [ForeignKey("Participant")]
+        public Guid IdParticipant { get; set; }
+
+        [Required]
+        public required string Code { get; set; }
     }
 }
