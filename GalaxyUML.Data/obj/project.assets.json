@@ -682,6 +682,16 @@
         "build": {
           "buildTransitive/net8.0/_._": {}
         }
+      },
+      "GalaxyUML.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/GalaxyUML.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GalaxyUML.Core.dll": {}
+        }
       }
     }
   },
@@ -1666,10 +1676,16 @@
         "system.security.cryptography.protecteddata.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "GalaxyUML.Core/1.0.0": {
+      "type": "project",
+      "path": "../GalaxyUML.Core/GalaxyUML.Core.csproj",
+      "msbuildProject": "../GalaxyUML.Core/GalaxyUML.Core.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "GalaxyUML.Core >= 1.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.2"
     ]
   },
@@ -1704,7 +1720,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
+              "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

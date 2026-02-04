@@ -1,7 +1,0 @@
-namespace GalaxyUML.Core
-{
-    public interface ITeamCommand
-    {
-        void execute();
-    }
-}

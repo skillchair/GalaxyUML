@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GalaxyUML.Data.Entities
 {
     class AttributeEntity

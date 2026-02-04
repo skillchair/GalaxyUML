@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GalaxyUML.Data.Entities
 {
     class TextEntity
@@ -16,7 +18,7 @@ namespace GalaxyUML.Data.Entities
         public double Size { get; set; }
 
         [Required]
-        [MaxLength(7)]
-        public string Color { get; set; }
+        [MaxLength(9)]
+        public string Color { get; set; } = null!;
     }
 }
