@@ -4,7 +4,7 @@ namespace GalaxyUML.Core
     {
         public Guid IdTeam { get; private set; }
         public string TeamName { get; private set; }
-        public User Owner { get; private set; }
+        public User teamOwner { get; private set; }
         public string TeamCode { get; private set; }
         public List<Meeting> Meetings { get; private set; }
         public List<TeamMember> Members { get; set; }
@@ -14,7 +14,7 @@ namespace GalaxyUML.Core
         {
             IdTeam = Guid.NewGuid();
             TeamName = teamName;
-            Owner = owner;
+            teamOwner = owner;
             TeamCode = TeamCodeGenerator();
             Members = [new TeamMember(this, owner, new RoleOwner(this))];
             Meetings = new List<Meeting>();
@@ -45,7 +45,7 @@ namespace GalaxyUML.Core
 
         public void ChangeRole(User member, IRole newRole)
         {
-            if (member.IdUser == this.Owner.IdUser)
+            if (member.IdUser == this.teamOwner.IdUser)
                 throw new Exception("Owner's role can not be changed.");
 
             var teamMember = Members.FirstOrDefault(m => m.Member == member);
@@ -56,6 +56,23 @@ namespace GalaxyUML.Core
                 throw new Exception("There can only be one owner of a team.");
                 
             teamMember.ChangeRole(newRole);
+        }
+        public Meeting OrganizeMeeting(TeamMember owner)
+        {
+            if (owner.Role is not RoleOrganizer)
+                throw new Exception("Only organizer can organize a meeting");
+
+            var meeting = new Meeting(owner.Member);
+
+            return meeting;
+        }
+
+        public void EndMeeting(Meeting meeting)
+        {
+            if (meeting == null)
+                throw new Exception("Meeting does not exist.");
+
+            meeting.EndMeeting();
         }
 
         public void Ban(User user)

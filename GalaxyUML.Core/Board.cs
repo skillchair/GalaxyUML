@@ -1,4 +1,6 @@
 // NEPOTREBAN
+
+/*
 using System.Drawing;
 
 namespace GalaxyUML.Core
@@ -109,3 +111,4 @@ namespace GalaxyUML.Core
         }
     }
 }
+*/
