@@ -4,31 +4,45 @@ namespace GalaxyUML.Core
 {
     public class Box : IDrawable
     {
-        public Line? Line { get; private set; }
+        public List<Line> Lines { get; private set; }
 
         public Box(Point startingPoint, Point endingPoint) : base(startingPoint, endingPoint)
         {
             base.Type = DrawableType.Box;
-            Line = null;
+            Lines = new List<Line>();
         }
 
         public void LinkLine(Line line)
         {
             if (line == null)
                 throw new Exception("Line doesn't exist.");
+            
+            var lineInAList = Lines.FirstOrDefault(l => l.IdDrawable == line.IdDrawable);
+            if (lineInAList != null)
+                throw new Exception("Line is already connected to this box.");
 
-            Line = line;
+            Lines.Add(lineInAList);
         }
 
-        public void UnlinkLine() { Line = null; }
+        public void UnlinkLine(Line line)
+        {
+            if (line == null)
+                throw new Exception("Line doesn't exist.");
+
+            var lineInAList = Lines.FirstOrDefault(l => l.IdDrawable == line.IdDrawable);
+            if (lineInAList == null)
+                throw new Exception("Line isn't connected to this box.");
+
+            Lines.Remove(lineInAList);
+        }
 
         override public void RemoveSelf()
         {
-            if (Line == null)
-                throw new Exception("Box isn't connected to a line.");
-
-            Line.RemoveSelf();
-            Line = null;    // box mora da zna da je ostao bez line-a
+            foreach (Line line in Lines)
+            {
+                Line.RemoveSelf();
+                this.UnlinkLine(line);
+            }
         }
     }
 }

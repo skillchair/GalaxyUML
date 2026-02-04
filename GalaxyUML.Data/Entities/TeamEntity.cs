@@ -1,13 +1,12 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GalaxyUML.Data.Entities
 {
-    public class TeamEntity
+    class TeamEntity
     {
         [Key]
-        public Guid IdTeam { get; set; }
+        public Guid Id { get; set; }
         
         [Required]
         [StringLength(100)]

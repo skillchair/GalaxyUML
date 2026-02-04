@@ -4414,7 +4414,7 @@
 											"top": 852,
 											"width": 346.73779296875,
 											"height": 13,
-											"text": "+changeRole(member: TeamMember, newRole: IRole): void",
+											"text": "+changeRole(member: TeamMember, newRole): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -6488,7 +6488,7 @@
 											"top": 1758,
 											"width": 114.07080078125,
 											"height": 13,
-											"text": "-line: Line",
+											"text": "-lines*: Line",
 											"horizontalAlignment": 0
 										}
 									],
@@ -11439,7 +11439,7 @@
 											"top": 686,
 											"width": 142.958984375,
 											"height": 13,
-											"text": "+role: IRole",
+											"text": "+role",
 											"horizontalAlignment": 0
 										},
 										{
@@ -17739,10 +17739,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGcD0yOXVUJ7ow="
 									},
-									"name": "newRole",
-									"type": {
-										"$ref": "AAAAAAGb8TFMG5ZrW0A="
-									}
+									"name": "newRole"
 								},
 								{
 									"_type": "UMLParameter",
@@ -18329,7 +18326,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGcAJxJjAnnuxw="
 							},
-							"name": "line",
+							"name": "lines*",
 							"visibility": "private",
 							"type": {
 								"$ref": "AAAAAAGb8Sc24Y7hV+Q="
@@ -18710,7 +18707,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGcBZpJK+0KDj0="
 							},
-							"name": "MeetingStarted"
+							"name": "MeetingStarted",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -18718,7 +18716,8 @@
 							"_parent": {
 								"$ref": "AAAAAAGcBZpJK+0KDj0="
 							},
-							"name": "MeetingEnded"
+							"name": "MeetingEnded",
+							"type": ""
 						}
 					]
 				},
@@ -19187,10 +19186,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGcDqaH6zcB2o8="
 							},
-							"name": "role",
-							"type": {
-								"$ref": "AAAAAAGb8TFMG5ZrW0A="
-							}
+							"name": "role"
 						},
 						{
 							"_type": "UMLAttribute",

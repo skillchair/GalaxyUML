@@ -1,35 +1,22 @@
-<<<<<<< HEAD
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GalaxyUML.Data.Entities
 {
-    public class TeamMemberEntity
-    {
-        [Key]
-        public Guid IdTeamMember { get; set; }
-        
-        [Required]
-        public Guid IdTeam { get; set; }
-        
-        [ForeignKey("IdTeam")]
-        public virtual TeamEntity Team { get; set; } = null!;
-        
-        [Required]
-        public Guid IdMember { get; set; }
-        
-        [ForeignKey("IdMember")]
-        public virtual UserEntity Member { get; set; } = null!;
-        
-        [Required]
-        public string Role { get; set; } = null!;
-=======
-namespace GalaxyUML.Data
-{
     class TeamMemberEntity
     {
-        
->>>>>>> 621de3dfa30e40a0490cad19a2bca0e7d954bb14
+        [Key]
+        public Guid Id { get; set; }
+
+        [Required]
+        public int Role { get; set; }
+
+        [Required]
+        public Guid IdTeam { get; set; }
+        public virtual TeamEntity Team { get; set; } = null!;
+
+        [Required]
+        public Guid IdMember { get; set; }
+        public virtual UserEntity Member { get; set; } = null!;
     }
 }

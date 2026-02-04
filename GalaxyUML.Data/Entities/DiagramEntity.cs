@@ -1,16 +1,24 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GalaxyUML.Data.Entities
 {
-    public class DiagramEntity
+    class DiagramEntity
     {
         [Key]
-        public Guid IdDiagram { get; set; }
+        public Guid Id { get; set; }
         
-        public virtual ICollection<BoxEntity> Boxes { get; set; } = null!;
-        public virtual ICollection<LineEntity> Lines { get; set; } = null!;
-        public virtual ICollection<TextEntity> Texts { get; set; } = null!;
+        [Required]
+        public Guid IdMeeting { get; set; }
+        public virtual MeetingEntity Meeting { get; set; } = null!;
+
+        [Required]
+        public Guid IdParent { get; set; }
+        public virtual DiagramEntity? Diagram { get; set; } // nema svaki parent-a (npr board nema)
+
+        [Required]
+        public int Type { get; set; }
+
+        public virtual ICollection<DrawableEntity> Drawables { get; set; } = new List<DrawableEntity>();
     }
 }

@@ -8,23 +8,23 @@ namespace GalaxyUML.Core
         public Chat Chat { get; private set; }
         public Diagram Board { get; private set; }
         public List<MeetingParticipant> Participants { get; set; }
-        public User Organizer { get; private set; }
-        public User ActiveParticipant { get; private set; }
+        public TeamMember Organizer { get; private set; }
+        public TeamMember ActiveParticipant { get; private set; }
         public bool IsActive { get; private set; }
 
-        public Meeting(User organizer)
+        public Meeting(TeamMember organizer)
         {
             IdMeeting = Guid.NewGuid();
             StartingTime = DateTime.Now;
             EndingTime = DateTime.MaxValue;   // ako nije zavrsen teoretski nema kraj
-            Chat = new Chat();
+            Chat = new Chat(this);
             Board = new Diagram();
             Participants = new List<MeetingParticipant>();
             Organizer = organizer;
             ActiveParticipant = organizer;
             IsActive = true;
         }
-        public Meeting(User organizer, Diagram board, Chat chat)
+        public Meeting(TeamMember organizer, Diagram board, Chat chat)
         {
             IdMeeting = Guid.NewGuid();
             StartingTime = DateTime.Now;

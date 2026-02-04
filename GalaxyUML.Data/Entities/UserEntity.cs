@@ -1,14 +1,11 @@
-<<<<<<< HEAD
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GalaxyUML.Data.Entities
 {
-    public class UserEntity
+    class UserEntity
     {
         [Key]
-        public Guid IdUser { get; set; }
+        public Guid Id { get; set; }
         
         [Required]
         [StringLength(100)]
@@ -30,16 +27,5 @@ namespace GalaxyUML.Data.Entities
         public string Password { get; set; } = null!; // Hash
         
         public virtual ICollection<TeamEntity> Teams { get; set; } = null!;
-        public virtual ICollection<MeetingEntity> OrganizedMeetings { get; set; } = null!;
-        public virtual ICollection<MeetingParticipantEntity> MeetingParticipants { get; set; } = null!;
-        public virtual ICollection<MessageEntity> Messages { get; set; } = null!;
-        public virtual ICollection<TeamMemberEntity> TeamMembers { get; set; } = null!;
-=======
-namespace GalaxyUML.Data
-{
-    class UserEntity
-    {
-        
->>>>>>> 621de3dfa30e40a0490cad19a2bca0e7d954bb14
     }
 }

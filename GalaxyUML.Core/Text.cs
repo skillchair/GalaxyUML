@@ -9,11 +9,11 @@ namespace GalaxyUML.Core
         public double Size { get; private set; }    // wpf koristi double
         public string Color { get; private set; }   // HEXA ZA WPF
 
-        public Text(Point startingPoint, Point endingPoint, string content, string format, double size, string color)
+        public Text(Point startingPoint, Point endingPoint, string format, double size, string color)
             : base(startingPoint, endingPoint)
         {
             base.Type = DrawableType.Text;
-            Content = content;
+            Content = "Text";
             Format = format;
             Size = size;
             Color = color;

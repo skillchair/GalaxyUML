@@ -1,13 +1,12 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GalaxyUML.Data.Entities
 {
-    public class MeetingEntity
+    class MeetingEntity
     {
         [Key]
-        public Guid IdMeeting { get; set; }
+        public Guid Id { get; set; }
         
         [Required]
         public DateTime StartingTime { get; set; }
@@ -16,20 +15,21 @@ namespace GalaxyUML.Data.Entities
         
         [Required]
         public Guid IdOrganizer { get; set; }
-        
-        [ForeignKey("IdOrganizer")]
-        public virtual UserEntity Organizer { get; set; }
+        public virtual UserEntity Organizer { get; set; } = null!;
         
         [Required]
         public Guid IdTeam { get; set; }
+        public virtual TeamEntity Team { get; set; } = null!;
         
-        [ForeignKey("IdTeam")]
-        public virtual TeamEntity Team { get; set; }
+        public virtual ICollection<MeetingParticipantEntity> MeetingParticipants { get; set; } = new List<MeetingParticipantEntity>();
         
-        public virtual ICollection<MeetingParticipantEntity> MeetingParticipants { get; set; }
-        public virtual ChatEntity Chat { get; set; }
-        public virtual DiagramEntity Board { get; set; }
-        public virtual UserEntity ActiveParticipant { get; set; }
+        [Required]
+        public Guid IdChat { get; set; }
+        public virtual ChatEntity Chat { get; set; } = null!;
+
+        [Required]
+        public Guid IdBoard { get; set; }
+        public virtual DiagramEntity Board { get; set; } = null!;
         
         public bool IsActive { get; set; }
     }

@@ -1,32 +1,28 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GalaxyUML.Data.Entities
 {
-    public class LineEntity
+    class LineEntity
     {
         [Key]
-        public Guid IdLine { get; set; }
+        public Guid IdDrawable { get; set; }
         
         [Required]
-        public Guid IdDiagram { get; set; }
-        
-        [ForeignKey("IdDiagram")]
-        public virtual DiagramEntity Diagram { get; set; } = null!;
-        
+        public Guid Box1Id { get; set; }
+        public virtual BoxEntity Box1 { get; set; } = null!;
+
         [Required]
-        public int X1 { get; set; }
-        
-        [Required]
-        public int Y1 { get; set; }
-        
-        [Required]
-        public int X2 { get; set; }
-        
-        [Required]
-        public int Y2 { get; set; }
-        
-        public string Type { get; set; } = null!;
+        public Guid IdBox2 { get; set; }
+        public virtual BoxEntity Box2 { get; set; } = null!;
+
+        [MaxLength(50)]
+        public string Text1 { get; set; } = "";
+
+        [MaxLength(50)]
+        public string Text2 { get; set; } = "";
+
+        [MaxLength(50)]
+        public string MiddleText { get; set; } = "";
     }
 }
