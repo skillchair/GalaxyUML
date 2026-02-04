@@ -1,6 +1,6 @@
 namespace GalaxyUML.Core
 {
-    public class TeamMember: ITeamObserver
+    public class TeamMember: ITeamObserver<TeamMember>
     {
         public Guid IdTeamMember { get; set; }
         public Team Team { get; private set; }
@@ -22,5 +22,11 @@ namespace GalaxyUML.Core
         }
 
         public void ChangeRole(IRole newRole) { Role = newRole; }
+        
+        public void Update(TeamEvent<TeamMember> teamEvent, ITeamCommand command)
+        {
+            // Implementation of the observer update method
+            // This would be called when team events occur
+        }
     }
 }

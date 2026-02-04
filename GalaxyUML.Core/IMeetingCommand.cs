@@ -1,6 +1,6 @@
 namespace GalaxyUML.Core
 {
-    public interface ITeamCommand
+    interface IMeetingCommand
     {
         void execute();
     }

@@ -1,9 +1,9 @@
 namespace GalaxyUML.Core
 {
-    interface ITeamObservable
+    interface ITeamObservable<T>
     {
-        void Attach(ITeamObserver observer);
-        void Detach(ITeamObserver observer);
-        void Notify();
+        void Attach(ITeamObserver<T> observer);
+        void Detach(ITeamObserver<T> observer);
+        void Notify(TeamEventType teamEvent);
     }
 }

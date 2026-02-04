@@ -6,13 +6,25 @@ namespace GalaxyUML.Core
         public DateTime StartingTime { get; private set; }
         public DateTime EndingTime { get; private set; }
         public Chat Chat { get; private set; }
-        public Board Board { get; private set; }
+        public Diagram Board { get; private set; }
         public List<MeetingParticipant> Participants { get; set; }
         public User Organizer { get; private set; }
         public User ActiveParticipant { get; private set; }
         public bool IsActive { get; private set; }
 
-        public Meeting(User organizer, Board board, Chat chat)
+        public Meeting(User organizer)
+        {
+            IdMeeting = Guid.NewGuid();
+            StartingTime = DateTime.Now;
+            EndingTime = DateTime.MaxValue;   // ako nije zavrsen teoretski nema kraj
+            Chat = new Chat();
+            Board = new Diagram();
+            Participants = new List<MeetingParticipant>();
+            Organizer = organizer;
+            ActiveParticipant = organizer;
+            IsActive = true;
+        }
+        public Meeting(User organizer, Diagram board, Chat chat)
         {
             IdMeeting = Guid.NewGuid();
             StartingTime = DateTime.Now;
@@ -46,7 +58,8 @@ namespace GalaxyUML.Core
             Participants.Remove(participantInAList);
         }
 
-        public void GiveControl(User participant) { ActiveParticipant = participant; }
+        // preimenovano u grantcontrol da bude isto kao u dokumentu
+        public void GrantControl(User participant) { ActiveParticipant = participant; }
         public void ReleaseBoard() { ActiveParticipant = Organizer; }
         public void EndMeeting()
         {

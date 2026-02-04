@@ -4,10 +4,12 @@ namespace GalaxyUML.Core
     {
         public Guid IdChat { get; private set; }
         public List<Message> Messages { get; private set; }
+        public Meeting meeting { get; private set; }
 
-        public Chat()
+        public Chat(Meeting meeting)
         {
             Messages = new List<Message>();
+            this.meeting = meeting;
         }
 
         public void AddMessage(Message message)

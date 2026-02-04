@@ -1,9 +1,9 @@
 namespace GalaxyUML.Core
 {
-    interface IMeetingObservable
+    interface IMeetingObservable<T>
     {
         void Attach(IMeetingObserver meetingObserver);
         void Detach(IMeetingObserver meetingObserver);
-        void Notify();
+        void Notify(MeetingEvent<T> meetingEvent);
     }
 }

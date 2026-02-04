@@ -9,6 +9,13 @@ namespace GalaxyUML.Core
         public Point EndingPoint { get; private set; }
         public List<IDrawable> Drawables { get; private set; }
 
+        public Diagram()
+        {
+            IdDiagram = Guid.NewGuid();
+            StartingPoint = new Point(0, 0);
+            EndingPoint = new Point(1000, 1000);
+            Drawables = new List<IDrawable>();
+        }
         public Diagram(Point startingPoint, Point endingPoint)
         {
             IdDiagram = Guid.NewGuid();
@@ -42,7 +49,20 @@ namespace GalaxyUML.Core
 
         public void MoveDrawable(IDrawable drawable, Point newStartingPoint)
         {
+            var drawableInAList = Drawables.FirstOrDefault(d => d.IdDrawable == drawable.IdDrawable);
+            if (drawableInAList == null)
+                throw new Exception("Drawable object not on this diagram.");
+
+            int deltaX = newStartingPoint.X - drawable.StartingPoint.X;
+            int deltaY = newStartingPoint.Y - drawable.StartingPoint.Y;
+
+            Point newEndingPoint = new Point(drawable.EndingPoint.X + deltaX, drawable.EndingPoint.Y + deltaY);
             
+            if (newStartingPoint.X < StartingPoint.X || newStartingPoint.Y < StartingPoint.Y ||
+                newEndingPoint.X > EndingPoint.X || newEndingPoint.Y > EndingPoint.Y)
+                throw new Exception("Drawable out of diagram's bounds.");
+
+            drawable.Move(newStartingPoint);
         }
 
         // RESIZE SE UVEK RADI OD DONJE DESNE IVICE!

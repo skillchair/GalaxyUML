@@ -26,16 +26,18 @@ namespace GalaxyUML.Core
     {
         UserJoined,
         MemberLeft,
-        MemberRoleChange
+        MemberRoleChange,
+        MeetingStarted,
+        MeetingEnded
     }
 
     public enum MeetingEventType
     {
         MemberJoined,
         ParticipantLeft,
-        DrawableAdded,
-        DrawableRemoved,
-        DrawableEdited,
+        // DrawableAdded,
+        // DrawableRemoved,
+        // DrawableEdited,
         DiagramAdded,
         DiagramRemoved,
         DiagramEditted,

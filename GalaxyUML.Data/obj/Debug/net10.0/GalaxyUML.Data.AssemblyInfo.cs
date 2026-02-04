@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GalaxyUML.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f965be6781f8143ca0a5f65d3844c7cb6d06e52d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b8c7136c178224198fa37d8d56522f62bfe78c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("GalaxyUML.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GalaxyUML.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

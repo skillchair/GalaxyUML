@@ -21,9 +21,7 @@ namespace GalaxyUML.Core
 
         public void Update(MeetingEventType meetingEvent)
         {
-            throw new NotImplementedException();
-            if (meetingEvent.Type == MeetingEventType.MemberJoined)
-                
+            throw new NotImplementedException(); 
         }
     }
 }
