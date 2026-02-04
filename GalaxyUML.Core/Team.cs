@@ -86,7 +86,7 @@ namespace GalaxyUML.Core
         }
         private string TeamCodeGenerator()
         {
-            return Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            return Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper();
         }
     }
 }
