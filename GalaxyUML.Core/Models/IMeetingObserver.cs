@@ -1,6 +1,6 @@
 namespace GalaxyUML.Core.Models
 {
-    public interface IMeetingObserver<T>
+    public interface IMeetingObserver
     {
         void Update(MeetingEventType meetingEvent);
     }

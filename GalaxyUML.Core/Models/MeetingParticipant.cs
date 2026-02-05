@@ -4,9 +4,9 @@ namespace GalaxyUML.Core.Models
     {
         public Guid IdMeetingParticipant { get; private set; }
         public Meeting Meeting { get; private set; }
-        public User TeamMember { get; private set; }
+        public TeamMember TeamMember { get; private set; }
 
-        public MeetingParticipant(Meeting meeting, User teamMember)
+        public MeetingParticipant(Meeting meeting, TeamMember teamMember)
         {
             IdMeetingParticipant = Guid.NewGuid();
             Meeting = meeting;
@@ -19,11 +19,12 @@ namespace GalaxyUML.Core.Models
             // radi meeting.addToWaitingList(this) il kako vec. nek ostane zasad ovako
         }
 
-        public void ClearEntry()
-        {
-            Meeting.RemoveParticipant(TeamMember);
-            TeamMember.LeaveMeeting();
-        }
+        // ne valja
+        // public void ClearEntry()
+        // {
+        //     Meeting.RemoveParticipant(this);
+        //     TeamMember.LeaveMeeting();
+        // }
 
         public override void Update(MeetingEventType meetingEvent)
         {

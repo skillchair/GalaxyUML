@@ -3,18 +3,17 @@ namespace GalaxyUML.Core.Models.TeamCommands
     public class MemberLeftCommand//: ITeamCommand
     {
         public TeamMember Member { get; private set; }
-        public List<User> Members { get; private set; }
+        public Team Team { get; private set; }
 
-        public MemberLeftCommand(TeamMember member, List<User> members)
+        public MemberLeftCommand(TeamMember member, Team team)
         {
             Member = member;
-            Members = members;
+            Team = team;
         }
 
-        // public void execute()
-        // {
-        //     foreach(User m in Members)
-        //         m.LeaveTeam();
-        // }
+        public void execute()
+        {
+            Team.RemoveMember(Member);
+        }
     }
 }

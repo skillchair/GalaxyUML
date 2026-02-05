@@ -37,25 +37,26 @@ namespace GalaxyUML.Core.Models
             IsActive = true;
         }
 
-        public void AddParticipant(User member)
+        public void AddParticipant(TeamMember member)
         {
-            var memberInAList = Participants.FirstOrDefault(p => p.IdMeetingParticipant == member.IdUser);
+            var memberInAList = Participants.FirstOrDefault(p => p.IdMeetingParticipant == member.IdTeamMember);
             if (memberInAList != null)
                 throw new Exception("User already in a meeting.");
 
             Participants.Add(new MeetingParticipant(this, member));
         }
 
-        public void RemoveParticipant(User participant)
+        // ne valja
+        public void RemoveParticipant(MeetingParticipant participant)
         {
-            var participantInAList = Participants.FirstOrDefault(p => p.IdMeetingParticipant == participant.IdUser);
-            if (participantInAList == null)
-                throw new Exception("Participant not found.");
+            // var participantInAList = Participants.FirstOrDefault(p => p.IdMeetingParticipant == participant.IdMeetingParticipant);
+            // if (participantInAList == null)
+            //     throw new Exception("Participant not found.");
 
-            foreach (MeetingParticipant p in Participants)
-                p.ClearEntry();
+            // foreach (MeetingParticipant p in Participants)
+            //     p.ClearEntry();
 
-            Participants.Remove(participantInAList);
+            // Participants.Remove(participantInAList);
         }
 
         // preimenovano u grantcontrol da bude isto kao u dokumentu

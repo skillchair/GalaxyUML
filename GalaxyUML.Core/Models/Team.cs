@@ -16,14 +16,14 @@ namespace GalaxyUML.Core.Models
             TeamName = teamName;
             teamOwner = owner;
             TeamCode = TeamCodeGenerator();
-            Members = [new TeamMember(this, owner, new RoleOwner(this))];
+            Members = [new TeamMember(this, owner, RoleEnum.Owner)];
             Meetings = new List<Meeting>();
             BannedUsers = new List<User>();
         }
 
         public void AddMember(User user)
         {
-            var member = Members.FirstOrDefault(m => m.IdTeamMember == user.IdUser);
+            var member = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
             if (member != null)
                 throw new Exception("User is already this team's member.");
 
@@ -31,19 +31,19 @@ namespace GalaxyUML.Core.Models
             if (bannedUser != null)
                 throw new Exception("This user can not join because they are banned.");
 
-            Members.Add(new TeamMember(this, user, new RoleMember()));
+            Members.Add(new TeamMember(this, user, RoleEnum.Member));
         }
 
-        public void RemoveMember(User member)
+        public void RemoveMember(TeamMember member)
         {
-            var teamMember = Members.FirstOrDefault(m => m.Member == member);
+            var teamMember = Members.FirstOrDefault(m => m.IdTeamMember == member.IdTeamMember);
             if (teamMember == null)
                 throw new Exception("User is not this team's member.");
             
             Members.Remove(teamMember);
         }
 
-        public void ChangeRole(User member, IRole newRole)
+        public void ChangeRole(User member, RoleEnum newRole)
         {
             if (member.IdUser == this.teamOwner.IdUser)
                 throw new Exception("Owner's role can not be changed.");
@@ -57,14 +57,12 @@ namespace GalaxyUML.Core.Models
                 
             teamMember.ChangeRole(newRole);
         }
-        public Meeting OrganizeMeeting(TeamMember owner)
+        public void OrganizeMeeting(TeamMember owner)
         {
-            if (owner.Role is not RoleOrganizer)
-                throw new Exception("Only organizer can organize a meeting");
+            if (owner.Role is not RoleEnum.Organizer || owner.Role is not RoleEnum.Owner)
+                throw new Exception("Only organizers can organize meetings");
 
-            var meeting = new Meeting(owner);
-
-            return meeting;
+            Meetings.Add(new Meeting(owner));
         }
 
         public void EndMeeting(Meeting meeting)
@@ -81,7 +79,7 @@ namespace GalaxyUML.Core.Models
             if (member == null)
                 throw new Exception("User not in this team.");
 
-            member.ClearEntry();        // brisemo i iz team-a i member napusta
+            //member.ClearEntry();        // brisemo i iz team-a i member napusta
             BannedUsers.Add(user);      // dodajemo u lokalnu listu banovanih
         }
         private string TeamCodeGenerator()

@@ -15,15 +15,15 @@ namespace GalaxyUML.Core.Models
             Role = role;
         }
 
-        public void ClearEntry()
-        {
-            Team.RemoveMember(Member);
-            //Member.LeaveTeam(Team);
-        }
+        // public void ClearEntry()
+        // {
+        //     Team.RemoveMember(Member);
+        //     //Member.LeaveTeam(Team);
+        // }
 
         public void ChangeRole(RoleEnum newRole) { Role = newRole; }
         
-        public void Update(TeamEvent<TeamMember> teamEvent, ITeamCommand command)
+        public void Update(TeamEvent<User> teamEvent, ITeamCommand command)
         {
             // Implementation of the observer update method
             // This would be called when team events occur
