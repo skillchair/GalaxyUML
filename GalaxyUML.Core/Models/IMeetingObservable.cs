@@ -1,9 +1,11 @@
+using GalaxyUML.Core.Models.Commands.MeetingCommands;
+
 namespace GalaxyUML.Core.Models
 {
-    public interface IMeetingObservable<T>
+    public interface IMeetingObservable
     {
-        void Attach(IMeetingObserver meetingObserver);
-        void Detach(IMeetingObserver meetingObserver);
-        void Notify(Events.MeetingEvent<T> meetingEvent);
+        void Attach(IMeetingObserver observer);
+        void Detach(IMeetingObserver oserver);
+        void Notify(MeetingEventType eventType, IMeetingCommand command);
     }
 }

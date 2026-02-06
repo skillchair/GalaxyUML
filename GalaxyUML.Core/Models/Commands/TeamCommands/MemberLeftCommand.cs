@@ -1,19 +1,20 @@
-namespace GalaxyUML.Core.Models.TeamCommands
+namespace GalaxyUML.Core.Models.Commands.TeamCommands
 {
-    public class MemberLeftCommand//: ITeamCommand
+    public class MemberLeftCommand : ITeamCommand
     {
-        public TeamMember Member { get; private set; }
-        public Team Team { get; private set; }
+        public User User { get; private set; }
 
-        public MemberLeftCommand(TeamMember member, Team team)
+        public MemberLeftCommand(Team team, User user) : base(team)
         {
-            Member = member;
-            Team = team;
+            User = user;
         }
 
-        public void execute()
+        public override void Execute(TeamEventType eventType)
         {
-            Team.RemoveMember(Member);
+            if (eventType != TeamEventType.MemberLeft)
+                throw new Exception("Invalid event. Expected TeamEventType.MemberLeft.");
+
+            User.LeaveTeam(Team);
         }
     }
 }

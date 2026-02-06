@@ -1,30 +1,37 @@
+using GalaxyUML.Core.Models.Commands.TeamCommands;
+
 namespace GalaxyUML.Core.Models
 {
-    public class Team
+    public class Team : ITeamObservable
     {
         public Guid IdTeam { get; private set; }
         public string TeamName { get; private set; }
-        public User teamOwner { get; private set; }
+        public TeamMember TeamOwner { get; private set; }
         public string TeamCode { get; private set; }
         public List<Meeting> Meetings { get; private set; }
         public List<TeamMember> Members { get; set; }
         public List<User> BannedUsers { get; private set; }
 
+        private List<ITeamObserver> _observers;
+
         public Team(string teamName, User owner)
         {
             IdTeam = Guid.NewGuid();
             TeamName = teamName;
-            teamOwner = owner;
+            TeamOwner = new TeamMember(this, owner, RoleEnum.Owner);
+            Members = [TeamOwner];
             TeamCode = TeamCodeGenerator();
-            Members = [new TeamMember(this, owner, RoleEnum.Owner)];
             Meetings = new List<Meeting>();
             BannedUsers = new List<User>();
+
+            _observers = new List<ITeamObserver>();
         }
 
         public void AddMember(User user)
         {
-            var member = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
-            if (member != null)
+            // moze i da se napravi pa da se proba i po primarnom kljucu da se trazi; nisam siguran sta je bolja praksa...
+            var memberInAList = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
+            if (memberInAList != null)
                 throw new Exception("User is already this team's member.");
 
             var bannedUser = BannedUsers.FirstOrDefault(b => b.IdUser == user.IdUser);
@@ -32,6 +39,7 @@ namespace GalaxyUML.Core.Models
                 throw new Exception("This user can not join because they are banned.");
 
             Members.Add(new TeamMember(this, user, RoleEnum.Member));
+            user.JoinTeam(this);
         }
 
         public void RemoveMember(TeamMember member)
@@ -41,18 +49,19 @@ namespace GalaxyUML.Core.Models
                 throw new Exception("User is not this team's member.");
             
             Members.Remove(teamMember);
+            member.LeaveTeam(this);
         }
 
-        public void ChangeRole(User member, RoleEnum newRole)
+        public void ChangeRole(TeamMember member, RoleEnum newRole)
         {
-            if (member.IdUser == this.teamOwner.IdUser)
+            if (member.IdTeamMember == TeamOwner.IdTeamMember)
                 throw new Exception("Owner's role can not be changed.");
 
-            var teamMember = Members.FirstOrDefault(m => m.Member == member);
+            var teamMember = Members.FirstOrDefault(m => m.IdTeamMember == member.IdTeamMember);
             if (teamMember == null)
                 throw new Exception("User is not this team's member.");
 
-            if (newRole == new RoleMember() || newRole == new RoleOrganizer())
+            if (newRole == RoleEnum.Member || newRole == RoleEnum.Organizer)
                 throw new Exception("There can only be one owner of a team.");
                 
             teamMember.ChangeRole(newRole);
@@ -85,6 +94,22 @@ namespace GalaxyUML.Core.Models
         private string TeamCodeGenerator()
         {
             return Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper();
+        }
+
+        public void Attach(ITeamObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Detach(ITeamObserver observer)
+        {
+            _observers.Remove(observer);
+        }
+
+        public void Notify(TeamEventType eventType, ITeamCommand command)
+        {
+            foreach (var observer in _observers)
+                observer.Update(eventType, command);
         }
     }
 }

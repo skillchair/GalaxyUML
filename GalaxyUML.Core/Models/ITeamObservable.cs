@@ -1,9 +1,11 @@
+using GalaxyUML.Core.Models.Commands.TeamCommands;
+
 namespace GalaxyUML.Core.Models
 {
-    public interface ITeamObservable<T>
+    public interface ITeamObservable
     {
-        void Attach(ITeamObserver<T> observer);
-        void Detach(ITeamObserver<T> observer);
-        void Notify(TeamEventType teamEvent);
+        void Attach(ITeamObserver observer);
+        void Detach(ITeamObserver observer);
+        void Notify(TeamEventType eventType, ITeamCommand command);
     }
 }

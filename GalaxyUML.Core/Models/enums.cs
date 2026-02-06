@@ -34,6 +34,8 @@ namespace GalaxyUML.Core.Models
 
     public enum MeetingEventType
     {
+        MeetingStarted,
+        MeetingEnded,
         MemberJoined,
         ParticipantLeft,
         // DrawableAdded,
@@ -41,6 +43,7 @@ namespace GalaxyUML.Core.Models
         // DrawableEdited,
         ObjectAdded,
         ObjectRemoved,
+        ObjectResized,
         ObjectEditted,
         MessageSent
     }

@@ -1,7 +1,14 @@
 namespace GalaxyUML.Core.Models.Commands.MeetingCommands
 {
-    public interface IMeetingCommand
+    public abstract class IMeetingCommand
     {
-        void Execute();
+        public Meeting Meeting { get; private set; }
+
+        public IMeetingCommand(Meeting meeting)
+        {
+            Meeting = meeting;
+        }
+
+        public abstract void Execute(MeetingEventType eventType);
     }
 }

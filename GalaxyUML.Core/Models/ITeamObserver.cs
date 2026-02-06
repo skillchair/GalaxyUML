@@ -1,7 +1,9 @@
+using GalaxyUML.Core.Models.Commands.TeamCommands;
+
 namespace GalaxyUML.Core.Models
 {
-    public interface ITeamObserver<T>
+    public interface ITeamObserver
     {
-        public abstract void Update(Events.TeamEvent<T> teamEvent);
+        public void Update(TeamEventType eventType, ITeamCommand command);
     }
 }
