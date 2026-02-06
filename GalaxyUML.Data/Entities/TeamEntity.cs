@@ -14,8 +14,6 @@ namespace GalaxyUML.Data.Entities
         
         [Required]
         public Guid IdTeamOwner { get; set; }
-        
-        [ForeignKey("IdTeamOwner")]
         public virtual UserEntity TeamOwner { get; set; } = null!;
         
         [Required]
@@ -23,7 +21,7 @@ namespace GalaxyUML.Data.Entities
         public string TeamCode { get; set; } = null!;
         
         public virtual ICollection<MeetingEntity> Meetings { get; set; } = null!;
-        public virtual ICollection<TeamMemberEntity> TeamMembers { get; set; } = null!;
+        public virtual ICollection<TeamMemberEntity> Members { get; set; } = null!;
         public virtual ICollection<UserEntity> BannedUsers { get; set; } = null!;
     }
 }

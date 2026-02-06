@@ -20,5 +20,7 @@ namespace GalaxyUML.Data.Entities
         [Required]
         [MaxLength(9)]
         public string Color { get; set; } = null!;
+
+        public virtual ICollection<TeamMemberEntity> TeamMembers { get; set; } = new List<TeamMemberEntity>();
     }
 }

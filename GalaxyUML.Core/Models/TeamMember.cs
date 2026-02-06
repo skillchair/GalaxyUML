@@ -2,10 +2,10 @@ namespace GalaxyUML.Core.Models
 {
     public class TeamMember
     {
-        public Guid IdTeamMember { get; set; }
+        public Guid IdTeamMember { get; private set; }
         public Team Team { get; private set; }
         public User Member { get; private set; }
-        public RoleEnum Role { get; set; }
+        public RoleEnum Role { get; private set; }
 
         public TeamMember(Team team, User member, RoleEnum role)
         {

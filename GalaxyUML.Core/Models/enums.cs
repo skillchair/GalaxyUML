@@ -7,6 +7,12 @@ namespace GalaxyUML.Core.Models
         Owner
     }
 
+    public enum MemberStatus
+    {
+        Valid,
+        Banned
+    }
+
     public enum ObjectType
     {
         Diagram,

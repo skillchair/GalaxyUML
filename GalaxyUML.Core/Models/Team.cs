@@ -10,7 +10,7 @@ namespace GalaxyUML.Core.Models
         public string TeamCode { get; private set; }
         public List<Meeting> Meetings { get; private set; }
         public List<TeamMember> Members { get; set; }
-        public List<User> BannedUsers { get; private set; }
+        public List<BannedUser> BannedUsers { get; private set; }
 
         private List<ITeamObserver> _observers;
 
@@ -22,7 +22,7 @@ namespace GalaxyUML.Core.Models
             Members = [TeamOwner];
             TeamCode = TeamCodeGenerator();
             Meetings = new List<Meeting>();
-            BannedUsers = new List<User>();
+            BannedUsers = new List<BannedUser>();
 
             _observers = new List<ITeamObserver>();
         }
@@ -82,7 +82,7 @@ namespace GalaxyUML.Core.Models
             meeting.EndMeeting();
         }
 
-        public void Ban(User user)
+        public void Ban(BannedUser user)
         {
             var member = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
             if (member == null)
