@@ -34,7 +34,7 @@ namespace GalaxyUML.Core.Models
             if (memberInAList != null)
                 throw new Exception("User is already this team's member.");
 
-            var bannedUser = BannedUsers.FirstOrDefault(b => b.IdUser == user.IdUser);
+            var bannedUser = BannedUsers.FirstOrDefault(b => b.User.IdUser == user.IdUser);
             if (bannedUser != null)
                 throw new Exception("This user can not join because they are banned.");
 
@@ -82,14 +82,14 @@ namespace GalaxyUML.Core.Models
             meeting.EndMeeting();
         }
 
-        public void Ban(BannedUser user)
+        public void Ban(User user)
         {
             var member = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
             if (member == null)
                 throw new Exception("User not in this team.");
 
             //member.ClearEntry();        // brisemo i iz team-a i member napusta
-            BannedUsers.Add(user);      // dodajemo u lokalnu listu banovanih
+            BannedUsers.Add(new BannedUser(user, this));      // dodajemo u lokalnu listu banovanih
         }
         private string TeamCodeGenerator()
         {
