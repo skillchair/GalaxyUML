@@ -1,8 +1,4 @@
-TREBA IMPLEMENTIRATI COMMAND PATTERN I OBSERVER PATTERN
-TREBA NAPRAVITI REPO-E I MAPPERE
+ostaje da se zavrsi db context i da se usput i verovatno koriguju entiteti (reference na druge tabele;
+        kao npr BoxEntity ima id od DrawableEntity epa treba da ima i referencu na njega)
 
-SVE STO JE KOMENTARISANO SAM KOMENTARISAO ZARAD REBUILDOVANJA I TREBA ODKOMENTARISATI I RESITI GRESKE!!!
-
-IDALJE NIJE 1:1 SA UML DIJAGRAMOM!
-
-DBCONTEXT NIJE DOBAR!!!
+treba napraviti repo-e

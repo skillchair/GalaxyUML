@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using GalaxyUML.Core.Models;
 
 namespace GalaxyUML.Data.Entities
 {
@@ -7,6 +8,7 @@ namespace GalaxyUML.Data.Entities
     {
         [Key]
         public Guid IdDiagram { get; set; }    // isti kljuc ko u dijagramu; svaki drawable je i dijagram
+        public DiagramEntity Diagram { get; set; } = null!;
 
         [Required]
         public int Type { get; set; }

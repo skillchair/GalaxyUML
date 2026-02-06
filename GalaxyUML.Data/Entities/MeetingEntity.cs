@@ -20,7 +20,7 @@ namespace GalaxyUML.Data.Entities
         public Guid IdTeam { get; set; }
         public virtual TeamEntity Team { get; set; } = null!;
         
-        public virtual ICollection<MeetingParticipantEntity> MeetingParticipants { get; set; } = new List<MeetingParticipantEntity>();
+        public virtual ICollection<MeetingParticipantEntity> Participants { get; set; } = new List<MeetingParticipantEntity>();
         
         [Required]
         public Guid IdChat { get; set; }

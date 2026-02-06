@@ -26,6 +26,7 @@ namespace GalaxyUML.Data.Entities
         [Required]
         public string Password { get; set; } = null!;
         
-        public virtual ICollection<TeamMemberEntity> Teams { get; set; } = new List<TeamMemberEntity>();
+        public virtual ICollection<TeamMemberEntity> Teams { get; set; } = null!;
+        public virtual ICollection<BannedUserEntity> BannedTeams { get; set; } = null!;
     }
 }

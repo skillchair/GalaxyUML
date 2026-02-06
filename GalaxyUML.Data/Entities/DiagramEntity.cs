@@ -6,6 +6,7 @@ namespace GalaxyUML.Data.Entities
     {
         [Key]
         public Guid Id { get; set; }
+        public DrawableEntity Drawable { get; set; } = null!;
 
         [Required]
         public int Type { get; set; }
@@ -16,8 +17,8 @@ namespace GalaxyUML.Data.Entities
 
         [Required]
         public Guid IdParent { get; set; }
-        public virtual DiagramEntity? Diagram { get; set; } // nema svaki parent-a (npr board nema)
+        public virtual DiagramEntity? Parent { get; set; } // nema svaki parent-a (npr board nema)
 
-        public virtual ICollection<DrawableEntity> Drawables { get; set; } = new List<DrawableEntity>();
+        public virtual ICollection<DiagramEntity> Objects { get; set; } = new List<DiagramEntity>();
     }
 }

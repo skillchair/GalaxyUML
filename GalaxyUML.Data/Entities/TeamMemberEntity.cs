@@ -17,5 +17,7 @@ namespace GalaxyUML.Data.Entities
 
         [Required]
         public int Role { get; set; }
+
+        public virtual ICollection<MeetingParticipantEntity> Meetings { get; set; } = null!;
     }
 }

@@ -45,7 +45,68 @@ namespace GalaxyUML.Data
                 .HasForeignKey(tm => tm.IdMember)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<UserEntity>
+            modelBuilder.Entity<BannedUserEntity>()
+                .HasKey(b => new { b.IdUser, b.IdTeam });
+
+            modelBuilder.Entity<BannedUserEntity>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.BannedTeams)
+                .HasForeignKey(b => b.IdTeam)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<BannedUserEntity>()
+                .HasOne(b => b.Team)
+                .WithMany(t => t.BannedUsers)
+                .HasForeignKey(b => b.IdUser)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MeetingParticipantEntity>()
+                .HasKey(mp => new { mp.IdMeeting, mp.IdParticipant });
+
+            modelBuilder.Entity<MeetingParticipantEntity>()
+                .HasOne(mp => mp.Meeting)
+                .WithMany(m => m.Participants)
+                .HasForeignKey(mp => mp.IdParticipant)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MeetingParticipantEntity>()
+                .HasOne(mp => mp.Participant)
+                .WithMany(p => p.Meetings)
+                .HasForeignKey(mp => mp.IdMeeting)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MeetingEntity>()
+                .HasOne(m => m.Board)
+                .WithOne(b => b.Meeting)
+                .HasForeignKey<DiagramEntity>(b => b.IdMeeting)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MeetingEntity>()
+                .HasOne(m => m.Chat)
+                .WithOne(c => c.Meeting)
+                .HasForeignKey<ChatEntity>(m => m.IdMeeting)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DiagramEntity>()
+                .HasOne(d => d.Meeting)
+                .WithOne(m => m.Board)
+                .HasForeignKey<DiagramEntity>(d => d .IdMeeting)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DiagramEntity>()
+                .HasOne(d => d.Parent)
+                .WithMany(p => p.Objects)
+                .HasForeignKey(d => d.IdParent)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DrawableEntity>()
+                .HasKey(d => new { d.IdDiagram });
+
+            modelBuilder.Entity<DrawableEntity>()
+                .HasOne(d => d.Diagram)
+                .WithOne(d => d.Drawable)
+                .HasForeignKey<DrawableEntity>(d => d.IdDiagram)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

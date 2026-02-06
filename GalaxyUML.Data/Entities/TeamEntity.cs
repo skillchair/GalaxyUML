@@ -22,6 +22,6 @@ namespace GalaxyUML.Data.Entities
         
         public virtual ICollection<MeetingEntity> Meetings { get; set; } = null!;
         public virtual ICollection<TeamMemberEntity> Members { get; set; } = null!;
-        public virtual ICollection<UserEntity> BannedUsers { get; set; } = null!;
+        public virtual ICollection<BannedUserEntity> BannedUsers { get; set; } = null!;
     }
 }
