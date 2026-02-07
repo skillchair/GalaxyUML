@@ -14,7 +14,7 @@ namespace GalaxyUML.Data.Entities
         
         [Required]
         public Guid IdOrganizer { get; set; }
-        public virtual UserEntity Organizer { get; set; } = null!;
+        public virtual MeetingParticipantEntity Organizer { get; set; } = null!;
         
         [Required]
         public Guid IdTeam { get; set; }

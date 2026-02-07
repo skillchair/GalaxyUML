@@ -11,6 +11,6 @@ namespace GalaxyUML.Data.Entities
         public Guid IdMeeting { get; set; }
         public MeetingEntity Meeting { get; set; } = null!;
         
-        public virtual ICollection<MessageEntity> Messages { get; set; } = null!;
+        public virtual ICollection<MessageEntity>? Messages { get; set; }
     }
 }

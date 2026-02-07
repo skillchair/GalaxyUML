@@ -5,7 +5,10 @@ namespace GalaxyUML.Data.Entities
     class MethodEntity
     {
         [Key]
-        public Guid IdMethod { get; set; }
+        public Guid Id { get; set; }
+
+        [Required]
+        public string Content { get; set; } = null!;
 
         [Required]
         public Guid IdClassBox { get; set; }

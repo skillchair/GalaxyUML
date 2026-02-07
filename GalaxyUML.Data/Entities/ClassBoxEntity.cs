@@ -2,18 +2,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class ClassBoxEntity
+    class ClassBoxEntity : BoxEntity
     {
-        [Key]
-        public Guid IdBox { get; set; }     // identifikuje se pomocu box posto je svaki classBox prevashodno box
-
         [Required]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = "Class";
 
         [Required]
         public string Stereotype { get; set; } = "";
 
         [Required]
         public double TextSize { get; set; }
+
+        public ICollection<AttributeEntity>? Attributes { get; set; }
+        public ICollection<MethodEntity>? Methods { get; set; }
     }
 }

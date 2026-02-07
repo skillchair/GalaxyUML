@@ -30,7 +30,7 @@ namespace GalaxyUML.Core.Models
 
             _observers = new List<IMeetingObserver>();
         }
-        public Meeting(MeetingParticipant organizer, Diagram board, Chat chat)
+        public Meeting(TeamMember organizer, Diagram board, Chat chat)
         {
             IdMeeting = Guid.NewGuid();
             StartingTime = DateTime.Now;
@@ -38,8 +38,8 @@ namespace GalaxyUML.Core.Models
             Chat = chat;
             Board = board;
             Participants = new List<MeetingParticipant>();
-            Organizer = organizer;
-            ActiveParticipant = organizer;
+            Organizer = new MeetingParticipant(this, organizer);
+            ActiveParticipant = Organizer;
             IsActive = true;
 
             _observers = new List<IMeetingObserver>();

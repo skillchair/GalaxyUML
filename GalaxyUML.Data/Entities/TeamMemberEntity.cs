@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using GalaxyUML.Core.Models;
 
 namespace GalaxyUML.Data.Entities
 {
@@ -16,8 +17,8 @@ namespace GalaxyUML.Data.Entities
         public virtual UserEntity Member { get; set; } = null!;
 
         [Required]
-        public int Role { get; set; }
+        public RoleEnum Role { get; set; }
 
-        public virtual ICollection<MeetingParticipantEntity> Meetings { get; set; } = null!;
+        public virtual ICollection<MeetingParticipantEntity>? Meetings { get; set; } = null!;
     }
 }

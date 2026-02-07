@@ -12,7 +12,7 @@ namespace GalaxyUML.Core.Models
             Objs = new List<IDiagram>();
         }
 
-        public Diagram(Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram>? objs = null)  // default = null
+        public Diagram(Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram> objs)
     : base(startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Diagram;

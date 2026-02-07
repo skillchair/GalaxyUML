@@ -6,7 +6,7 @@ namespace GalaxyUML.Core.Models
     {
         public List<Line> Lines { get; private set; }
 
-        public Box(Point startingPoint, Point endingPoint, Meeting meeting, List<Line>? lines = null)  // default = null
+        public Box(Point startingPoint, Point endingPoint, Meeting meeting, List<Line> lines)  // default = null
             : base(startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Box;

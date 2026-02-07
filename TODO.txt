@@ -1,4 +1,1 @@
-ostaje da se zavrsi db context i da se usput i verovatno koriguju entiteti (reference na druge tabele;
-        kao npr BoxEntity ima id od DrawableEntity epa treba da ima i referencu na njega)
-
 treba napraviti repo-e

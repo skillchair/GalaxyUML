@@ -2,11 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class TextEntity
+    class TextEntity : DrawableEntity
     {
-        [Key]
-        public Guid IdDrawable { get; set; }    // text je drawable i tako se identifikuje
-
         [Required]
         public string Content { get; set; } = "Text";
 

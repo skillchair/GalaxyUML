@@ -1,3 +1,5 @@
+using PasswordHelper = GalaxyUML.Core.Security.PasswordHelper;
+
 namespace GalaxyUML.Core.Models
 {
     public class User
@@ -17,7 +19,7 @@ namespace GalaxyUML.Core.Models
             LastName = lastName;
             Username = username;
             Email = email;
-            Password = password;
+            Password = PasswordHelper.HashPassword(password); // hashujemo ovde
             Teams = new List<Team>();
         }
 

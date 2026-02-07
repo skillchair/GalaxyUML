@@ -8,10 +8,10 @@ namespace GalaxyUML.Data.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public Guid IdClassBox { get; set; }
-        public virtual ClassBoxEntity ClassBox { get; set; } = null!;
+        public string Content { get; set; } = null!;
 
         [Required]
-        public string Attribute { get; set; } = null!;
+        public Guid IdClassBox { get; set; }
+        public virtual ClassBoxEntity ClassBox { get; set; } = null!;
     }
 }

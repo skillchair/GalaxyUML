@@ -24,9 +24,10 @@ namespace GalaxyUML.Data.Entities
         public string Email { get; set; } = null!;
         
         [Required]
+        [StringLength(255), MinLength(6)]
         public string Password { get; set; } = null!;
         
-        public virtual ICollection<TeamMemberEntity> Teams { get; set; } = null!;
-        public virtual ICollection<BannedUserEntity> BannedTeams { get; set; } = null!;
+        public virtual ICollection<TeamMemberEntity>? Teams { get; set; }
+        public virtual ICollection<BannedUserEntity>? BannedTeams { get; set; }
     }
 }
