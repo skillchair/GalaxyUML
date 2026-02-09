@@ -1,0 +1,64 @@
+using Microsoft.EntityFrameworkCore;
+using Chat = GalaxyUML.Core.Models.Chat;
+using ChatMapper = GalaxyUML.Data.Mappers.ChatMapper;
+using Team = GalaxyUML.Core.Models.Team;
+using TeamMapper = GalaxyUML.Data.Mappers.TeamMapper;
+
+namespace GalaxyUML.Data.Repositories
+{
+    class ChatRepo : IChatRepo
+    {
+        AppDbContext _context;
+
+        public ChatRepo(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task CreateAsync(Chat chat, Team team)
+        {
+            if (await _context.Meetings.AnyAsync(c => c.Id == chat.IdChat))
+                throw new Exception("Chat with this id already exists.");
+            
+            var entityT = await _context.Teams.FirstOrDefaultAsync(t => t.Id == team.IdTeam);
+            if (entityT == null)
+                throw new Exception("Team with this id doesn't exist.");
+
+            var entity = ChatMapper.ToEntity(chat, TeamMapper.ToEntity(team));
+            await _context.Chats.AddAsync(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Chat chat)
+        {
+            var entity = await _context.Chats.FirstOrDefaultAsync(c => c.Id == chat.IdChat);
+            if (entity == null)
+                throw new Exception("Chat with this id doesn't exist.");
+
+            _context.Chats.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Chat?> GetByIdAsync(Guid id)
+        {
+            var entity = await _context.Chats.FirstOrDefaultAsync(c => c.Id == id);
+            return entity == null ? null : ChatMapper.ToModel(entity);
+        }
+
+        public async Task<Chat?> GetByMeetingAsync(Guid idMeeting)
+        {
+            var entity = await _context.Chats.FirstOrDefaultAsync(c => c.IdMeeting == idMeeting);
+            return entity == null ? null : ChatMapper.ToModel(entity);
+        }
+
+        public async Task UpdateAsync(Chat chat)
+        {
+            var entity = await _context.Chats.FirstOrDefaultAsync(c => c.Id == chat.IdChat);
+            if (entity == null)
+                throw new Exception("Chat with this id doesn't exist.");
+
+            _context.Chats.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+    }
+}

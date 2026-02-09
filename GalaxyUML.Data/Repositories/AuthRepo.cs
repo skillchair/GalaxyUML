@@ -1,26 +1,25 @@
 using GalaxyUML.Core.Models;
 using GalaxyUML.Core.Security;
-using GalaxyUML.Data.Mappers;
 
 namespace GalaxyUML.Data.Repositories
 {
     class AuthRepo
     {
-        private readonly UserRepo _userRepo;
+        private readonly IUserRepo _userRepo;
 
-        public AuthRepo(UserRepo userRepo)
+        public AuthRepo(IUserRepo userRepo)
         {
             _userRepo = userRepo;
         }
 
-        public User? Login(string username, string password)
+        public async Task<User?> LoginAsync(string username, string password)
         {
-            var entity = _userRepo.GetByUsername(username);
+            var entity = await _userRepo.GetByUsernameAsync(username);
             if (entity == null)
                 return null;
 
             if (PasswordHelper.VerifyPassword(password, entity.Password))
-                return UserMapper.ToModel(entity);
+                return entity;
 
             return null;
         }
