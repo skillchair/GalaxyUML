@@ -39,7 +39,7 @@ namespace GalaxyUML.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Meeting>> GetAllByOrganizerAsync(Guid idOrganizer)
+        public async Task<IEnumerable<Meeting>> GetByOrganizerAsync(Guid idOrganizer)
         {
             return await _context.Meetings
                             .AsNoTracking()
@@ -48,7 +48,7 @@ namespace GalaxyUML.Data.Repositories
                             .ToListAsync();
         }
 
-        public async Task<IEnumerable<Meeting>> GetAllByTeamAsync(Guid idTeam)
+        public async Task<IEnumerable<Meeting>> GetByTeamAsync(Guid idTeam)
         {
             return await _context.Meetings
                             .AsNoTracking()
@@ -80,6 +80,14 @@ namespace GalaxyUML.Data.Repositories
 
             _context.Meetings.Update(MeetingMapper.ToEntity(meeting, null!)); // Primer, prilagodi svom mapperu
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Meeting>> GetAllAsync()
+        {
+            return await _context.Meetings
+                            .AsNoTracking()
+                            .Select(m => MeetingMapper.ToModel(m))
+                            .ToListAsync();
         }
     }
 }

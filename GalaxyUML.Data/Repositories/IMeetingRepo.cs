@@ -7,8 +7,9 @@ namespace GalaxyUML.Data.Repositories
     {
         Task<Meeting?> GetByIdAsync(Guid id);
         Task<Meeting?> GetByTeamIfActiveAsync(Guid idTeam);
-        Task<IEnumerable<Meeting>> GetAllByTeamAsync(Guid idTeam);
-        Task<IEnumerable<Meeting>> GetAllByOrganizerAsync(Guid idOrganizer);
+        Task<IEnumerable<Meeting>> GetByTeamAsync(Guid idTeam);
+        Task<IEnumerable<Meeting>> GetByOrganizerAsync(Guid idOrganizer);
+        Task<IEnumerable<Meeting>> GetAllAsync();
 
         Task CreateAsync(Meeting meeting, Team team);
         Task DeleteAsync(Meeting meeting);

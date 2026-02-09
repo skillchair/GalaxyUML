@@ -16,7 +16,7 @@ namespace GalaxyUML.Data.Repositories
 
         public async Task CreateAsync(TeamMember teamMember)
         {
-            if (_context.Members.Any(tm => tm.Id == teamMember.IdTeamMember))
+            if (await _context.Members.AnyAsync(tm => tm.Id == teamMember.IdTeamMember))
                 throw new Exception("TeamMember with this id already exists.");
 
             var entity = TeamMemberMapper.ToEntity(teamMember);
@@ -34,34 +34,64 @@ namespace GalaxyUML.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<TeamMember?> GetByIdAsync(Guid id)
+        public async Task<IEnumerable<TeamMember>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                        .AsNoTracking()
+                        .Select(m => TeamMemberMapper.ToModel(m))
+                        .ToListAsync();
         }
 
-        public Task<IEnumerable<TeamMember>> GetByTeamAsync(Guid idTeam)
+        public async Task<TeamMember?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _context.Members.FirstOrDefaultAsync(m => m.Id == id);
+            return entity == null ? null : TeamMemberMapper.ToModel(entity);
         }
 
-        public Task<IEnumerable<TeamMember>> GetByTeamRoleAsync(Guid idTeam, RoleEnum role)
+        public async Task<IEnumerable<TeamMember>> GetByTeamAsync(Guid idTeam)
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                        .AsNoTracking()
+                        .Where(m => m.IdTeam == idTeam)
+                        .Select(m => TeamMemberMapper.ToModel(m))
+                        .ToListAsync();
         }
 
-        public Task<IEnumerable<TeamMember>> GetByUserAsync(Guid idUser)
+        public async Task<IEnumerable<TeamMember>> GetByTeamRoleAsync(Guid idTeam, RoleEnum role)
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                        .AsNoTracking()
+                        .Where(m => m.IdTeam == idTeam && m.Role == role)
+                        .Select(m => TeamMemberMapper.ToModel(m))
+                        .ToListAsync();
         }
 
-        public Task<IEnumerable<TeamMember>> GetByUserRoleAsync(Guid idUser, RoleEnum role)
+        public async Task<IEnumerable<TeamMember>> GetByUserAsync(Guid idUser)
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                        .AsNoTracking()
+                        .Where(m => m.IdMember == idUser)
+                        .Select(m => TeamMemberMapper.ToModel(m))
+                        .ToListAsync();
         }
 
-        public Task UpdateAsync(TeamMember teamMember)
+        public async Task<IEnumerable<TeamMember>> GetByUserRoleAsync(Guid idUser, RoleEnum role)
         {
-            throw new NotImplementedException();
+            return await _context.Members
+                        .AsNoTracking()
+                        .Where(m => m.IdMember == idUser && m.Role == role)
+                        .Select(m => TeamMemberMapper.ToModel(m))
+                        .ToListAsync();
+        }
+
+        public async Task UpdateAsync(TeamMember teamMember)
+        {
+            var entity = await _context.Members.FirstOrDefaultAsync(tm => tm.Id == teamMember.IdTeamMember);
+            if (entity == null)
+                throw new Exception("TeamMember with this id doesn't exist.");
+
+            _context.Members.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -39,6 +39,14 @@ namespace GalaxyUML.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Chat>> GetAllAsync()
+        {
+            return await _context.Chats
+                            .AsNoTracking()
+                            .Select(c => ChatMapper.ToModel(c))
+                            .ToListAsync();
+        }
+
         public async Task<Chat?> GetByIdAsync(Guid id)
         {
             var entity = await _context.Chats.FirstOrDefaultAsync(c => c.Id == id);

@@ -24,7 +24,7 @@ namespace GalaxyUML.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Message>> GetAllByChat(Guid idChat)
+        public async Task<IEnumerable<Message>> GetByChatAsync(Guid idChat)
         {
             return await _context.Messages
                             .AsNoTracking()
@@ -33,7 +33,7 @@ namespace GalaxyUML.Data.Repositories
                             .ToListAsync();
         }
 
-        public async Task<IEnumerable<Message>> GetAllByTeamParticipant(Guid idMeetingParticipant)
+        public async Task<IEnumerable<Message>> GetByTeamParticipantAsync(Guid idMeetingParticipant)
         {
             return await _context.Messages
                             .AsNoTracking()
@@ -49,6 +49,14 @@ namespace GalaxyUML.Data.Repositories
                             .Where(m => m.Id == id)
                             .Select(m => MessageMapper.ToModel(m))
                             .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetAllAsync()
+        {
+            return await _context.Messages
+                            .AsNoTracking()
+                            .Select(m => MessageMapper.ToModel(m))
+                            .ToListAsync();
         }
     }
 }

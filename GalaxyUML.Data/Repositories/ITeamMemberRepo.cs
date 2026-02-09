@@ -10,6 +10,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<TeamMember>> GetByTeamRoleAsync(Guid idTeam, RoleEnum role);
         Task<IEnumerable<TeamMember>> GetByUserAsync(Guid idUser);
         Task<IEnumerable<TeamMember>> GetByUserRoleAsync(Guid idUser, RoleEnum role);
+        Task<IEnumerable<TeamMember>> GetAllAsync();
 
         Task CreateAsync(TeamMember teamMember);
         Task DeleteAsync(TeamMember teamMember);
