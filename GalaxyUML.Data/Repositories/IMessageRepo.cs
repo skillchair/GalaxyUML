@@ -1,3 +1,4 @@
+using GalaxyUML.Core.Models;
 using Chat = GalaxyUML.Core.Models.Chat;
 using Message = GalaxyUML.Core.Models.Message;
 
@@ -10,7 +11,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<Message>> GetByTeamParticipantAsync(Guid idMeetingParticipant);
         Task<IEnumerable<Message>> GetAllAsync();
 
-        Task CreateAsync(Message message, Chat chat);
+        Task CreateAsync(Message message, Chat chat, Team team);
         // nismo definisali brisanje i edit!!!
     }
 }

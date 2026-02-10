@@ -1,4 +1,5 @@
 using GalaxyUML.Core.Models;
+using GalaxyUML.Data.Entities;
 using Message = GalaxyUML.Core.Models.Message;
 using MessageEntity = GalaxyUML.Data.Entities.MessageEntity;
 
@@ -14,15 +15,15 @@ namespace GalaxyUML.Data.Mappers
             );
         }
 
-        public static MessageEntity ToEntity(Message model, Chat chat)
+        public static MessageEntity ToEntity(Message model, ChatEntity chatEntity, TeamEntity teamEntity)
         {
             return new MessageEntity
             {
                 Id = model.IdMessage,
-                IdChat = chat.IdChat,
-                Chat = ChatMapper.ToEntity(chat),
+                IdChat = chatEntity.Id,
+                Chat = chatEntity,
                 IdMeetingParticipant = model.Sender.IdMeetingParticipant,
-                Sender = MeetingParticipantMapper.ToEntity(model.Sender),
+                Sender = MeetingParticipantMapper.ToEntity(model.Sender, teamEntity),
                 Content = model.Content,
                 Timestamp = model.Timestamp
             };

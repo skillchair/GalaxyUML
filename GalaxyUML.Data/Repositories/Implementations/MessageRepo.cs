@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Chat = GalaxyUML.Core.Models.Chat;
 using Message = GalaxyUML.Core.Models.Message;
+using Team = GalaxyUML.Core.Models.Team;
 using MessageMapper = GalaxyUML.Data.Mappers.MessageMapper;
+using ChatMapper = GalaxyUML.Data.Mappers.ChatMapper;
+using GalaxyUML.Data.Mappers;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
@@ -14,14 +17,16 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(Message message, Chat chat)
+        public async Task CreateAsync(Message message, Chat chat, Team team)
         {
             if (await _context.Chats.FindAsync(chat) != null)
                 throw new Exception("Chat not found.");
             if (await _context.Messages.AnyAsync(m => m.Id == message.IdMessage))
                 throw new Exception("Message with this id already exists.");
 
-            var entity = MessageMapper.ToEntity(message, chat);
+            var teamEntity = TeamMapper.ToEntity(team);
+            var chatEntity = ChatMapper.ToEntity(chat, teamEntity);
+            var entity = MessageMapper.ToEntity(message, chatEntity, teamEntity);
             _context.Messages.Add(entity);
             await _context.SaveChangesAsync();
         }

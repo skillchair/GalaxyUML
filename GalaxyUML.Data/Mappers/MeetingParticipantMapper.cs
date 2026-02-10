@@ -1,3 +1,4 @@
+using GalaxyUML.Data.Entities;
 using MeetingParticipant = GalaxyUML.Core.Models.MeetingParticipant;
 using MeetingParticipantEntity = GalaxyUML.Data.Entities.MeetingParticipantEntity;
 
@@ -13,13 +14,13 @@ namespace GalaxyUML.Data.Mappers
             );
         }
 
-        public static MeetingParticipantEntity ToEntity(MeetingParticipant model)
+        public static MeetingParticipantEntity ToEntity(MeetingParticipant model, TeamEntity teamEntity)
         {
             return new MeetingParticipantEntity
             {
                 Id = model.IdMeetingParticipant,
                 IdMeeting = model.Meeting.IdMeeting,
-                Meeting = MeetingMapper.ToEntity(model.Meeting),
+                Meeting = MeetingMapper.ToEntity(model.Meeting, teamEntity),
                 IdParticipant = model.TeamMember.IdTeamMember,
                 Participant = TeamMemberMapper.ToEntity(model.TeamMember)
             };

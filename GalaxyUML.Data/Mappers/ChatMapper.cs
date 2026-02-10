@@ -19,7 +19,10 @@ namespace GalaxyUML.Data.Mappers
         {
             List<MessageEntity> messages = new List<MessageEntity>();
             foreach (var msg in model.Messages)
-                messages.Add(MessageMapper.ToEntity(msg, model));
+            {
+                var modelEntity = ChatMapper.ToEntity(model, teamEntity);
+                messages.Add(MessageMapper.ToEntity(msg, modelEntity, teamEntity));
+            }
 
             return new ChatEntity
             {

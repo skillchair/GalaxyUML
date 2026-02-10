@@ -1,3 +1,4 @@
+using GalaxyUML.Data.Entities;
 using MeetingParticipant = GalaxyUML.Core.Models.MeetingParticipant;
 
 namespace GalaxyUML.Data.Repositories
@@ -9,7 +10,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<MeetingParticipant>> GetByParticipantAsync(Guid idParticipant);
         Task<IEnumerable<MeetingParticipant>> GetAllAsync();
 
-        Task CreateAsync(MeetingParticipant participant);
+        Task CreateAsync(MeetingParticipant participant, TeamEntity teamEntity);
         Task DeleteAsync(MeetingParticipant participant);
         Task UpdateAsync(MeetingParticipant participant);
     }
