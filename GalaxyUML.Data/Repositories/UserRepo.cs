@@ -23,7 +23,7 @@ namespace GalaxyUML.Data.Repositories
                 throw new Exception("User with this email already exists.");
 
             var entity = UserMapper.ToEntity(user);
-            await _context.Users.AddAsync(entity);
+            _context.Users.Add(entity);
             await _context.SaveChangesAsync();
         }
 

@@ -16,11 +16,13 @@ namespace GalaxyUML.Data.Repositories
 
         public async Task CreateAsync(Message message, Chat chat)
         {
+            if (await _context.Chats.FindAsync(chat) != null)
+                throw new Exception("Chat not found.");
             if (await _context.Messages.AnyAsync(m => m.Id == message.IdMessage))
-                throw new Exception("Meeting with this id already exists.");
-            
+                throw new Exception("Message with this id already exists.");
+
             var entity = MessageMapper.ToEntity(message, chat);
-            await _context.Messages.AddAsync(entity);
+            _context.Messages.Add(entity);
             await _context.SaveChangesAsync();
         }
 

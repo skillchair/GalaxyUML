@@ -19,7 +19,7 @@ namespace GalaxyUML.Data.Repositories
                 throw new Exception("User with this id doesn't exist.");
 
             var entity = BannedUserMapper.ToEntity(bannedUser);
-            await _context.BannedUsers.AddAsync(entity);
+            _context.BannedUsers.Add(entity);
             await _context.SaveChangesAsync();
         }
 

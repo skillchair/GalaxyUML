@@ -1,3 +1,4 @@
+using Team = GalaxyUML.Core.Models.Team;
 using Diagram = GalaxyUML.Core.Models.Diagram;
 using ObjectType = GalaxyUML.Core.Models.ObjectType;
 
@@ -11,7 +12,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<Diagram>> GetByMeetingParentAsync(Guid idMeeting, Guid idParent);   // namerno i idMeeting iz sigurnosnih razloga
         Task<IEnumerable<Diagram>> GetAllAsync();
 
-        Task CreateAsync(Diagram diagram);
+        Task CreateAsync(Diagram diagram, Diagram? parent, Team team);
         Task UpdateAsync(Diagram diagram);
         Task DeleteAsync(Diagram diagram);
     }

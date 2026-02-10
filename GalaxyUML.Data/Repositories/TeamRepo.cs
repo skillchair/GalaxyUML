@@ -21,7 +21,7 @@ namespace GalaxyUML.Data.Repositories
                 throw new Exception("Team with this code already exists.");
 
             var entity = TeamMapper.ToEntity(team);
-            await _context.Teams.AddAsync(entity);
+            _context.Teams.Add(entity);
             await _context.SaveChangesAsync();
         }
 

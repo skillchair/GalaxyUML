@@ -20,7 +20,7 @@ namespace GalaxyUML.Data.Repositories
                 throw new Exception("TeamMember with this id already exists.");
 
             var entity = TeamMemberMapper.ToEntity(teamMember);
-            await _context.Members.AddAsync(entity);
+            _context.Members.Add(entity);
             await _context.SaveChangesAsync();
         }
 

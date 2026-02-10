@@ -19,7 +19,7 @@ namespace GalaxyUML.Data.Repositories
                 throw new Exception("Participant with this id already exists.");
 
             var entity = MeetingParticipantMapper.ToEntity(participant);
-            await _context.Participants.AddAsync(entity);
+            _context.Participants.Add(entity);
             await _context.SaveChangesAsync();
         }
 

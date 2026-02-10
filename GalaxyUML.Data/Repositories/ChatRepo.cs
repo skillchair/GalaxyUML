@@ -17,15 +17,15 @@ namespace GalaxyUML.Data.Repositories
 
         public async Task CreateAsync(Chat chat, Team team)
         {
+            var entityT = await _context.Teams.FindAsync(team);
+            if (entityT == null)
+                throw new Exception("Team not found.");
+                
             if (await _context.Meetings.AnyAsync(c => c.Id == chat.IdChat))
                 throw new Exception("Chat with this id already exists.");
-            
-            var entityT = await _context.Teams.FirstOrDefaultAsync(t => t.Id == team.IdTeam);
-            if (entityT == null)
-                throw new Exception("Team with this id doesn't exist.");
 
             var entity = ChatMapper.ToEntity(chat, TeamMapper.ToEntity(team));
-            await _context.Chats.AddAsync(entity);
+            _context.Chats.Add(entity);
             await _context.SaveChangesAsync();
         }
 
