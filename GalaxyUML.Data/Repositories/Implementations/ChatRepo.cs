@@ -4,7 +4,7 @@ using ChatMapper = GalaxyUML.Data.Mappers.ChatMapper;
 using Team = GalaxyUML.Core.Models.Team;
 using TeamMapper = GalaxyUML.Data.Mappers.TeamMapper;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class ChatRepo : IChatRepo
     {

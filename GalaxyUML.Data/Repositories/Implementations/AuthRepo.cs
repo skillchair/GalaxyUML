@@ -1,9 +1,9 @@
 using GalaxyUML.Core.Models;
 using GalaxyUML.Core.Security;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class AuthRepo
+    class AuthRepo : IAuthRepo
     {
         private readonly IUserRepo _userRepo;
 

@@ -5,7 +5,7 @@ using DrawableMapper = GalaxyUML.Data.Mappers.DrawableMapper;
 using ObjectType = GalaxyUML.Core.Models.ObjectType;
 using Microsoft.EntityFrameworkCore;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class DrawableRepo : IDrawableRepo
     {

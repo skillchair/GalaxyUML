@@ -2,7 +2,7 @@ using GalaxyUML.Data.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Team = GalaxyUML.Core.Models.Team;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class TeamRepo : ITeamRepo
     {

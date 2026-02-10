@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using User = GalaxyUML.Core.Models.User;
 using UserMapper = GalaxyUML.Data.Mappers.UserMapper;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class UserRepo : IUserRepo
     {

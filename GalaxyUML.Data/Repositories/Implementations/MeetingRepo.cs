@@ -4,7 +4,7 @@ using MeetingMapper = GalaxyUML.Data.Mappers.MeetingMapper;
 using Team = GalaxyUML.Core.Models.Team;
 using TeamMapper = GalaxyUML.Data.Mappers.TeamMapper;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class MeetingRepo : IMeetingRepo
     {

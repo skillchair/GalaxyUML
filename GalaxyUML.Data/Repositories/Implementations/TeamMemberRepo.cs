@@ -3,7 +3,7 @@ using TeamMemberMapper = GalaxyUML.Data.Mappers.TeamMemberMapper;
 using RoleEnum = GalaxyUML.Core.Models.RoleEnum;
 using Microsoft.EntityFrameworkCore;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class TeamMemberRepo : ITeamMemberRepo
     {

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MeetingParticipant = GalaxyUML.Core.Models.MeetingParticipant;
 using MeetingParticipantMapper = GalaxyUML.Data.Mappers.MeetingParticipantMapper;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class MeetingParticipantRepo : IMeetingParticipantRepo
     {

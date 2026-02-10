@@ -5,7 +5,7 @@ using Diagram = GalaxyUML.Core.Models.Diagram;
 using DiagramMapper = GalaxyUML.Data.Mappers.DiagramMapper;
 using Team = GalaxyUML.Core.Models.Team;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class DiagramRepo : IDiagramRepo
     {

@@ -3,7 +3,7 @@ using Chat = GalaxyUML.Core.Models.Chat;
 using Message = GalaxyUML.Core.Models.Message;
 using MessageMapper = GalaxyUML.Data.Mappers.MessageMapper;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class MessageRepo : IMessageRepo
     {

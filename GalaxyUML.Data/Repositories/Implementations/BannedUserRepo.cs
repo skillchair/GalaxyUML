@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BannedUser = GalaxyUML.Core.Models.BannedUser;
 using BannedUserMapper = GalaxyUML.Data.Mappers.BannedUserMapper;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories.Implementations
 {
     class BannedUserRepo : IBannedUserRepo
     {
