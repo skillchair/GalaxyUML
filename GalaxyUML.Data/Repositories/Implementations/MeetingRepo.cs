@@ -29,9 +29,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Meeting meeting)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Meetings.FirstOrDefaultAsync(m => m.Id == meeting.IdMeeting);
+            var entity = await _context.Meetings.FirstOrDefaultAsync(m => m.Id == id);
             if (entity == null)
                 throw new Exception("Meeting with this id doesn't exist.");
 

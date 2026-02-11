@@ -1,7 +1,8 @@
-using GalaxyUML.Data.Entities;
+using Team = GalaxyUML.Core.Models.Team;
 using Microsoft.EntityFrameworkCore;
 using MeetingParticipant = GalaxyUML.Core.Models.MeetingParticipant;
 using MeetingParticipantMapper = GalaxyUML.Data.Mappers.MeetingParticipantMapper;
+using GalaxyUML.Data.Mappers;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
@@ -14,19 +15,20 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(MeetingParticipant participant, TeamEntity teamEntity)
+        public async Task CreateAsync(MeetingParticipant participant, Team team)
         {
             if (await _context.Participants.AnyAsync(p => p.Id == participant.IdMeetingParticipant))
                 throw new Exception("Participant with this id already exists.");
 
+            var teamEntity = TeamMapper.ToEntity(team);
             var entity = MeetingParticipantMapper.ToEntity(participant, teamEntity);
             _context.Participants.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(MeetingParticipant participant)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Participants.FirstOrDefaultAsync(p => p.Id == participant.IdMeetingParticipant);
+            var entity = await _context.Participants.FirstOrDefaultAsync(p => p.Id == id);
             if (entity == null)
                 throw new Exception("Participants with this id doesn't exist.");
 

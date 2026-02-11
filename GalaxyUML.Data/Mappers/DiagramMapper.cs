@@ -33,7 +33,7 @@ namespace GalaxyUML.Data.Mappers
             );
         }
 
-        public static DiagramEntity ToEntity(Diagram model, DiagramEntity? parent, TeamEntity teamEntity)
+        public static DiagramEntity ToEntity(Diagram model/*, DiagramEntity? parent/*, TeamEntity teamEntity*/)
         {
             DiagramEntity diagramEntity = new DiagramEntity()
             {
@@ -42,9 +42,10 @@ namespace GalaxyUML.Data.Mappers
                 StartingPoint = model.StartingPoint,
                 EndingPoint = model.EndingPoint,
                 IdMeeting = model.Meeting.IdMeeting,
-                Meeting = MeetingMapper.ToEntity(model.Meeting, teamEntity),
-                IdParent = parent?.Id,
-                Parent = parent,
+                Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
+                // IdParent = parent?.Id,
+                // Parent = parent,
+                IdParent = model.IdParent,
                 Objects = new List<DiagramEntity>() // prazno za sad
             };
 
@@ -54,11 +55,11 @@ namespace GalaxyUML.Data.Mappers
                     switch (o.Type)
                     {
                         case ObjectType.Diagram:
-                            objs.Add(ToEntity((Diagram)o, diagramEntity, teamEntity));
+                            objs.Add(ToEntity((Diagram)o/*, diagramEntity/*, teamEntity*/));
                             break;
 
                         default:
-                            objs.Add(DrawableMapper.ToEntity((IDrawable)o, diagramEntity, teamEntity));
+                            objs.Add(DrawableMapper.ToEntity((IDrawable)o/*, diagramEntity/*, teamEntity*/));
                             break;
                     }
 

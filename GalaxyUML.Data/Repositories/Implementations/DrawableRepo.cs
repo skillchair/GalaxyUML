@@ -31,9 +31,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(IDrawable drawable)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Drawables.FirstOrDefaultAsync(d => d.Id == drawable.IdDiagram);
+            var entity = await _context.Drawables.FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
                 throw new Exception("Drawable object with this id doesn't exist.");
 

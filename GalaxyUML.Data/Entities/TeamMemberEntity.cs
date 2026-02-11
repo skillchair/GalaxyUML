@@ -3,7 +3,7 @@ using GalaxyUML.Core.Models;
 
 namespace GalaxyUML.Data.Entities
 {
-    class TeamMemberEntity
+    public class TeamMemberEntity
     {
         [Key]
         public Guid Id { get; set; }

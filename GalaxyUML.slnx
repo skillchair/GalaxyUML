@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="GalaxyUML.Api/GalaxyUML.Api.csproj" />
   <Project Path="GalaxyUML.Core/GalaxyUML.Core.csproj" />
   <Project Path="GalaxyUML.Data/GalaxyUML.Data.csproj" />
   <Project Path="GalaxyUML.UI/GalaxyUML.UI.csproj" />

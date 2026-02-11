@@ -37,9 +37,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Diagram diagram)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == diagram.IdDiagram);
+            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
                 throw new Exception("Diagram with this id doesn't exist.");
 

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class TextEntity : DrawableEntity
+    public class TextEntity : DrawableEntity
     {
         [Required]
         public string Content { get; set; } = "Text";

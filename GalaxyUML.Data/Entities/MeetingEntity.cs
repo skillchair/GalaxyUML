@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class MeetingEntity
+    public class MeetingEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -18,7 +18,7 @@ namespace GalaxyUML.Data.Entities
         
         [Required]
         public Guid IdTeam { get; set; }
-        public virtual TeamEntity Team { get; set; } = null!;
+        //public virtual TeamEntity Team { get; set; } = null!;
         
         public virtual ICollection<MeetingParticipantEntity> Participants { get; set; } = new List<MeetingParticipantEntity>();
         

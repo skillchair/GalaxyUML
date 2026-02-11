@@ -4,7 +4,7 @@ using ObjectType = GalaxyUML.Core.Models.ObjectType;
 
 namespace GalaxyUML.Data.Entities
 {
-    class DiagramEntity
+    public class DiagramEntity
     {
         [Key]
         public Guid Id { get; set; }

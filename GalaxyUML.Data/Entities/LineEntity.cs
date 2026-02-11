@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class LineEntity : DrawableEntity
+    public class LineEntity : DrawableEntity
     {   
         [Required]
         public Guid IdBox1 { get; set; }

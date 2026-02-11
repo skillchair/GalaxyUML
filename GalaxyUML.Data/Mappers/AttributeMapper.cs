@@ -16,9 +16,9 @@ namespace GalaxyUML.Data.Mappers
             return new Attribute(classBox, entity.Content);
         }
 
-        public static AttributeEntity ToEntity(Attribute model, DiagramEntity parent, TeamEntity team)
+        public static AttributeEntity ToEntity(Attribute model, DiagramEntity parent/*, TeamEntity team*/)
         {
-            var classBox = DrawableMapper.ToEntity(model.ClassBox, parent, team) as ClassBoxEntity
+            var classBox = DrawableMapper.ToEntity(model.ClassBox/*, parent/*, team*/) as ClassBoxEntity
                 ?? throw new InvalidCastException("model.ClassBox is not a ClassBox at runtime.");
             return new AttributeEntity
             {

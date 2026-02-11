@@ -23,9 +23,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(BannedUser bannedUser)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.BannedUsers.FirstOrDefaultAsync(b => b.Id == bannedUser.IdBan);
+            var entity = await _context.BannedUsers.FirstOrDefaultAsync(b => b.Id == id);
             if (entity == null)
                 throw new Exception("User with this id doesn't exist.");
             

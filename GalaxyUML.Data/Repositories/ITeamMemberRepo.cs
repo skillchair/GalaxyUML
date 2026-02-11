@@ -3,7 +3,7 @@ using RoleEnum = GalaxyUML.Core.Models.RoleEnum;
 
 namespace GalaxyUML.Data.Repositories
 {
-    interface ITeamMemberRepo
+    public interface ITeamMemberRepo
     {
         Task<TeamMember?> GetByIdAsync(Guid id);
         Task<IEnumerable<TeamMember>> GetByTeamAsync(Guid idTeam);
@@ -13,7 +13,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<TeamMember>> GetAllAsync();
 
         Task CreateAsync(TeamMember teamMember);
-        Task DeleteAsync(TeamMember teamMember);
         Task UpdateAsync(TeamMember teamMember);
+        Task DeleteAsync(Guid id);
     }
 }

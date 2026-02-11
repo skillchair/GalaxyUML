@@ -25,9 +25,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Team team)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Teams.FirstOrDefaultAsync(t => t.Id == team.IdTeam);
+            var entity = await _context.Teams.FirstOrDefaultAsync(t => t.Id == id);
             if (entity == null)
                 throw new Exception("Team with this id doesn't exist.");
 
@@ -55,7 +55,7 @@ namespace GalaxyUML.Data.Repositories.Implementations
             return entity == null ? null : TeamMapper.ToModel(entity);
         }
 
-        public async Task<IEnumerable<Team>> GetAllByOwnerAsync(Guid idOwner)
+        public async Task<IEnumerable<Team>> GetByOwnerAsync(Guid idOwner)
         {
             return await _context.Teams
                    .AsNoTracking()

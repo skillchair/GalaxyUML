@@ -10,20 +10,21 @@ namespace GalaxyUML.Data.Mappers
         public static Message ToModel(MessageEntity entity)
         {
             return new Message(
+                entity.IdChat,
                 MeetingParticipantMapper.ToModel(entity.Sender),
                 entity.Content
             );
         }
 
-        public static MessageEntity ToEntity(Message model, ChatEntity chatEntity, TeamEntity teamEntity)
+        public static MessageEntity ToEntity(Message model/*, ChatEntity chatEntity, TeamEntity teamEntity*/)
         {
             return new MessageEntity
             {
                 Id = model.IdMessage,
-                IdChat = chatEntity.Id,
-                Chat = chatEntity,
+                IdChat = model.IdChat,
+                //Chat = chatEntity,
                 IdMeetingParticipant = model.Sender.IdMeetingParticipant,
-                Sender = MeetingParticipantMapper.ToEntity(model.Sender, teamEntity),
+                Sender = MeetingParticipantMapper.ToEntity(model.Sender/*, teamEntity*/),
                 Content = model.Content,
                 Timestamp = model.Timestamp
             };

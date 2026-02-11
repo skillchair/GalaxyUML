@@ -15,20 +15,20 @@ namespace GalaxyUML.Data.Mappers
             );
         }
 
-        public static ChatEntity ToEntity(Chat model, TeamEntity teamEntity)
+        public static ChatEntity ToEntity(Chat model/*, TeamEntity teamEntity*/)
         {
             List<MessageEntity> messages = new List<MessageEntity>();
+            var modelEntity = ChatMapper.ToEntity(model/*, teamEntity*/);
             foreach (var msg in model.Messages)
             {
-                var modelEntity = ChatMapper.ToEntity(model, teamEntity);
-                messages.Add(MessageMapper.ToEntity(msg, modelEntity, teamEntity));
+                messages.Add(MessageMapper.ToEntity(msg/*, modelEntity*//*, teamEntity*/));
             }
 
             return new ChatEntity
             {
                 Id = model.IdChat,
                 IdMeeting = model.Meeting.IdMeeting,
-                Meeting = MeetingMapper.ToEntity(model.Meeting, teamEntity),
+                Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
                 Messages = messages
             };
         }

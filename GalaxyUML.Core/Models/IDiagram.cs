@@ -9,12 +9,14 @@ namespace GalaxyUML.Core.Models
         public Point StartingPoint { get; protected set; }
         public Point EndingPoint { get; protected set; }
         public Meeting Meeting { get; private set; }
+        public Guid IdParent { get; private set; }
 
-        public IDiagram(Meeting meeting)
+        public IDiagram(Meeting meeting, Guid? idParent = null)
         {
             StartingPoint = Constants.Constants.MinPoint;
             EndingPoint = Constants.Constants.MaxPoint;
             Meeting = meeting;
+            IdParent = idParent ?? IdParent;
         }
 
         public IDiagram(Point startingPoint, Point endingPoint, Meeting meeting)

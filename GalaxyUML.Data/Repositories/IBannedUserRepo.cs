@@ -11,6 +11,6 @@ namespace GalaxyUML.Data.Repositories
 
         Task CreateAsync(BannedUser bannedUser);
         Task UpdateAsync(BannedUser bannedUser);
-        Task DeleteAsync(BannedUser bannedUser);
+        Task DeleteAsync(Guid id);
     }
 }

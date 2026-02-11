@@ -67,7 +67,7 @@ namespace GalaxyUML.Data.Mappers
             };
         }
 
-        public static DrawableEntity ToEntity(IDrawable model, DiagramEntity parent, TeamEntity teamEntity)
+        public static DrawableEntity ToEntity(IDrawable model/*, DiagramEntity parent/*, TeamEntity teamEntity*/)
         {
             switch (model.Type)
             {
@@ -76,7 +76,7 @@ namespace GalaxyUML.Data.Mappers
                         var boxModel = (Box)model;
 
                         var lineEntities = boxModel.Lines?
-                            .Select(l => (LineEntity)ToEntity(l, parent, teamEntity))
+                            .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
                             .ToList() ?? new List<LineEntity>();
 
                         return new BoxEntity
@@ -86,9 +86,9 @@ namespace GalaxyUML.Data.Mappers
                             StartingPoint = boxModel.StartingPoint,
                             EndingPoint = boxModel.EndingPoint,
                             IdMeeting = boxModel.Meeting.IdMeeting,
-                            Meeting = MeetingMapper.ToEntity(boxModel.Meeting, teamEntity),
-                            IdParent = parent.Id,
-                            Parent = parent,
+                            //Meeting = MeetingMapper.ToEntity(boxModel.Meeting/*, teamEntity),
+                            IdParent = model.IdParent,
+                            //Parent = parent,
                             Objects = null,
                             Lines = lineEntities
                         };
@@ -99,7 +99,7 @@ namespace GalaxyUML.Data.Mappers
                         var classBoxModel = (ClassBox)model;
 
                         var lineEntities = classBoxModel.Lines?
-                            .Select(l => (LineEntity)ToEntity(l, parent, teamEntity))
+                            .Select(l => (LineEntity)ToEntity(l/*, parent, teamEntity*/))
                             .ToList() ?? new List<LineEntity>();
 
                         return new ClassBoxEntity
@@ -109,9 +109,10 @@ namespace GalaxyUML.Data.Mappers
                             StartingPoint = classBoxModel.StartingPoint,
                             EndingPoint = classBoxModel.EndingPoint,
                             IdMeeting = classBoxModel.Meeting.IdMeeting,
-                            Meeting = MeetingMapper.ToEntity(classBoxModel.Meeting, teamEntity),
-                            IdParent = parent.Id,
-                            Parent = parent,
+                            Meeting = MeetingMapper.ToEntity(classBoxModel.Meeting/*, teamEntity*/),
+                            IdParent = model.IdParent,
+                            //IdParent = parent.Id,
+                            //Parent = parent,
                             Objects = null,
                             Lines = lineEntities
                         };
@@ -126,9 +127,10 @@ namespace GalaxyUML.Data.Mappers
                         StartingPoint = textModel.StartingPoint,
                         EndingPoint = textModel.EndingPoint,
                         IdMeeting = textModel.Meeting.IdMeeting,
-                        Meeting = MeetingMapper.ToEntity(textModel.Meeting, teamEntity),
-                        IdParent = parent.Id,
-                        Parent = parent,
+                        Meeting = MeetingMapper.ToEntity(textModel.Meeting/*, teamEntity*/),
+                        // IdParent = parent.Id,
+                        // Parent = parent,
+                        IdParent = model.IdParent,
                         Objects = null,
                         Content = textModel.Content,
                         Format = textModel.Format,
@@ -152,12 +154,13 @@ namespace GalaxyUML.Data.Mappers
                         StartingPoint = lineModel.StartingPoint,
                         EndingPoint = lineModel.EndingPoint,
                         IdMeeting = lineModel.Meeting.IdMeeting,
-                        Meeting = MeetingMapper.ToEntity(lineModel.Meeting, teamEntity),
-                        IdParent = parent.Id,
-                        Parent = parent,
+                        Meeting = MeetingMapper.ToEntity(lineModel.Meeting/*, teamEntity*/),
+                        // IdParent = parent.Id,
+                        // Parent = parent,
+                        IdParent = model.IdParent,
                         Objects = null,
-                        Box1 = (BoxEntity)ToEntity(lineModel.Box1, parent, teamEntity),
-                        Box2 = (BoxEntity)ToEntity(lineModel.Box2, parent, teamEntity)
+                        Box1 = (BoxEntity)ToEntity(lineModel.Box1/*, parent, teamEntity*/),
+                        Box2 = (BoxEntity)ToEntity(lineModel.Box2/*, parent, teamEntity*/)
                     };
 
                 default:

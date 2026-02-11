@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Data", "GalaxyUML
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.UI", "GalaxyUML.UI\GalaxyUML.UI.csproj", "{776676A3-A63C-3884-F07A-A62B9F3900AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Api", "GalaxyUML.Api\GalaxyUML.Api.csproj", "{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,18 +55,18 @@ Global
 		{776676A3-A63C-3884-F07A-A62B9F3900AC}.Release|x64.Build.0 = Release|Any CPU
 		{776676A3-A63C-3884-F07A-A62B9F3900AC}.Release|x86.ActiveCfg = Release|Any CPU
 		{776676A3-A63C-3884-F07A-A62B9F3900AC}.Release|x86.Build.0 = Release|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Debug|x64.Build.0 = Debug|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Debug|x86.Build.0 = Debug|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Release|x64.ActiveCfg = Release|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Release|x64.Build.0 = Release|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Release|x86.ActiveCfg = Release|Any CPU
-		{83DC5B7C-5046-40D7-AFAF-F1F4D0B5C5A7}.Release|x86.Build.0 = Release|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Debug|x64.Build.0 = Debug|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Debug|x86.Build.0 = Debug|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Release|x64.ActiveCfg = Release|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Release|x64.Build.0 = Release|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Release|x86.ActiveCfg = Release|Any CPU
+		{288078C5-B989-4B1D-867B-3862ABC6602D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

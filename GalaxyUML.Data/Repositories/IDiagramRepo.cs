@@ -14,6 +14,6 @@ namespace GalaxyUML.Data.Repositories
 
         Task CreateAsync(Diagram diagram, Diagram? parent, Team team);
         Task UpdateAsync(Diagram diagram);
-        Task DeleteAsync(Diagram diagram);
+        Task DeleteAsync(Guid id);
     }
 }

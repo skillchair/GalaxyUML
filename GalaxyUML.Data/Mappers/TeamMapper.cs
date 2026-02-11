@@ -36,7 +36,7 @@ namespace GalaxyUML.Data.Mappers
 
             List<MeetingEntity> meetingEntities = new List<MeetingEntity>();
             foreach (var m in team.Meetings)
-                meetingEntities.Add(MeetingMapper.ToEntity(m, teamEntity));
+                meetingEntities.Add(MeetingMapper.ToEntity(m/*, teamEntity*/));
 
             teamEntity.Meetings = meetingEntities;
 

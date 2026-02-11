@@ -1,9 +1,9 @@
 using GalaxyUML.Core.Models;
 using GalaxyUML.Core.Security;
 
-namespace GalaxyUML.Data.Repositories.Implementations
+namespace GalaxyUML.Data.Repositories
 {
-    interface IAuthRepo
+    public interface IAuthRepo
     {
         Task<User?> LoginAsync(string username, string password);
     }

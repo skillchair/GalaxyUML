@@ -29,9 +29,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Chat chat)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _context.Chats.FirstOrDefaultAsync(c => c.Id == chat.IdChat);
+            var entity = await _context.Chats.FirstOrDefaultAsync(c => c.Id == id);
             if (entity == null)
                 throw new Exception("Chat with this id doesn't exist.");
 

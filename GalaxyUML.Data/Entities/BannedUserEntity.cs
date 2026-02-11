@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class BannedUserEntity
+    public class BannedUserEntity
     {
         [Key]
         public Guid Id { get; set; }

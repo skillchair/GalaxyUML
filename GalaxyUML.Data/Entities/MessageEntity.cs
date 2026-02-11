@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class MessageEntity
+    public class MessageEntity
     {
         [Key]
         public Guid Id { get; set; }

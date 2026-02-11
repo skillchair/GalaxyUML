@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GalaxyUML.Data.Entities
 {
-    class ClassBoxEntity : BoxEntity
+    public class ClassBoxEntity : BoxEntity
     {
         [Required]
         public string Name { get; set; } = "Class";

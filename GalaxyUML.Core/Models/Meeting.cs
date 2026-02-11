@@ -13,10 +13,11 @@ namespace GalaxyUML.Core.Models
         public List<MeetingParticipant> Participants { get; set; }
         public MeetingParticipant ActiveParticipant { get; private set; }
         public bool IsActive { get; private set; }
+        public Guid IdTeam { get; private set; }
 
         private List<IMeetingObserver> _observers;
 
-        public Meeting(TeamMember organizer)
+        public Meeting(Guid idTeam, TeamMember organizer)
         {
             IdMeeting = Guid.NewGuid();
             StartingTime = DateTime.Now;
@@ -27,6 +28,7 @@ namespace GalaxyUML.Core.Models
             Participants = [Organizer];
             ActiveParticipant = Organizer;
             IsActive = true;
+            IdTeam = idTeam;
 
             _observers = new List<IMeetingObserver>();
         }

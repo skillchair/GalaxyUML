@@ -16,11 +16,11 @@ namespace GalaxyUML.Data.Mappers
             );
         }
 
-        public static MeetingEntity ToEntity(Meeting model, TeamEntity teamEntity)
+        public static MeetingEntity ToEntity(Meeting model/*, TeamEntity teamEntity*/)
         {
             List<MeetingParticipantEntity> participantEntities = new List<MeetingParticipantEntity>();
             foreach (var p in model.Participants)
-                participantEntities.Add(MeetingParticipantMapper.ToEntity(p, teamEntity));
+                participantEntities.Add(MeetingParticipantMapper.ToEntity(p/*, teamEntity*/));
 
             return new MeetingEntity
             {
@@ -28,14 +28,15 @@ namespace GalaxyUML.Data.Mappers
                 StartingTime = model.StartingTime,
                 EndingTime = model.EndingTime,
                 IdOrganizer = model.Organizer.IdMeetingParticipant,
-                Organizer = MeetingParticipantMapper.ToEntity(model.Organizer, teamEntity),
-                IdTeam = teamEntity.Id,
-                Team = teamEntity,
+                Organizer = MeetingParticipantMapper.ToEntity(model.Organizer/*, teamEntity*/),
+                IdTeam = model.IdTeam,
+                // IdTeam = teamEntity.Id,
+                //Team = teamEntity,
                 Participants = participantEntities,
                 IdChat = model.Chat.IdChat,
-                Chat = ChatMapper.ToEntity(model.Chat, teamEntity),
+                Chat = ChatMapper.ToEntity(model.Chat/*, teamEntity*/),
                 IdBoard = model.Board.IdDiagram,
-                Board = DiagramMapper.ToEntity(model.Board, null, teamEntity),  // board nema parent-a!
+                Board = DiagramMapper.ToEntity(model.Board/*, null/*, teamEntity*/),  // board nema parent-a!
                 IsActive = model.IsActive
             };
         }
