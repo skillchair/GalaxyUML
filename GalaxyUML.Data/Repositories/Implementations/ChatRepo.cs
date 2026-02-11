@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Chat = GalaxyUML.Core.Models.Chat;
 using ChatMapper = GalaxyUML.Data.Mappers.ChatMapper;
-using Team = GalaxyUML.Core.Models.Team;
-using TeamMapper = GalaxyUML.Data.Mappers.TeamMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
