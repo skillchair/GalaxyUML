@@ -9,7 +9,7 @@ namespace GalaxyUML.Api.Controllers
     class TeamController : ControllerBase
     {
         private readonly ITeamRepo _teamRepo;
-        
+
         public TeamController(ITeamRepo teamRepo)
         {
             _teamRepo = teamRepo;
@@ -27,7 +27,7 @@ namespace GalaxyUML.Api.Controllers
         public async Task<IActionResult> GetByCodeAsync(string code)
         {
             var team = _teamRepo.GetByCodeAsync(code);
-            if (team == null)  return NotFound();
+            if (team == null) return NotFound();
             return Ok(team);
         }
 
@@ -46,12 +46,12 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(Team team)
+        public async Task<IActionResult> CreateAsync([FromBody] Team team)
         {
             try
             {
                 await _teamRepo.CreateAsync(team);
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = team.IdTeam}, team);
+                return Ok(team);
             }
             catch (Exception ex)
             {
@@ -60,11 +60,11 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(Team team)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Team team)
         {
             try
             {
-                await _teamRepo.UpdateAsync(team);
+                await _teamRepo.UpdateAsync(id, team);
                 return NoContent();
             }
             catch (Exception ex)

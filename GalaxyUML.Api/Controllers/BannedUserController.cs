@@ -9,7 +9,7 @@ namespace GalaxyUML.Api.Controllers
     class BannedUserController : ControllerBase
     {
         private readonly IBannedUserRepo _banRepo;
-        
+
         public BannedUserController(IBannedUserRepo banRepo)
         {
             _banRepo = banRepo;
@@ -47,7 +47,7 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody]BannedUser bannedUser)
+        public async Task<IActionResult> CreateAsync([FromBody] BannedUser bannedUser)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody]BannedUser bannedUser)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] BannedUser bannedUser)
         {
             try
             {
@@ -73,11 +73,19 @@ namespace GalaxyUML.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            
+            try
+            {
+                await _banRepo.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

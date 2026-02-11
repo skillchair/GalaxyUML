@@ -1,10 +1,9 @@
-using Team = GalaxyUML.Core.Models.Team;
 using Diagram = GalaxyUML.Core.Models.Diagram;
 using ObjectType = GalaxyUML.Core.Models.ObjectType;
 
 namespace GalaxyUML.Data.Repositories
 {
-    interface IDiagramRepo
+    public interface IDiagramRepo
     {
         Task<Diagram?> GetByIdAsync(Guid id);
         Task<IEnumerable<Diagram>> GetByMeetingAsync(Guid idMeeting);

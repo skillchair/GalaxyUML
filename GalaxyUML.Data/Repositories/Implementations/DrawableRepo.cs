@@ -64,7 +64,7 @@ namespace GalaxyUML.Data.Repositories.Implementations
                             .ToListAsync();
         }
 
-        public async Task<IEnumerable<IDrawable>> GetByParentTypeAsync(Guid idParent, ObjectType type, Guid idMeeting)
+        public async Task<IEnumerable<IDrawable>> GetByParentTypeAsync(Guid idParent, ObjectType type)
         {
             return await _context.Drawables
                             .AsNoTracking()

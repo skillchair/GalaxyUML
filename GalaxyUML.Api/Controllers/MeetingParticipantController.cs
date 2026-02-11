@@ -49,7 +49,7 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost("{id:guid}")]
-        public async Task<IActionResult> CreateAsync(MeetingParticipant meetingParticipant/*, TeamEntity teamEntity*/)
+        public async Task<IActionResult> CreateAsync([FromBody] MeetingParticipant meetingParticipant/*, TeamEntity teamEntity*/)
         {
             try
             {
@@ -62,6 +62,18 @@ namespace GalaxyUML.Api.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            try
+            {
+                await _participantRepo.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

@@ -39,7 +39,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(user);
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
             var users = await _userRepo.GetAllAsync();
@@ -47,7 +47,7 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(User user)
+        public async Task<IActionResult> CreateAsync([FromBody] User user)
         {
             try
             {
@@ -61,11 +61,11 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPut("{id:guid}")] // Dodajemo id u rutu radi identifikacije
-        public async Task<IActionResult> UpdateAsync(Guid id, User user)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] User user)
         {
             try
             {
-                await _userRepo.UpdateAsync(user);
+                await _userRepo.UpdateAsync(id, user);
                 return NoContent();
             }
             catch (Exception ex)

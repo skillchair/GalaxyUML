@@ -54,7 +54,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(members);
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
             var members = await _memberRepo.GetAllAsync();
@@ -62,7 +62,7 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(TeamMember teamMember)
+        public async Task<IActionResult> CreateAsync([FromBody]TeamMember teamMember)
         {
             try
             {
@@ -76,11 +76,11 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(TeamMember teamMember)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody]TeamMember teamMember)
         {
             try
             {
-                await _memberRepo.UpdateAsync(teamMember);
+                await _memberRepo.UpdateAsync(id, teamMember);
                 return NoContent();
             }
             catch (Exception ex)

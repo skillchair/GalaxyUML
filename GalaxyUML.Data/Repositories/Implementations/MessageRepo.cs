@@ -40,11 +40,11 @@ namespace GalaxyUML.Data.Repositories.Implementations
                             .ToListAsync();
         }
 
-        public async Task<IEnumerable<Message>> GetByTeamParticipantAsync(Guid idMeetingParticipant)
+        public async Task<IEnumerable<Message>> GetByChatSenderAsync(Guid idChat, Guid idSender)
         {
             return await _context.Messages
                             .AsNoTracking()
-                            .Where(m => m.IdSender == idMeetingParticipant)
+                            .Where(m => m.IdSender == idSender && m.IdChat == idChat)
                             .Select(m => MessageMapper.ToModel(m))
                             .ToListAsync();
         }
