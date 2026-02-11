@@ -15,13 +15,13 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(MeetingParticipant participant, Team team)
+        public async Task CreateAsync(MeetingParticipant participant/*, Team team*/)
         {
             if (await _context.Participants.AnyAsync(p => p.Id == participant.IdMeetingParticipant))
                 throw new Exception("Participant with this id already exists.");
 
-            var teamEntity = TeamMapper.ToEntity(team);
-            var entity = MeetingParticipantMapper.ToEntity(participant, teamEntity);
+            // var teamEntity = TeamMapper.ToEntity(team);
+            var entity = MeetingParticipantMapper.ToEntity(participant/*, teamEntity*/);
             _context.Participants.Add(entity);
             await _context.SaveChangesAsync();
         }

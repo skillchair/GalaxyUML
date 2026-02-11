@@ -16,22 +16,22 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(Diagram diagram, Diagram? parent, Team team)
+        public async Task CreateAsync(Diagram diagram/*, Diagram? parent, Team team*/)
         {
-            var teamEntity = await _context.Teams.FindAsync(team.IdTeam);
-            if (teamEntity == null) throw new Exception("Team not found.");
+            // var teamEntity = await _context.Teams.FindAsync(team.IdTeam);
+            // if (teamEntity == null) throw new Exception("Team not found.");
 
-            if (await _context.Diagrams.AnyAsync(d => d.Id == diagram.IdDiagram))
-                throw new Exception("Diagram with this ID already exists.");
+            // if (await _context.Diagrams.AnyAsync(d => d.Id == diagram.IdDiagram))
+            //     throw new Exception("Diagram with this ID already exists.");
 
-            DiagramEntity? parentEntity = null;
-            if (parent != null)
-            {
-                parentEntity = await _context.Diagrams.FindAsync(parent.IdDiagram);
-                if (parentEntity == null) throw new Exception("Parent diagram not found.");
-            }
+            // DiagramEntity? parentEntity = null;
+            // if (parent != null)
+            // {
+            //     parentEntity = await _context.Diagrams.FindAsync(parent.IdDiagram);
+            //     if (parentEntity == null) throw new Exception("Parent diagram not found.");
+            // }
 
-            var entity = DiagramMapper.ToEntity(diagram, parentEntity, teamEntity);
+            var entity = DiagramMapper.ToEntity(diagram/*, parentEntity, teamEntity*/);
 
             _context.Diagrams.Add(entity);
             await _context.SaveChangesAsync();

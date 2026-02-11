@@ -11,7 +11,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<Message>> GetByTeamParticipantAsync(Guid idMeetingParticipant);
         Task<IEnumerable<Message>> GetAllAsync();
 
-        Task CreateAsync(Message message, Chat chat, Team team);
+        Task CreateAsync(Message message/*, Chat chat, Team team*/);
         // nismo definisali brisanje i edit!!!
     }
 }

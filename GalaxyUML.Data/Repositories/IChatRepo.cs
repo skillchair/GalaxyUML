@@ -9,7 +9,7 @@ namespace GalaxyUML.Data.Repositories
         Task<Chat?> GetByMeetingAsync(Guid idMeeting);
         Task<IEnumerable<Chat>> GetAllAsync();
 
-        Task CreateAsync(Chat chat, Team team);
+        Task CreateAsync(Chat chat/*, Team team*/);
         Task UpdateAsync(Chat chat);
         Task DeleteAsync(Guid id);
     }

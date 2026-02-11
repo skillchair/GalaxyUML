@@ -15,16 +15,16 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(Meeting meeting, Team team)
+        public async Task CreateAsync(Meeting meeting/*, Team team*/)
         {
-            var entityT = await _context.Teams.FindAsync(team);
-            if (entityT == null)
-                throw new Exception("Team not found.");
+            // var entityT = await _context.Teams.FindAsync(team);
+            // if (entityT == null)
+            //     throw new Exception("Team not found.");
                 
             if (await _context.Meetings.AnyAsync(m => m.Id == meeting.IdMeeting))
                 throw new Exception("Meeting with this id already exists.");
 
-            var entity = MeetingMapper.ToEntity(meeting, TeamMapper.ToEntity(team));
+            var entity = MeetingMapper.ToEntity(meeting/*, TeamMapper.ToEntity(team)*/);
             _context.Meetings.Add(entity);
             await _context.SaveChangesAsync();
         }
@@ -78,7 +78,7 @@ namespace GalaxyUML.Data.Repositories.Implementations
             if (entity == null)
                 throw new Exception("Meeting with this id doesn't exist");
 
-            _context.Meetings.Update(MeetingMapper.ToEntity(meeting, null!)); // Primer, prilagodi svom mapperu
+            _context.Meetings.Update(MeetingMapper.ToEntity(meeting/*, null!*/)); // Primer, prilagodi svom mapperu
             await _context.SaveChangesAsync();
         }
 

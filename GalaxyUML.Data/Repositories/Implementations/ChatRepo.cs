@@ -15,16 +15,16 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(Chat chat, Team team)
+        public async Task CreateAsync(Chat chat/*, Team team*/)
         {
-            var entityT = await _context.Teams.FindAsync(team);
-            if (entityT == null)
-                throw new Exception("Team not found.");
+            // var entityT = await _context.Teams.FindAsync(team);
+            // if (entityT == null)
+            //     throw new Exception("Team not found.");
                 
             if (await _context.Meetings.AnyAsync(c => c.Id == chat.IdChat))
                 throw new Exception("Chat with this id already exists.");
 
-            var entity = ChatMapper.ToEntity(chat, TeamMapper.ToEntity(team));
+            var entity = ChatMapper.ToEntity(chat/*, TeamMapper.ToEntity(team)*/);
             _context.Chats.Add(entity);
             await _context.SaveChangesAsync();
         }

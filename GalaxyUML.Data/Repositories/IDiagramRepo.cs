@@ -12,7 +12,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<Diagram>> GetByMeetingParentAsync(Guid idMeeting, Guid idParent);   // namerno i idMeeting iz sigurnosnih razloga
         Task<IEnumerable<Diagram>> GetAllAsync();
 
-        Task CreateAsync(Diagram diagram, Diagram? parent, Team team);
+        Task CreateAsync(Diagram diagram/*, Diagram? parent, Team team*/);
         Task UpdateAsync(Diagram diagram);
         Task DeleteAsync(Guid id);
     }

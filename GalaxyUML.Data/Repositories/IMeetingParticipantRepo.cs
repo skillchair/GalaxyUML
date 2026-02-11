@@ -10,7 +10,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<MeetingParticipant>> GetByParticipantAsync(Guid idParticipant);
         Task<IEnumerable<MeetingParticipant>> GetAllAsync();
 
-        Task CreateAsync(MeetingParticipant participant, Team team);
+        Task CreateAsync(MeetingParticipant participant/*, Team team*/);
         Task UpdateAsync(MeetingParticipant participant);
         Task DeleteAsync(Guid id);
     }
