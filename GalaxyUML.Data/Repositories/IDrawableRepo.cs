@@ -13,7 +13,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<IDrawable>> GetAllAsync();
 
         Task CreateAsync(IDrawable drawable/*, Diagram parent, Team team*/);
-        Task UpdateAsync(IDrawable drawable);
+        Task UpdateAsync(Guid id, IDrawable drawable);
         Task DeleteAsync(Guid id);
     }
 }

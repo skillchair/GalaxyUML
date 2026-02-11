@@ -7,7 +7,7 @@ namespace GalaxyUML.Data.Entities
     public class DiagramEntity
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         //public DrawableEntity Drawable { get; set; } = null!;
 
         [Required]

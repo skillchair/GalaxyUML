@@ -63,7 +63,7 @@ namespace GalaxyUML.Data.Repositories.Implementations
             return entity == null ? null : UserMapper.ToModel(entity);
         }
 
-        public async Task UpdateAsync(User user)
+        public async Task UpdateAsync(Guid id, User user)
         {
             var entity = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.IdUser);
             if (entity == null)

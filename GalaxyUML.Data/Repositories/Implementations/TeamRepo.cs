@@ -15,10 +15,10 @@ namespace GalaxyUML.Data.Repositories.Implementations
 
         public async Task CreateAsync(Team team)
         {
-            if (await _context.Teams.AnyAsync(t => t.Id == team.IdTeam))
-                throw new Exception("Team with this id already exists.");
-            if (await _context.Teams.AnyAsync(t => t.TeamCode == team.TeamCode))
-                throw new Exception("Team with this code already exists.");
+            // if (await _context.Teams.AnyAsync(t => t.Id == team.IdTeam))
+            //     throw new Exception("Team with this id already exists.");
+            // if (await _context.Teams.AnyAsync(t => t.TeamCode == team.TeamCode))
+            //     throw new Exception("Team with this code already exists.");
 
             var entity = TeamMapper.ToEntity(team);
             _context.Teams.Add(entity);
@@ -64,9 +64,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
                    .ToListAsync();
         }
 
-        public async Task UpdateAsync(Team team)
+        public async Task UpdateAsync(Guid id, Team team)
         {
-            var entity = await _context.Teams.FirstOrDefaultAsync(t => t.Id == team.IdTeam);
+            var entity = await _context.Teams.FirstOrDefaultAsync(t => t.Id == id);
             if (entity == null)
                 throw new Exception("Team with this id doesn't exist.");
 

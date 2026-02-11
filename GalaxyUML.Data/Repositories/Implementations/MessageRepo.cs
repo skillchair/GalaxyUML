@@ -44,7 +44,7 @@ namespace GalaxyUML.Data.Repositories.Implementations
         {
             return await _context.Messages
                             .AsNoTracking()
-                            .Where(m => m.IdMeetingParticipant == idMeetingParticipant)
+                            .Where(m => m.IdSender == idMeetingParticipant)
                             .Select(m => MessageMapper.ToModel(m))
                             .ToListAsync();
         }

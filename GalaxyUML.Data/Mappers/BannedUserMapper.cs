@@ -8,8 +8,10 @@ namespace GalaxyUML.Data.Mappers
         public static BannedUser ToModel(BannedUserEntity entity)
         {
             return new BannedUser(
-                UserMapper.ToModel(entity.User),
-                TeamMapper.ToModel(entity.Team)
+                entity.IdTeam,
+                entity.IdUser,
+                TeamMapper.ToModel(entity.Team),
+                UserMapper.ToModel(entity.User)
             );
         }
 
@@ -17,10 +19,10 @@ namespace GalaxyUML.Data.Mappers
         {
             return new BannedUserEntity
             {
-                Id = model.IdBan,
+                //Id = model.IdBan,
                 IdUser = model.User.IdUser,
                 User = UserMapper.ToEntity(model.User),
-                IdTeam = model.Team.IdTeam,
+                IdTeam = model.IdTeam,
                 Team = TeamMapper.ToEntity(model.Team)
             };
         }

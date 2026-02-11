@@ -2,12 +2,15 @@ namespace GalaxyUML.Core.Models
 {
     public class Chat
     {
-        public Guid IdChat { get; private set; }
+        //public Guid IdChat { get; private set; }
         public List<Message> Messages { get; private set; }
         public Meeting Meeting { get; private set; }
+        public Guid IdMeeting { get; private set; }
 
-        public Chat(Meeting meeting)
+        public Chat(/*Guid id, */Guid idMeeting, Meeting meeting)
         {
+            //IdChat = id;
+            IdMeeting = idMeeting;
             Messages = new List<Message>();
             Meeting = meeting;
         }

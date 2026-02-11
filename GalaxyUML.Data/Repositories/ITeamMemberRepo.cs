@@ -13,7 +13,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<TeamMember>> GetAllAsync();
 
         Task CreateAsync(TeamMember teamMember);
-        Task UpdateAsync(TeamMember teamMember);
+        Task UpdateAsync(Guid id, TeamMember teamMember);
         Task DeleteAsync(Guid id);
     }
 }

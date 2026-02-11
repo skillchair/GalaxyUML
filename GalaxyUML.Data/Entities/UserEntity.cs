@@ -5,7 +5,7 @@ namespace GalaxyUML.Data.Entities
     public class UserEntity
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         
         [Required]
         [StringLength(100)]

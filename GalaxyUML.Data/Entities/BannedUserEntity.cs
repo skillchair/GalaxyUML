@@ -5,7 +5,7 @@ namespace GalaxyUML.Data.Entities
     public class BannedUserEntity
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
 
         [Required]
         public Guid IdUser { get; set; }

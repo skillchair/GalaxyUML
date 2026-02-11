@@ -9,6 +9,8 @@ namespace GalaxyUML.Data.Mappers
         public static MeetingParticipant ToModel(MeetingParticipantEntity entity)
         {
             return new MeetingParticipant(
+                entity.IdMeeting,
+                entity.IdParticipant,
                 MeetingMapper.ToModel(entity.Meeting),
                 TeamMemberMapper.ToModel(entity.Participant)
             );
@@ -18,10 +20,10 @@ namespace GalaxyUML.Data.Mappers
         {
             return new MeetingParticipantEntity
             {
-                Id = model.IdMeetingParticipant,
-                IdMeeting = model.Meeting.IdMeeting,
+                //Id = model.IdMeetingParticipant,
+                IdMeeting = model.IdMeeting,
                 Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
-                IdParticipant = model.TeamMember.IdTeamMember,
+                IdParticipant = model.IdParticipant,
                 Participant = TeamMemberMapper.ToEntity(model.TeamMember)
             };
         }

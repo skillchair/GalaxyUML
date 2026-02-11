@@ -11,6 +11,7 @@ namespace GalaxyUML.Data.Mappers
         {
             return new Message(
                 entity.IdChat,
+                entity.IdSender,
                 MeetingParticipantMapper.ToModel(entity.Sender),
                 entity.Content
             );
@@ -23,7 +24,7 @@ namespace GalaxyUML.Data.Mappers
                 Id = model.IdMessage,
                 IdChat = model.IdChat,
                 //Chat = chatEntity,
-                IdMeetingParticipant = model.Sender.IdMeetingParticipant,
+                IdSender = model.IdSender,
                 Sender = MeetingParticipantMapper.ToEntity(model.Sender/*, teamEntity*/),
                 Content = model.Content,
                 Timestamp = model.Timestamp

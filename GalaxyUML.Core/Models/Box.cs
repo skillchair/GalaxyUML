@@ -6,8 +6,8 @@ namespace GalaxyUML.Core.Models
     {
         public List<Line> Lines { get; private set; }
 
-        public Box(Point startingPoint, Point endingPoint, Meeting meeting, List<Line> lines)  // default = null
-            : base(startingPoint, endingPoint, meeting)
+        public Box(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<Line> lines)  // default = null
+            : base(/*id, */startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Box;
             Lines = lines ?? new List<Line>();
@@ -18,7 +18,7 @@ namespace GalaxyUML.Core.Models
             if (line == null)
                 throw new Exception("Line doesn't exist.");
 
-            var lineInAList = Lines.FirstOrDefault(l => l.IdDiagram == line.IdDiagram);
+            var lineInAList = Lines.FirstOrDefault(line);
             if (lineInAList != null)
                 throw new Exception("Line is already connected to this box.");
 
@@ -30,7 +30,7 @@ namespace GalaxyUML.Core.Models
             if (line == null)
                 throw new Exception("Line doesn't exist.");
 
-            var lineInAList = Lines.FirstOrDefault(l => l.IdDiagram == line.IdDiagram);
+            var lineInAList = Lines.FirstOrDefault(line);
             if (lineInAList == null)
                 throw new Exception("Line isn't connected to this box.");
 

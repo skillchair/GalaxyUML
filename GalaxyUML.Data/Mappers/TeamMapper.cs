@@ -9,6 +9,8 @@ namespace GalaxyUML.Data.Mappers
         public static Team ToModel(TeamEntity entity)
         {
             return new Team(
+                entity.Id,
+                entity.IdTeamOwner,
                 entity.TeamName,
                 UserMapper.ToModel(entity.TeamOwner.Member)
             );
@@ -18,9 +20,9 @@ namespace GalaxyUML.Data.Mappers
         {
             TeamEntity teamEntity = new TeamEntity
             {
-                Id = team.IdTeam,
+                //Id = team.IdTeam,
                 TeamName = team.TeamName,
-                IdTeamOwner = team.TeamOwner.IdTeamMember,
+                IdTeamOwner = team.IdOwner,
                 TeamOwner = TeamMemberMapper.ToEntity(team.TeamOwner),
                 TeamCode = team.TeamCode,
                 Meetings = new List<MeetingEntity>(),   // prazno za sad

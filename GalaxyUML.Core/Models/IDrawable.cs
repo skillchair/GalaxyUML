@@ -7,8 +7,8 @@ namespace GalaxyUML.Core.Models
         // mozemo da stavimo i fiksno da ima u konstruktoru podrazumevanu krajnju tacku koja bi se racunala; 
         // tako je to odgovornost modela, ne viseg sloja; neka za sad ovako pa kad odlucimo koje ce dimenzije biti tad
         // I TO RACUNAMO NA OSN TYPE ATRIBUTA I SUPER!
-        public IDrawable(Point startingPoint, Point endingPoint, Meeting meeting)  // default = null
-            : base(startingPoint, endingPoint, meeting)
+        public IDrawable(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting)  // default = null
+            : base(/*id, */startingPoint, endingPoint, meeting)
         {
         }
 

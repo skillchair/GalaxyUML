@@ -4,24 +4,27 @@ namespace GalaxyUML.Core.Models
 {
     public abstract class IDiagram
     {
-        public Guid IdDiagram { get; private set; }
+        //public Guid IdDiagram { get; private set; }
         public ObjectType Type { get; protected set; }
         public Point StartingPoint { get; protected set; }
         public Point EndingPoint { get; protected set; }
         public Meeting Meeting { get; private set; }
         public Guid IdParent { get; private set; }
+        public Guid IdMeeting { get; private set; }
 
-        public IDiagram(Meeting meeting, Guid? idParent = null)
+        public IDiagram(/*Guid id, */Guid idMeeting, Point startingPoint, Point endingPoint, Meeting meeting, Guid? idParent = null)
         {
-            StartingPoint = Constants.Constants.MinPoint;
-            EndingPoint = Constants.Constants.MaxPoint;
+            //IdDiagram = id;
+            IdMeeting = idMeeting;
+            StartingPoint = startingPoint;
+            EndingPoint = endingPoint;
             Meeting = meeting;
             IdParent = idParent ?? IdParent;
         }
 
-        public IDiagram(Point startingPoint, Point endingPoint, Meeting meeting)
+        public IDiagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting)
         {
-            IdDiagram = Guid.NewGuid();
+            //IdDiagram = Guid.NewGuid();
             StartingPoint = startingPoint;
             EndingPoint = endingPoint;
             Meeting = meeting;

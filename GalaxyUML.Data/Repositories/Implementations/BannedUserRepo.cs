@@ -15,9 +15,6 @@ namespace GalaxyUML.Data.Repositories.Implementations
 
         public async Task CreateAsync(BannedUser bannedUser)
         {
-            if (await _context.BannedUsers.AnyAsync(b => b.Id == bannedUser.IdBan))
-                throw new Exception("User with this id doesn't exist.");
-
             var entity = BannedUserMapper.ToEntity(bannedUser);
             _context.BannedUsers.Add(entity);
             await _context.SaveChangesAsync();
@@ -65,9 +62,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
                             .ToListAsync();
         }
 
-        public async Task UpdateAsync(BannedUser bannedUser)
+        public async Task UpdateAsync(Guid id, BannedUser bannedUser)
         {
-            var entity = await _context.BannedUsers.FirstOrDefaultAsync(b => b.Id == bannedUser.IdBan);
+            var entity = await _context.BannedUsers.FirstOrDefaultAsync(b => b.Id == id);
             if (entity == null)
                 throw new Exception("User with this id doesn't exist.");
             

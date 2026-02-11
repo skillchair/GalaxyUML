@@ -8,6 +8,7 @@ namespace GalaxyUML.Data.Mappers
         public static User ToModel(UserEntity entity)
         {
             return new User(
+                entity.Id,
                 entity.FirstName,
                 entity.LastName,
                 entity.Username,

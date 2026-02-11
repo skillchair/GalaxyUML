@@ -8,6 +8,7 @@ namespace GalaxyUML.Data.Mappers
         public static TeamMember ToModel(TeamMemberEntity entity)
         {
             return new TeamMember(
+                entity.IdTeam,
                 TeamMapper.ToModel(entity.Team),
                 UserMapper.ToModel(entity.Member),
                 entity.Role
@@ -18,8 +19,8 @@ namespace GalaxyUML.Data.Mappers
         {
             return new TeamMemberEntity
             {
-                Id = model.IdTeamMember,
-                IdTeam = model.Team.IdTeam,
+                //Id = model.IdTeamMember,
+                IdTeam = model.IdTeam,
                 Team = TeamMapper.ToEntity(model.Team),
                 IdMember = model.Member.IdUser,
                 Member = UserMapper.ToEntity(model.Member)

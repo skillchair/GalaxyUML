@@ -2,14 +2,16 @@ namespace GalaxyUML.Core.Models
 {
     public class TeamMember
     {
-        public Guid IdTeamMember { get; private set; }
+        //public Guid IdTeamMember { get; private set; }
         public Team Team { get; private set; }
+        public Guid IdTeam { get; private set; }
         public User Member { get; private set; }
         public RoleEnum Role { get; private set; }
 
-        public TeamMember(Team team, User member, RoleEnum role)
+        public TeamMember(Guid idTeam,Team team, User member, RoleEnum role)
         {
-            IdTeamMember = Guid.NewGuid();
+            //IdTeamMember = Guid.NewGuid();
+            IdTeam = idTeam;
             Team = team;
             Member = member;
             Role = role;

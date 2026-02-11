@@ -88,9 +88,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
                             .ToListAsync();
         }
 
-        public async Task UpdateAsync(Diagram diagram)
+        public async Task UpdateAsync(Guid id, Diagram diagram)
         {
-            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == diagram.IdDiagram);
+            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
                 throw new Exception("Diagram with this id doesn't exist.");
 

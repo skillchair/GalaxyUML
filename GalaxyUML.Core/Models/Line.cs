@@ -10,9 +10,9 @@ namespace GalaxyUML.Core.Models
         public string Text2 { get; private set; }
         public string MiddleText { get; private set; }
 
-        public Line(Point startingPoint, Point endingPoint, Meeting meeting,
+        public Line(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting,
                     Box box1, Box box2)  // default = null
-            : base(startingPoint, endingPoint, meeting)
+            : base(/*id, */startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Line;
             Box1 = box1;

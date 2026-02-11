@@ -16,17 +16,17 @@ namespace GalaxyUML.Data.Repositories.Implementations
             _context = context;
         }
 
-        public async Task CreateAsync(IDrawable drawable, Diagram parent, Team team)
+        public async Task CreateAsync(IDrawable drawable/*, Diagram parent, Team team*/)
         {
-            var teamEntity = await _context.Teams.FindAsync(team);
-            if (teamEntity == null)
-                throw new Exception("Drawable with this id already exists.");
+            // var teamEntity = await _context.Teams.FindAsync(team);
+            // if (teamEntity == null)
+            //     throw new Exception("Drawable with this id already exists.");
             
-            var parentEntity = await _context.Diagrams.FindAsync(parent);
-            if (parentEntity == null)
-                throw new Exception("Parent object not found.");
+            // var parentEntity = await _context.Diagrams.FindAsync(parent);
+            // if (parentEntity == null)
+            //     throw new Exception("Parent object not found.");
 
-            var entity = DrawableMapper.ToEntity(drawable, parentEntity, teamEntity);
+            var entity = DrawableMapper.ToEntity(drawable);//, parentEntity/*, teamEntity*/);
             _context.Drawables.Add(entity);
             await _context.SaveChangesAsync();
         }
@@ -73,9 +73,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
                             .ToListAsync();
         }
 
-        public async Task UpdateAsync(IDrawable drawable)
+        public async Task UpdateAsync(Guid id, IDrawable drawable)
         {
-            var entity = await _context.Drawables.FirstOrDefaultAsync(d => d.Id == drawable.IdDiagram);
+            var entity = await _context.Drawables.FirstOrDefaultAsync(d => d.Id == id);
             if (entity == null)
                 throw new Exception("Drawable object with this id doesn't exist.");
 

@@ -2,13 +2,17 @@ namespace GalaxyUML.Core.Models
 {
     public class MeetingParticipant
     {
-        public Guid IdMeetingParticipant { get; private set; }
+        //public Guid IdMeetingParticipant { get; private set; }
         public Meeting Meeting { get; private set; }
         public TeamMember TeamMember { get; private set; }
+        public Guid IdMeeting { get; private set; }
+        public Guid IdParticipant { get; private set; }
 
-        public MeetingParticipant(Meeting meeting, TeamMember teamMember)
+        public MeetingParticipant(Guid idMeeting, Guid idParticipant, Meeting meeting, TeamMember teamMember)
         {
-            IdMeetingParticipant = Guid.NewGuid();
+            //IdMeetingParticipant = Guid.NewGuid();
+            IdMeeting = idMeeting;
+            IdParticipant = idParticipant;
             Meeting = meeting;
             TeamMember = teamMember;
         }

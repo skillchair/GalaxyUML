@@ -81,11 +81,11 @@ namespace GalaxyUML.Data.Mappers
 
                         return new BoxEntity
                         {
-                            Id = boxModel.IdDiagram,
+                            //Id = boxModel.IdDiagram,
                             Type = boxModel.Type,
                             StartingPoint = boxModel.StartingPoint,
                             EndingPoint = boxModel.EndingPoint,
-                            IdMeeting = boxModel.Meeting.IdMeeting,
+                            IdMeeting = boxModel.IdMeeting,
                             //Meeting = MeetingMapper.ToEntity(boxModel.Meeting/*, teamEntity),
                             IdParent = model.IdParent,
                             //Parent = parent,
@@ -104,11 +104,11 @@ namespace GalaxyUML.Data.Mappers
 
                         return new ClassBoxEntity
                         {
-                            Id = classBoxModel.IdDiagram,
+                            //Id = classBoxModel.IdDiagram,
                             Type = classBoxModel.Type,
                             StartingPoint = classBoxModel.StartingPoint,
                             EndingPoint = classBoxModel.EndingPoint,
-                            IdMeeting = classBoxModel.Meeting.IdMeeting,
+                            IdMeeting = classBoxModel.IdMeeting,
                             Meeting = MeetingMapper.ToEntity(classBoxModel.Meeting/*, teamEntity*/),
                             IdParent = model.IdParent,
                             //IdParent = parent.Id,
@@ -122,11 +122,11 @@ namespace GalaxyUML.Data.Mappers
                     var textModel = (Text)model;
                     return new TextEntity
                     {
-                        Id = textModel.IdDiagram,
+                        //Id = textModel.IdDiagram,
                         Type = textModel.Type,
                         StartingPoint = textModel.StartingPoint,
                         EndingPoint = textModel.EndingPoint,
-                        IdMeeting = textModel.Meeting.IdMeeting,
+                        IdMeeting = textModel.IdMeeting,
                         Meeting = MeetingMapper.ToEntity(textModel.Meeting/*, teamEntity*/),
                         // IdParent = parent.Id,
                         // Parent = parent,
@@ -149,11 +149,11 @@ namespace GalaxyUML.Data.Mappers
                     var lineModel = (Line)model;
                     return new LineEntity
                     {
-                        Id = lineModel.IdDiagram,
+                        //Id = lineModel.IdDiagram,
                         Type = lineModel.Type,
                         StartingPoint = lineModel.StartingPoint,
                         EndingPoint = lineModel.EndingPoint,
-                        IdMeeting = lineModel.Meeting.IdMeeting,
+                        IdMeeting = lineModel.IdMeeting,
                         Meeting = MeetingMapper.ToEntity(lineModel.Meeting/*, teamEntity*/),
                         // IdParent = parent.Id,
                         // Parent = parent,

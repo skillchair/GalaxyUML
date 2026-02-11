@@ -6,14 +6,15 @@ namespace GalaxyUML.Core.Models
     {
         public List<IDiagram> Objs { get; private set; }
 
-        public Diagram(Meeting meeting): base(meeting)
+        public Diagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting) 
+                : base(/*id, */startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Diagram;
             Objs = new List<IDiagram>();
         }
 
-        public Diagram(Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram> objs)
-    : base(startingPoint, endingPoint, meeting)
+        public Diagram(Guid id, Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram> objs)
+    : base(/*id, */startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Diagram;
             Objs = objs ?? new List<IDiagram>();
@@ -21,7 +22,7 @@ namespace GalaxyUML.Core.Models
 
         public void Add(IDiagram obj)
         {
-            var objInAList = Objs.FirstOrDefault(o => o.IdDiagram == obj.IdDiagram);
+            var objInAList = Objs.FirstOrDefault(obj);
             if (objInAList == null)
                 throw new Exception("Object already on this diagram.");
 
@@ -53,7 +54,7 @@ namespace GalaxyUML.Core.Models
 
         public void Remove(IDiagram obj)
         {
-            var objInAList = Objs.FirstOrDefault(o => o.IdDiagram == obj.IdDiagram);
+            var objInAList = Objs.FirstOrDefault(obj);
             if (objInAList == null)
                 throw new Exception("Object not on this diagram.");
 

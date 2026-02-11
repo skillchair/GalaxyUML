@@ -5,14 +5,16 @@ namespace GalaxyUML.Core.Models
         public Guid IdMessage { get; private set; }
         public DateTime Timestamp { get; private set; }
         public MeetingParticipant Sender { get; private set; }
+        public Guid IdSender { get; private set; }
         public string Content { get; private set; }
         public Guid IdChat { get; private set; }
 
-        public Message(Guid idChat, MeetingParticipant sender, string content)
+        public Message(Guid idChat, Guid idSender, MeetingParticipant sender, string content)
         {
             IdMessage = Guid.NewGuid();
             Timestamp = DateTime.Now;
             IdChat = idChat;
+            IdSender = idSender;
             Sender = sender;
             Content = content;
         }

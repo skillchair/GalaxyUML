@@ -26,6 +26,7 @@ namespace GalaxyUML.Data.Mappers
                             break;
                     }
             return new Diagram(
+                entity.IdMeeting,
                 entity.StartingPoint,
                 entity.EndingPoint,
                 MeetingMapper.ToModel(entity.Meeting),
@@ -37,11 +38,11 @@ namespace GalaxyUML.Data.Mappers
         {
             DiagramEntity diagramEntity = new DiagramEntity()
             {
-                Id = model.IdDiagram,
+                //Id = model.IdDiagram,
                 Type = model.Type,
                 StartingPoint = model.StartingPoint,
                 EndingPoint = model.EndingPoint,
-                IdMeeting = model.Meeting.IdMeeting,
+                IdMeeting = model.IdMeeting,
                 Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
                 // IdParent = parent?.Id,
                 // Parent = parent,

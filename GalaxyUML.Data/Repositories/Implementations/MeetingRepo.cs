@@ -21,8 +21,8 @@ namespace GalaxyUML.Data.Repositories.Implementations
             // if (entityT == null)
             //     throw new Exception("Team not found.");
                 
-            if (await _context.Meetings.AnyAsync(m => m.Id == meeting.IdMeeting))
-                throw new Exception("Meeting with this id already exists.");
+            // if (await _context.Meetings.AnyAsync(m => m.Id == meeting.IdMeeting))
+            //     throw new Exception("Meeting with this id already exists.");
 
             var entity = MeetingMapper.ToEntity(meeting/*, TeamMapper.ToEntity(team)*/);
             _context.Meetings.Add(entity);
@@ -72,9 +72,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
                             .FirstOrDefaultAsync();
         }
 
-        public async Task UpdateAsync(Meeting meeting)
+        public async Task UpdateAsync(Guid id, Meeting meeting)
         {
-            var entity = await _context.Meetings.FirstOrDefaultAsync(m => m.Id == meeting.IdMeeting);
+            var entity = await _context.Meetings.FirstOrDefaultAsync(m => m.Id == id);
             if (entity == null)
                 throw new Exception("Meeting with this id doesn't exist");
 

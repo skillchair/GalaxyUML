@@ -10,7 +10,8 @@ namespace GalaxyUML.Core.Models
         public List<Attribute> AttributeRows { get; private set; }
         public List<Method> MethodRows { get; private set; }
 
-        public ClassBox(Point startingPoint, Point endingPoint, Meeting meeting, List<Line> lines) : base(startingPoint, endingPoint, meeting, lines)
+        public ClassBox(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<Line> lines) 
+            : base(/*id, */startingPoint, endingPoint, meeting, lines)
         {
             base.Type = ObjectType.ClassBox;
             ClassName = "Class";
@@ -50,20 +51,20 @@ namespace GalaxyUML.Core.Models
         }
 
         public void ChangeTextSize(double newTextSize) { TextSize = newTextSize; }
-        public void AddAttribute(string content, char privacy = '+')
+        public void AddAttribute(Guid idClassBox, string content, char privacy = '+')
         {
             if (Stereotype == "interface")
                 throw new Exception("Cannot add attributes to an interface.");
 
-            AttributeRows.Add(new Attribute(this, privacy + content));
+            AttributeRows.Add(new Attribute(idClassBox, this, privacy + content));
         }
         public void RemoveAttribute(int row) { AttributeRows.RemoveAt(row); }
-        public void AddMethod(string content, char privacy = '+')
+        public void AddMethod(Guid idClassBox, string content, char privacy = '+')
         {
             if (Stereotype == "enumeration")
                 throw new Exception("Can not add methods to an enumeration.");
             
-            AttributeRows.Add(new Attribute(this, privacy + content));
+            MethodRows.Add(new Method(idClassBox, this, privacy + content));
         }
         public void RemoveMethod(int row) { MethodRows.RemoveAt(row); }
     }

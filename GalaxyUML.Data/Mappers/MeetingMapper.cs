@@ -10,7 +10,13 @@ namespace GalaxyUML.Data.Mappers
         public static Meeting ToModel(MeetingEntity entity)
         {
             return new Meeting(
-                MeetingParticipantMapper.ToModel(entity.Organizer).TeamMember,
+                entity.IdTeam,
+                entity.Id,
+                entity.IdOrganizer,
+                entity.IdChat,
+                entity.IdBoard,
+                MeetingParticipantMapper.ToModel(entity.Organizer),
+                //MeetingParticipantMapper.ToModel(entity.Organizer).TeamMember,
                 DiagramMapper.ToModel(entity.Board),
                 ChatMapper.ToModel(entity.Chat)
             );
@@ -24,18 +30,18 @@ namespace GalaxyUML.Data.Mappers
 
             return new MeetingEntity
             {
-                Id = model.IdMeeting,
+                //Id = model.IdMeeting,
                 StartingTime = model.StartingTime,
                 EndingTime = model.EndingTime,
-                IdOrganizer = model.Organizer.IdMeetingParticipant,
+                IdOrganizer = model.IdOrganizer,
                 Organizer = MeetingParticipantMapper.ToEntity(model.Organizer/*, teamEntity*/),
                 IdTeam = model.IdTeam,
                 // IdTeam = teamEntity.Id,
                 //Team = teamEntity,
                 Participants = participantEntities,
-                IdChat = model.Chat.IdChat,
+                IdChat = model.IdChat,
                 Chat = ChatMapper.ToEntity(model.Chat/*, teamEntity*/),
-                IdBoard = model.Board.IdDiagram,
+                IdBoard = model.IdBoard,
                 Board = DiagramMapper.ToEntity(model.Board/*, null/*, teamEntity*/),  // board nema parent-a!
                 IsActive = model.IsActive
             };

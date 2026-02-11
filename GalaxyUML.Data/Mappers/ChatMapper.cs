@@ -11,6 +11,7 @@ namespace GalaxyUML.Data.Mappers
         public static Chat ToModel(ChatEntity entity)
         {
             return new Chat(
+                entity.IdMeeting,
                 MeetingMapper.ToModel(entity.Meeting)
             );
         }
@@ -26,8 +27,8 @@ namespace GalaxyUML.Data.Mappers
 
             return new ChatEntity
             {
-                Id = model.IdChat,
-                IdMeeting = model.Meeting.IdMeeting,
+                //Id = model.IdChat,
+                IdMeeting = model.IdMeeting,
                 Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
                 Messages = messages
             };

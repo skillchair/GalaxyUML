@@ -16,8 +16,8 @@ namespace GalaxyUML.Data.Repositories.Implementations
 
         public async Task CreateAsync(TeamMember teamMember)
         {
-            if (await _context.Members.AnyAsync(tm => tm.Id == teamMember.IdTeamMember))
-                throw new Exception("TeamMember with this id already exists.");
+            // if (await _context.Members.AnyAsync(tm => tm.Id == teamMember.IdTeamMember))
+            //     throw new Exception("TeamMember with this id already exists.");
 
             var entity = TeamMemberMapper.ToEntity(teamMember);
             _context.Members.Add(entity);
@@ -84,9 +84,9 @@ namespace GalaxyUML.Data.Repositories.Implementations
                         .ToListAsync();
         }
 
-        public async Task UpdateAsync(TeamMember teamMember)
+        public async Task UpdateAsync(Guid id, TeamMember teamMember)
         {
-            var entity = await _context.Members.FirstOrDefaultAsync(tm => tm.Id == teamMember.IdTeamMember);
+            var entity = await _context.Members.FirstOrDefaultAsync(tm => tm.Id == id);
             if (entity == null)
                 throw new Exception("TeamMember with this id doesn't exist.");
 

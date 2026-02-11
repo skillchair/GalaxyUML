@@ -4,21 +4,23 @@ namespace GalaxyUML.Core.Models
 {
     public class Team : ITeamObservable
     {
-        public Guid IdTeam { get; private set; }
+        //public Guid IdTeam { get; private set; }
         public string TeamName { get; private set; }
         public TeamMember TeamOwner { get; private set; }
         public string TeamCode { get; private set; }
         public List<Meeting> Meetings { get; private set; }
         public List<TeamMember> Members { get; set; }
         public List<BannedUser> BannedUsers { get; private set; }
+        public Guid IdOwner { get; private set; }
 
         private List<ITeamObserver> _observers;
 
-        public Team(string teamName, User owner)
+        public Team(/*Guid id, */Guid idTeam, Guid idOwner, string teamName, User owner)
         {
-            IdTeam = Guid.NewGuid();
+            //IdTeam = id;
             TeamName = teamName;
-            TeamOwner = new TeamMember(this, owner, RoleEnum.Owner);
+            IdOwner = idOwner;
+            TeamOwner = new TeamMember(idTeam, this, owner, RoleEnum.Owner);
             Members = [TeamOwner];
             TeamCode = TeamCodeGenerator();
             Meetings = new List<Meeting>();
@@ -27,7 +29,7 @@ namespace GalaxyUML.Core.Models
             _observers = new List<ITeamObserver>();
         }
 
-        public void AddMember(User user)
+        public void AddMember(Guid idTeam, User user)
         {
             // moze i da se napravi pa da se proba i po primarnom kljucu da se trazi; nisam siguran sta je bolja praksa...
             var memberInAList = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
@@ -38,13 +40,13 @@ namespace GalaxyUML.Core.Models
             if (bannedUser != null)
                 throw new Exception("This user can not join because they are banned.");
 
-            Members.Add(new TeamMember(this, user, RoleEnum.Member));
+            Members.Add(new TeamMember(idTeam, this, user, RoleEnum.Member));
             user.JoinTeam(this);
         }
 
         public void RemoveMember(TeamMember member)
         {
-            var teamMember = Members.FirstOrDefault(m => m.IdTeamMember == member.IdTeamMember);
+            var teamMember = Members.FirstOrDefault(member);
             if (teamMember == null)
                 throw new Exception("User is not this team's member.");
             
@@ -54,10 +56,10 @@ namespace GalaxyUML.Core.Models
 
         public void ChangeRole(TeamMember member, RoleEnum newRole)
         {
-            if (member.IdTeamMember == TeamOwner.IdTeamMember)
+            if (member.Role == RoleEnum.Owner)
                 throw new Exception("Owner's role can not be changed.");
 
-            var teamMember = Members.FirstOrDefault(m => m.IdTeamMember == member.IdTeamMember);
+            var teamMember = Members.FirstOrDefault(member);
             if (teamMember == null)
                 throw new Exception("User is not this team's member.");
 
@@ -66,12 +68,13 @@ namespace GalaxyUML.Core.Models
                 
             teamMember.ChangeRole(newRole);
         }
-        public void OrganizeMeeting(TeamMember owner)
+        // treba razmisliti
+        public void OrganizeMeeting(Guid idTeam, Guid idMeeting, Guid idChat, Guid idBoard, Guid idOrganizer, TeamMember organizer)
         {
-            if (owner.Role is not RoleEnum.Organizer || owner.Role is not RoleEnum.Owner)
+            if (organizer.Role is not RoleEnum.Organizer || organizer.Role is not RoleEnum.Owner)
                 throw new Exception("Only organizers can organize meetings");
 
-            Meetings.Add(new Meeting(owner));
+            Meetings.Add(new Meeting(idTeam, idMeeting, idOrganizer, idChat, idBoard, organizer));
         }
 
         public void EndMeeting(Meeting meeting)
@@ -82,14 +85,14 @@ namespace GalaxyUML.Core.Models
             meeting.EndMeeting();
         }
 
-        public void Ban(User user)
+        public void Ban(Guid idTeam, Guid idUser, User user)
         {
             var member = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
             if (member == null)
                 throw new Exception("User not in this team.");
 
             //member.ClearEntry();        // brisemo i iz team-a i member napusta
-            BannedUsers.Add(new BannedUser(user, this));      // dodajemo u lokalnu listu banovanih
+            BannedUsers.Add(new BannedUser(idTeam, idUser, this, user));      // dodajemo u lokalnu listu banovanih
         }
         private string TeamCodeGenerator()
         {

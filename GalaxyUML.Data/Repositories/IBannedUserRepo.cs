@@ -2,7 +2,7 @@ using BannedUser = GalaxyUML.Core.Models.BannedUser;
 
 namespace GalaxyUML.Data.Repositories
 {
-    interface IBannedUserRepo
+    public interface IBannedUserRepo
     {
         Task<BannedUser?> GetByIdAsync(Guid id);
         Task<IEnumerable<BannedUser>> GetByUserAsync(Guid idUser);
@@ -10,7 +10,7 @@ namespace GalaxyUML.Data.Repositories
         Task<IEnumerable<BannedUser>> GetAllAsync();
 
         Task CreateAsync(BannedUser bannedUser);
-        Task UpdateAsync(BannedUser bannedUser);
+        Task UpdateAsync(Guid id, BannedUser bannedUser);
         Task DeleteAsync(Guid id);
     }
 }

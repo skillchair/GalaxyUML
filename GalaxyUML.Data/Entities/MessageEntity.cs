@@ -5,14 +5,14 @@ namespace GalaxyUML.Data.Entities
     public class MessageEntity
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         
         [Required]
         public Guid IdChat { get; set; }
         public virtual ChatEntity Chat { get; set; } = null!;
         
         [Required]
-        public Guid IdMeetingParticipant { get; set; }
+        public Guid IdSender { get; set; }
         public virtual MeetingParticipantEntity Sender { get; set; } = null!;
         
         [Required]

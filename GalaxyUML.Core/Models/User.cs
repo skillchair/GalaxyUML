@@ -12,9 +12,9 @@ namespace GalaxyUML.Core.Models
         public string Password { get; private set; }
         public List<Team> Teams { get; private set; }
 
-        public User(string firstName, string lastName, string username, string email, string password)
+        public User(Guid id, string firstName, string lastName, string username, string email, string password)
         {
-            IdUser = Guid.NewGuid();
+            IdUser = id;
             FirstName = firstName;
             LastName = lastName;
             Username = username;
@@ -23,7 +23,7 @@ namespace GalaxyUML.Core.Models
             Teams = new List<Team>();
         }
 
-        public Team CreateTeam(string teamName) { return new Team(teamName, this); }
+        public Team CreateTeam(Guid idOwner, Guid idTeam, string teamName) { return new Team(idTeam, idOwner, teamName, this); }
         public void JoinTeam(Team team)
         {
             Teams.Add(team);
@@ -31,7 +31,7 @@ namespace GalaxyUML.Core.Models
 
         public void LeaveTeam(Team team)
         {
-            var teamInAList = Teams.FirstOrDefault(t => t.IdTeam == team.IdTeam);
+            var teamInAList = Teams.FirstOrDefault(team);
             if (teamInAList == null)
                 throw new Exception("User is not this team's member.");
 

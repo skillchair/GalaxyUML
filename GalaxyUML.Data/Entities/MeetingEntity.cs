@@ -5,7 +5,7 @@ namespace GalaxyUML.Data.Entities
     public class MeetingEntity
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         
         [Required]
         public DateTime StartingTime { get; set; }
