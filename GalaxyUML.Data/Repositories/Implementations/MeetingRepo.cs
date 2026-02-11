@@ -6,7 +6,7 @@ using TeamMapper = GalaxyUML.Data.Mappers.TeamMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class MeetingRepo : IMeetingRepo
+    public class MeetingRepo : IMeetingRepo
     {
         private readonly AppDbContext _context;
 

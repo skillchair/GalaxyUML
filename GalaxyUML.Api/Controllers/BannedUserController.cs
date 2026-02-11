@@ -6,7 +6,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/bans")]
-    class BannedUserController : ControllerBase
+    public class BannedUserController : ControllerBase
     {
         private readonly IBannedUserRepo _banRepo;
 
@@ -23,7 +23,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(ban);
         }
 
-        [HttpGet("user/{id:guid}")]
+        [HttpGet("user/{idUser:guid}")]
         public async Task<IActionResult> GetByUserAsync(Guid idUser)
         {
             var ban = await _banRepo.GetByUserAsync(idUser);
@@ -31,7 +31,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(ban);
         }
 
-        [HttpGet("team/{id:guid}")]
+        [HttpGet("team/{idTeam:guid}")]
         public async Task<IActionResult> GetByTeamAsync(Guid idTeam)
         {
             var ban = await _banRepo.GetByTeamAsync(idTeam);

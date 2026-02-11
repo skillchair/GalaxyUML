@@ -6,7 +6,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/messages")]
-    class MessageController : ControllerBase
+    public class MessageController : ControllerBase
     {
         private readonly IMessageRepo _messageRepo;
 
@@ -18,29 +18,29 @@ namespace GalaxyUML.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            var message = _messageRepo.GetByIdAsync(id);
+            var message = await _messageRepo.GetByIdAsync(id); // Dodat await
             if (message == null) return NotFound();
             return Ok(message);
         }
 
-        [HttpGet("chat/{id}")]
+        [HttpGet("chat/{idChat:guid}")] // Ispravljeno: bilo je {id}
         public async Task<IActionResult> GetByChatAsync(Guid idChat)
         {
-            var messages = _messageRepo.GetByChatAsync(idChat);
+            var messages = await _messageRepo.GetByChatAsync(idChat); // Dodat await
             return Ok(messages);
         }
 
-        [HttpGet("chat/{idChat:guid}/sender{idSender:guid}")]
+        [HttpGet("chat/{idChat:guid}/sender/{idSender:guid}")] // Ispravljeno: dodata kosa crta
         public async Task<IActionResult> GetByChatSenderAsync(Guid idChat, Guid idSender)
         {
-            var messages = _messageRepo.GetByChatSenderAsync(idChat, idSender);
+            var messages = await _messageRepo.GetByChatSenderAsync(idChat, idSender); // Dodat await
             return Ok(messages);
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
-            var messages = _messageRepo.GetAllAsync();
+            var messages = await _messageRepo.GetAllAsync(); // Dodat await
             return Ok(messages);
         }
 

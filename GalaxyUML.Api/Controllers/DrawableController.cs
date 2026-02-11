@@ -7,7 +7,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/drawables")]
-    class DrawableController : ControllerBase
+    public class DrawableController : ControllerBase
     {
         private readonly IDrawableRepo _drawableRepo;
 
@@ -31,7 +31,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(drawables);
         }
 
-        [HttpGet("parent/{id:guid}/type")]
+        [HttpGet("parent/{id:guid}/type{type:int}")]
         public async Task<IActionResult> GetByParentTypeAsync(Guid idParent, ObjectType type)
         {
             var drawables = await _drawableRepo.GetByParentTypeAsync(idParent, type);

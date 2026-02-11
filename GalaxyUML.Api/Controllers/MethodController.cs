@@ -6,7 +6,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/methods")]
-    class MethodController : ControllerBase
+    public class MethodController : ControllerBase
     {
         private readonly IMethodRepo _methodRepo;
 
@@ -23,7 +23,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(method);
         }
 
-        [HttpGet("classBox/{id:guid}")]
+        [HttpGet("classBox/{idClassBox:guid}")]
         public async Task<IActionResult> GetByClassBoxAsync(Guid idClassBox)
         {
             var methods = await _methodRepo.GetByClassBoxAsync(idClassBox);

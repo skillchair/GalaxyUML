@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class DrawableRepo : IDrawableRepo
+    public class DrawableRepo : IDrawableRepo
     {
         AppDbContext _context;
 

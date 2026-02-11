@@ -6,7 +6,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    class UserController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUserRepo _userRepo;
 
@@ -23,7 +23,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(user);
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("username/{username}")]
         public async Task<IActionResult> GetByUsernameAsync(string username)
         {
             var user = await _userRepo.GetByUsernameAsync(username);
@@ -31,7 +31,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(user);
         }
 
-        [HttpGet("{email:regex(*@*)}")]
+        [HttpGet("email/{email}")]
         public async Task<IActionResult> GetByEmailAsync(string email)
         {
             var user = await _userRepo.GetByEmailAsync(email);

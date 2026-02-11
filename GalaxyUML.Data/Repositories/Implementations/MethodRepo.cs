@@ -4,7 +4,7 @@ using MethodMapper = GalaxyUML.Data.Mappers.MethodMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class MethodRepo : IMethodRepo
+    public class MethodRepo : IMethodRepo
     {
         AppDbContext _context;
 

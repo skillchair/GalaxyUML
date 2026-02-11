@@ -6,7 +6,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/teams")]
-    class TeamController : ControllerBase
+    public class TeamController : ControllerBase
     {
         private readonly ITeamRepo _teamRepo;
 
@@ -23,7 +23,7 @@ namespace GalaxyUML.Api.Controllers
             return Ok(team);
         }
 
-        [HttpGet("{code:string}")]
+        [HttpGet("{code}")]
         public async Task<IActionResult> GetByCodeAsync(string code)
         {
             var team = _teamRepo.GetByCodeAsync(code);

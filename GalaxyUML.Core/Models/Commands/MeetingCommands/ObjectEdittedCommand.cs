@@ -11,6 +11,7 @@ namespace GalaxyUML.Core.Models.Commands.MeetingCommands
             Obj = obj;
         }
 
+        // NIJE DOBRO
         public override void Execute(MeetingEventType eventType)
         {
             if (eventType != MeetingEventType.ObjectEditted)
@@ -18,11 +19,11 @@ namespace GalaxyUML.Core.Models.Commands.MeetingCommands
 
             // mozda bolje edit, ne znam; imamo odvojene metode za move i resize. poenta mi je nekako da
             // svaka promena "trigeruje" editted event
-            int index = ParentObjs.FindIndex(o => o.IdDiagram == Obj.IdDiagram);
-            if (index == -1)
-                throw new Exception("Object not on this diagram.");
+            //int index = ParentObjs.FindIndex(o => o.IdDiagram == Obj.IdDiagram);
+            // if (index == -1)
+            //     throw new Exception("Object not on this diagram.");
 
-            ParentObjs[index] = Obj;
+            // ParentObjs[index] = Obj;
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class TeamMemberRepo : ITeamMemberRepo
+    public class TeamMemberRepo : ITeamMemberRepo
     {
         AppDbContext _context;
 

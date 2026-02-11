@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4kEzRru47Eg=",
+  "dgSpecHash": "AkIx+d9k4Lg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj",
+  "projectFilePath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\strucnjak\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
   ],

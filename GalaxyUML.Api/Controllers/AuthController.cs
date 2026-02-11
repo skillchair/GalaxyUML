@@ -6,7 +6,7 @@ namespace GalaxyUML.Api
 {
     [ApiController]
     [Route("api/auths")]
-    class AuthController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthRepo _authRepo;
 

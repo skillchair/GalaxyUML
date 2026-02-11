@@ -4,7 +4,7 @@ using Team = GalaxyUML.Core.Models.Team;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class TeamRepo : ITeamRepo
+    public class TeamRepo : ITeamRepo
     {
         private readonly AppDbContext _context;
         

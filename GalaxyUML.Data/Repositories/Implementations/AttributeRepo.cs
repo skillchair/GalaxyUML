@@ -4,7 +4,7 @@ using AttributeMapper = GalaxyUML.Data.Mappers.AttributeMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class AttributeRepo : IAttributeRepo
+    public class AttributeRepo : IAttributeRepo
     {
         private readonly AppDbContext _context;
 

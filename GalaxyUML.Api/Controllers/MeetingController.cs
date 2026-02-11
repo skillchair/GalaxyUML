@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using IMeetingRepo = GalaxyUML.Data.Repositories.IMeetingRepo;
 using Meeting = GalaxyUML.Core.Models.Meeting;
-using Team = GalaxyUML.Core.Models.Team;
 
 namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/meetings")]
-    class MeetingController : ControllerBase
+    public class MeetingController : ControllerBase
     {
         private readonly IMeetingRepo _meetingRepo;
 
@@ -24,14 +23,14 @@ namespace GalaxyUML.Api.Controllers
             return Ok(meeting);
         }
 
-        [HttpGet("team/{id:guid}")]
+        [HttpGet("team/{idTeam:guid}")] // Ispravljeno: bilo je {id}
         public async Task<IActionResult> GetByTeamAsync(Guid idTeam)
         {
             var meetings = await _meetingRepo.GetByTeamAsync(idTeam);
             return Ok(meetings);
         }
 
-        [HttpGet("{isActive:bool}/team/{id:guid}")]
+        [HttpGet("active/team/{idTeam:guid}")] // Izmenjeno: sklonjen :bool jer pravi konflikt
         public async Task<IActionResult> GetByTeamIfActiveAsync(Guid idTeam)
         {
             var meeting = await _meetingRepo.GetByTeamIfActiveAsync(idTeam);
@@ -39,49 +38,21 @@ namespace GalaxyUML.Api.Controllers
             return Ok(meeting);
         }
 
-        [HttpGet("organizer/{id:guid}")]
+        [HttpGet("organizer/{idOrganizer:guid}")]
         public async Task<IActionResult> GetByOrganizerAsync(Guid idOrganizer)
         {
             var meetings = await _meetingRepo.GetByOrganizerAsync(idOrganizer);
             return Ok(meetings);
         }
 
-        [HttpGet("get")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
             var meetings = await _meetingRepo.GetAllAsync();
             return Ok(meetings);
         }
 
-        [HttpPost("meeting/{idMeeting:guid}/team/{idTeam:guid}")]
-        public async Task<IActionResult> CreateAsync([FromBody] Meeting meeting/*, Team team*/)
-        {
-            try
-            {
-                await _meetingRepo.CreateAsync(meeting/*, team*/);
-                return Ok(meeting);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Meeting meeting)
-        {
-            try
-            {
-                await _meetingRepo.UpdateAsync(id, meeting);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")] // Dodat :guid radi sigurnosti
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             try

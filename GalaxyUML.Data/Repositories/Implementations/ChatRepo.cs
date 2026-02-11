@@ -4,7 +4,7 @@ using ChatMapper = GalaxyUML.Data.Mappers.ChatMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class ChatRepo : IChatRepo
+    public class ChatRepo : IChatRepo
     {
         AppDbContext _context;
 

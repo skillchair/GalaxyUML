@@ -8,7 +8,7 @@ using GalaxyUML.Data.Mappers;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class MessageRepo : IMessageRepo
+    public class MessageRepo : IMessageRepo
     {
         AppDbContext _context;
 

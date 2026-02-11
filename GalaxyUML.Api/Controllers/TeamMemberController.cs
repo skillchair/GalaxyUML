@@ -26,28 +26,28 @@ namespace GalaxyUML.Api.Controllers
             return Ok(member);
         }
 
-        [HttpGet("team/{id}")]
+        [HttpGet("team/{idTeam:guid}")]
         public async Task<IActionResult> GetByTeamAsync(Guid idTeam)
         {
             var members = await _memberRepo.GetByTeamAsync(idTeam);
             return Ok(members);
         }
 
-        [HttpGet("team/{id:guid}member/{role:int}")]
+        [HttpGet("team/{idTeam:guid}member/{role:int}")]
         public async Task<IActionResult> GetByTeamRoleAsync(Guid idTeam, RoleEnum role)
         {
             var members = await _memberRepo.GetByTeamRoleAsync(idTeam, role);
             return Ok(members);
         }
 
-        [HttpGet("user/{id:guid}")]
+        [HttpGet("user/{idUser:guid}")]
         public async Task<IActionResult> GetByUserAsync(Guid idUser)
         {
             var members = await _memberRepo.GetByUserAsync(idUser);
             return Ok(members);
         }
 
-        [HttpGet("user/{id:guid}/role")]
+        [HttpGet("user/{idUser:guid}/role")]
         public async Task<IActionResult> GetByUserRoleAsync(Guid idUser, RoleEnum role)
         {
             var members = await _memberRepo.GetByUserRoleAsync(idUser, role);

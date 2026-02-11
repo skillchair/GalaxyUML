@@ -1,6 +1,27 @@
 @GalaxyUML.Api_HostAddress = http://localhost:5248
 
-GET {{GalaxyUML.Api_HostAddress}}/weatherforecast/
+### Testiranje Autentifikacije
+POST {{GalaxyUML.Api_HostAddress}}/api/auths/login 
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+### Dobavljanje svih metoda
+GET {{GalaxyUML.Api_HostAddress}}/api/methods/all 
 Accept: application/json
 
-###
+### Dobavljanje svih atributa
+GET {{GalaxyUML.Api_HostAddress}}/api/attributes/all 
+Accept: application/json
+
+### Kreiranje novog dijagrama
+POST {{GalaxyUML.Api_HostAddress}}/api/diagrams 
+Content-Type: application/json
+
+{
+  "name": "Novi UML Dijagram",
+  "type": 1
+}

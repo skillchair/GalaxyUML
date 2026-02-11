@@ -4,7 +4,7 @@ using BannedUserMapper = GalaxyUML.Data.Mappers.BannedUserMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class BannedUserRepo : IBannedUserRepo
+    public class BannedUserRepo : IBannedUserRepo
     {
         AppDbContext _context;
 

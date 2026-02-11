@@ -4,7 +4,7 @@ using UserMapper = GalaxyUML.Data.Mappers.UserMapper;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class UserRepo : IUserRepo
+    public class UserRepo : IUserRepo
     {
         private readonly AppDbContext _context;
 

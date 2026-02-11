@@ -3,7 +3,7 @@ using GalaxyUML.Core.Security;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class AuthRepo : IAuthRepo
+    public class AuthRepo : IAuthRepo
     {
         private readonly IUserRepo _userRepo;
 

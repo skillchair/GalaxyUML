@@ -6,7 +6,7 @@ namespace GalaxyUML.Api.Controllers
 {
     [ApiController]
     [Route("api/chats")]
-    class ChatController : ControllerBase
+    public class ChatController : ControllerBase
     {
         private readonly IChatRepo _chatRepo;
 

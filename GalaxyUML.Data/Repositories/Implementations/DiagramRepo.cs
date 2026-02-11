@@ -7,7 +7,7 @@ using Team = GalaxyUML.Core.Models.Team;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class DiagramRepo : IDiagramRepo
+    public class DiagramRepo : IDiagramRepo
     {
         AppDbContext _context;
 

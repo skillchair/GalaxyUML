@@ -6,7 +6,7 @@ using GalaxyUML.Data.Mappers;
 
 namespace GalaxyUML.Data.Repositories.Implementations
 {
-    class MeetingParticipantRepo : IMeetingParticipantRepo
+    public class MeetingParticipantRepo : IMeetingParticipantRepo
     {
         AppDbContext _context;
 
