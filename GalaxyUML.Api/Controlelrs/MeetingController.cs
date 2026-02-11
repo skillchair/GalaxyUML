@@ -54,11 +54,11 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost("meeting/{idMeeting:guid}/team/{idTeam:guid}")]
-        public async Task<IActionResult> CreateAsync(Meeting meeting, Team team)
+        public async Task<IActionResult> CreateAsync(Meeting meeting/*, Team team*/)
         {
             try
             {
-                await _meetingRepo.CreateAsync(meeting, team);
+                await _meetingRepo.CreateAsync(meeting/*, team*/);
                 return CreatedAtAction(nameof(GetByIdAsync), new { idMeeting = meeting.IdMeeting}, meeting);
             }
             catch (Exception ex)

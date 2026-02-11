@@ -49,11 +49,11 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(MeetingParticipant meetingParticipant, TeamEntity teamEntity)
+        public async Task<IActionResult> CreateAsync(MeetingParticipant meetingParticipant/*, TeamEntity teamEntity*/)
         {
             try
             {
-                await _participantRepo.CreateAsync(meetingParticipant, teamEntity);
+                await _participantRepo.CreateAsync(meetingParticipant/*, teamEntity*/);
                 return NoContent();
             }
             catch (Exception ex)
