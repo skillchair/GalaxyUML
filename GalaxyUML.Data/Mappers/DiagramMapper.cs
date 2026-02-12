@@ -27,7 +27,7 @@ namespace GalaxyUML.Data.Mappers
                             break;
                     }
             return new Diagram(
-                entity.IdMeeting,
+                //entity.IdMeeting,
                 new Point(entity.StartX,
                 entity.StartY),
                 new Point(entity.EndX,
@@ -48,26 +48,26 @@ namespace GalaxyUML.Data.Mappers
                 EndX = model.EndingPoint.X,
                 EndY = model.EndingPoint.Y,
                 IdMeeting = model.IdMeeting,
-                Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
+                //Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
                 // IdParent = parent?.Id,
                 // Parent = parent,
                 IdParent = model.IdParent,
-                Objects = new List<DiagramEntity>() // prazno za sad
+                //Objects = new List<DiagramEntity>() // prazno za sad
             };
 
-            List<DiagramEntity> objs = new List<DiagramEntity>();
-            if (model.Objs != null)
-                foreach (var o in model.Objs)
-                    switch (o.Type)
-                    {
-                        case ObjectType.Diagram:
-                            objs.Add(ToEntity((Diagram)o/*, diagramEntity/*, teamEntity*/));
-                            break;
+            // List<DiagramEntity> objs = new List<DiagramEntity>();
+            // if (model.Objs != null)
+            //     foreach (var o in model.Objs)
+            //         switch (o.Type)
+            //         {
+            //             case ObjectType.Diagram:
+            //                 objs.Add(ToEntity((Diagram)o/*, diagramEntity/*, teamEntity*/));
+            //                 break;
 
-                        default:
-                            objs.Add(DrawableMapper.ToEntity((IDrawable)o/*, diagramEntity/*, teamEntity*/));
-                            break;
-                    }
+            //             default:
+            //                 objs.Add(DrawableMapper.ToEntity((IDrawable)o/*, diagramEntity/*, teamEntity*/));
+            //                 break;
+            //         }
 
             return diagramEntity;
         }

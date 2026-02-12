@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GalaxyUML.Core.Models
 {
     public class Attribute
@@ -7,6 +9,7 @@ namespace GalaxyUML.Core.Models
         public string Content { get; private set; }
         public Guid IdClassBox { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public Attribute(/*Guid id, */Guid idClassBox, ClassBox classBox, string content)
         {
             //IdAttribute = id;

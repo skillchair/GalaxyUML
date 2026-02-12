@@ -1,4 +1,4 @@
-namespace GalaxyUML.Core.Models
+namespace GalaxyUML.Core.Models.DTOs
 {
     public class LoginDto
     {

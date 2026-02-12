@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
@@ -6,6 +7,7 @@ namespace GalaxyUML.Core.Models
     {
         public List<IDiagram> Objs { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public Diagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting) 
                 : base(/*id, */startingPoint, endingPoint, meeting)
         {
@@ -13,7 +15,7 @@ namespace GalaxyUML.Core.Models
             Objs = new List<IDiagram>();
         }
 
-        public Diagram(Guid id, Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram> objs)
+        public Diagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram> objs)
     : base(/*id, */startingPoint, endingPoint, meeting)
         {
             base.Type = ObjectType.Diagram;

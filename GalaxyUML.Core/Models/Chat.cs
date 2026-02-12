@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GalaxyUML.Core.Models
 {
     public class Chat
@@ -7,6 +9,7 @@ namespace GalaxyUML.Core.Models
         public Meeting Meeting { get; private set; }
         public Guid IdMeeting { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public Chat(/*Guid id, */Guid idMeeting, Meeting meeting)
         {
             //IdChat = id;

@@ -18,14 +18,14 @@ namespace GalaxyUML.Data.Mappers
 
         public static MethodEntity ToEntity(Method model/*, DiagramEntity parent, TeamEntity team*/)
         {
-            var classBox = DrawableMapper.ToEntity(model.ClassBox/*, parent, team*/) as ClassBoxEntity
-                ?? throw new InvalidCastException("model.ClassBox is not a ClassBox at runtime.");
+            //var classBox = DrawableMapper.ToEntity(model.ClassBox/*, parent, team*/) as ClassBoxEntity
+                //?? throw new InvalidCastException("model.ClassBox is not a ClassBox at runtime.");
             return new MethodEntity
             {
                 //Id = model.IdMethod,
                 Content = model.Content,
                 IdClassBox = model.IdClassBox,
-                ClassBox = classBox
+                //ClassBox = classBox
             };
         }
     }

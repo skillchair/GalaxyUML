@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GalaxyUML.Core.Models
 {
     public class BannedUser
@@ -8,6 +10,7 @@ namespace GalaxyUML.Core.Models
         public Team Team { get; private set; }
         public Guid IdTeam { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public BannedUser(/*Guid id, */Guid idTeam, Guid idUser, Team team, User user)
         {
             //IdBan = id;

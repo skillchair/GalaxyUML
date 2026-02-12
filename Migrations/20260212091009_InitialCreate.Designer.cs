@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GalaxyUML.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260212082957_CleanArchitectureFinal")]
-    partial class CleanArchitectureFinal
+    [Migration("20260212091009_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

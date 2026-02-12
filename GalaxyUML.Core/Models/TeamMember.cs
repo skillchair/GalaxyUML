@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GalaxyUML.Core.Models
 {
     public class TeamMember
@@ -8,6 +10,7 @@ namespace GalaxyUML.Core.Models
         public User Member { get; private set; }
         public RoleEnum Role { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public TeamMember(Guid idTeam,Team team, User member, RoleEnum role)
         {
             //IdTeamMember = Guid.NewGuid();

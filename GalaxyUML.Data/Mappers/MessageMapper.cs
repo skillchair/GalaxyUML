@@ -25,7 +25,7 @@ namespace GalaxyUML.Data.Mappers
                 IdChat = model.IdChat,
                 //Chat = chatEntity,
                 IdSender = model.IdSender,
-                Sender = MeetingParticipantMapper.ToEntity(model.Sender/*, teamEntity*/),
+                //Sender = MeetingParticipantMapper.ToEntity(model.Sender/*, teamEntity*/),
                 Content = model.Content,
                 Timestamp = model.Timestamp
             };

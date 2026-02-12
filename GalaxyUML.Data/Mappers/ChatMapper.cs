@@ -18,19 +18,19 @@ namespace GalaxyUML.Data.Mappers
 
         public static ChatEntity ToEntity(Chat model/*, TeamEntity teamEntity*/)
         {
-            List<MessageEntity> messages = new List<MessageEntity>();
-            var modelEntity = ChatMapper.ToEntity(model/*, teamEntity*/);
-            foreach (var msg in model.Messages)
-            {
-                messages.Add(MessageMapper.ToEntity(msg/*, modelEntity*//*, teamEntity*/));
-            }
+            // List<MessageEntity> messages = new List<MessageEntity>();
+            // var modelEntity = ChatMapper.ToEntity(model/*, teamEntity*/);
+            // foreach (var msg in model.Messages)
+            // {
+            //     messages.Add(MessageMapper.ToEntity(msg/*, modelEntity*//*, teamEntity*/));
+            // }
 
             return new ChatEntity
             {
                 //Id = model.IdChat,
                 IdMeeting = model.IdMeeting,
-                Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
-                Messages = messages
+                //Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
+                //Messages = messages
             };
         }
     }

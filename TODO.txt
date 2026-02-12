@@ -1,1 +1,10 @@
-izbaci idteam iz dijagrama
+PROMENITI DA JE VLASNIK TIMA USER NA NE TEAMMEMBER
+PROMENITI DA JE MEETING ORGANIZATOR TEAMMEMBER A NE PARTICIPANT
+
+generisati bazu ponovo i migracije i veze
+
+promeniti u skladu sa tim i dijagram
+
+ponovo napraviti migracije i bazu
+
+usaglasiti sta se prima from body

@@ -53,7 +53,7 @@ namespace GalaxyUML.Core.Models
         //     _observers = new List<IMeetingObserver>();
         // }
 
-        public Meeting(/*Guid id, */Guid idTeam, Guid idMeeting, Guid idOrganizer, Guid idChat, Guid idBoard, MeetingParticipant organizer, Diagram board, Chat chat)
+        public Meeting(/*Guid id, */Guid idTeam/*, Guid idMeeting, */,Guid idOrganizer, Guid idChat, Guid idBoard, MeetingParticipant organizer, Diagram board, Chat chat)
         {
             //IdMeeting = id;
             StartingTime = DateTime.Now;
@@ -65,6 +65,8 @@ namespace GalaxyUML.Core.Models
             //Board = new Diagram(Constants.Constants.MinPoint, Constants.Constants.MaxPoint, this);
             //IdOrganizer = idOrganizer;
             Board = board;
+            //IdMeeting = idMeeting;
+            IdOrganizer = idOrganizer;
             Organizer = organizer;//new MeetingParticipant(idMeeting, idOrganizer, this, organizer);
             Participants = [Organizer];
             ActiveParticipant = Organizer;

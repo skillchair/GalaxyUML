@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GalaxyUML.Core.Models
 {
     public class Method
@@ -6,7 +8,8 @@ namespace GalaxyUML.Core.Models
         public Guid IdClassBox { get; private set; }
         public ClassBox ClassBox { get; private set; }
         public string Content { get; private set; }
-
+        
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public Method(Guid idClassBox, ClassBox classBox, string content)
         {
             //IdMethod = Guid.NewGuid();

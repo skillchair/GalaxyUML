@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
@@ -7,6 +8,7 @@ namespace GalaxyUML.Core.Models
         public List<Line> LinesAsStart { get; private set; }
         public List<Line> LinesAsEnd { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public Box(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<Line> linesStart, List<Line> linesEnd)  // default = null
             : base(/*id, */startingPoint, endingPoint, meeting)
         {

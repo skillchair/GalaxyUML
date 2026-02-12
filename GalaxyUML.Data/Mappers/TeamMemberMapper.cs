@@ -21,9 +21,9 @@ namespace GalaxyUML.Data.Mappers
             {
                 //Id = model.IdTeamMember,
                 IdTeam = model.IdTeam,
-                Team = TeamMapper.ToEntity(model.Team),
+                //Team = TeamMapper.ToEntity(model.Team),
                 IdMember = model.Member.IdUser,
-                Member = UserMapper.ToEntity(model.Member)
+                //Member = UserMapper.ToEntity(model.Member)
             };
         }
     }

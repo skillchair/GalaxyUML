@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
@@ -12,6 +13,7 @@ namespace GalaxyUML.Core.Models
         public Guid IdParent { get; private set; }
         public Guid IdMeeting { get; private set; }
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public IDiagram(/*Guid id, */Guid idMeeting, Point startingPoint, Point endingPoint, Meeting meeting, Guid? idParent = null)
         {
             //IdDiagram = id;

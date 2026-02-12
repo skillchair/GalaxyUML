@@ -25,28 +25,28 @@ namespace GalaxyUML.Data.Mappers
                 IdTeamOwner = team.IdOwner,
                 TeamOwner = TeamMemberMapper.ToEntity(team.TeamOwner),
                 TeamCode = team.TeamCode,
-                Meetings = new List<MeetingEntity>(),   // prazno za sad
-                Members = new List<TeamMemberEntity>(),
-                BannedUsers = new List<BannedUserEntity>()
+                //Meetings = new List<MeetingEntity>(),   // prazno za sad
+                //Members = new List<TeamMemberEntity>(),
+                //BannedUsers = new List<BannedUserEntity>()
             };
 
-            List<TeamMemberEntity> memberEntities = new List<TeamMemberEntity>();
-            foreach (var m in team.Members)
-                memberEntities.Add(TeamMemberMapper.ToEntity(m));
+            //List<TeamMemberEntity> memberEntities = new List<TeamMemberEntity>();
+            //foreach (var m in team.Members)
+                //memberEntities.Add(TeamMemberMapper.ToEntity(m));
 
-            teamEntity.Members = memberEntities;
+            // teamEntity.Members = memberEntities;
 
-            List<MeetingEntity> meetingEntities = new List<MeetingEntity>();
-            foreach (var m in team.Meetings)
-                meetingEntities.Add(MeetingMapper.ToEntity(m/*, teamEntity*/));
+            // List<MeetingEntity> meetingEntities = new List<MeetingEntity>();
+            // foreach (var m in team.Meetings)
+            //     meetingEntities.Add(MeetingMapper.ToEntity(m/*, teamEntity*/));
 
-            teamEntity.Meetings = meetingEntities;
+            // teamEntity.Meetings = meetingEntities;
 
-            List<BannedUserEntity> bannedUserEntities = new List<BannedUserEntity>();
-            foreach (var b in team.BannedUsers)
-                bannedUserEntities.Add(BannedUserMapper.ToEntity(b));
+            // List<BannedUserEntity> bannedUserEntities = new List<BannedUserEntity>();
+            // foreach (var b in team.BannedUsers)
+            //     bannedUserEntities.Add(BannedUserMapper.ToEntity(b));
 
-            teamEntity.BannedUsers = bannedUserEntities;
+            // teamEntity.BannedUsers = bannedUserEntities;
 
             return teamEntity;
         }

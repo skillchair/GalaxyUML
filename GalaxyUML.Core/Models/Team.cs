@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using GalaxyUML.Core.Models.Commands.TeamCommands;
 
 namespace GalaxyUML.Core.Models
@@ -5,22 +6,31 @@ namespace GalaxyUML.Core.Models
     public class Team : ITeamObservable
     {
         //public Guid IdTeam { get; private set; }
-        public string TeamName { get; private set; }
-        public TeamMember TeamOwner { get; private set; }
-        public string TeamCode { get; private set; }
-        public List<Meeting> Meetings { get; private set; }
+        public string TeamName { get; private set; } = null!;
+        public TeamMember TeamOwner { get; private set; } = null!;
+        public string TeamCode { get; private set; } = null!;
+        public List<Meeting> Meetings { get; private set; } = null!;
         public List<TeamMember> Members { get; set; }
         public List<BannedUser> BannedUsers { get; private set; }
         public Guid IdOwner { get; private set; }
 
         private List<ITeamObserver> _observers;
 
-        public Team(/*Guid id, */Guid idTeam, Guid idOwner, string teamName, User owner)
+        public Team() 
+        {
+            _observers = new List<ITeamObserver>();
+            Meetings = new List<Meeting>();
+            Members = new List<TeamMember>();
+            BannedUsers = new List<BannedUser>();
+        }
+
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
+        public Team(/*Guid id, */Guid id, Guid idTeamOwner, string teamName, User teamOwner)
         {
             //IdTeam = id;
             TeamName = teamName;
-            IdOwner = idOwner;
-            TeamOwner = new TeamMember(idTeam, this, owner, RoleEnum.Owner);
+            IdOwner = idTeamOwner;
+            TeamOwner = new TeamMember(id, this, teamOwner, RoleEnum.Owner);
             Members = [TeamOwner];
             TeamCode = TeamCodeGenerator();
             Meetings = new List<Meeting>();

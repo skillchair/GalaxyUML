@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
@@ -9,6 +10,7 @@ namespace GalaxyUML.Core.Models
         public double Size { get; private set; }    // wpf koristi double
         public string Color { get; private set; }   // HEXA ZA WPF
 
+        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
         public Text(Point startingPoint, Point endingPoint, Meeting meeting,
                     string content, string format, double size, string color)  // default = null
             : base(startingPoint, endingPoint, meeting)

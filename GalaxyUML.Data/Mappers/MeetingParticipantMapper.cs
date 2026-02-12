@@ -22,9 +22,9 @@ namespace GalaxyUML.Data.Mappers
             {
                 //Id = model.IdMeetingParticipant,
                 IdMeeting = model.IdMeeting,
-                Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
+                //Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
                 IdParticipant = model.IdParticipant,
-                Participant = TeamMemberMapper.ToEntity(model.TeamMember)
+                //Participant = TeamMemberMapper.ToEntity(model.TeamMember)
             };
         }
     }

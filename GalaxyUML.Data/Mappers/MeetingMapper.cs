@@ -11,7 +11,7 @@ namespace GalaxyUML.Data.Mappers
         {
             return new Meeting(
                 entity.IdTeam,
-                entity.Id,
+                //entity.Id,
                 entity.IdOrganizer,
                 entity.IdChat,
                 entity.IdBoard,
@@ -24,9 +24,9 @@ namespace GalaxyUML.Data.Mappers
 
         public static MeetingEntity ToEntity(Meeting model/*, TeamEntity teamEntity*/)
         {
-            List<MeetingParticipantEntity> participantEntities = new List<MeetingParticipantEntity>();
-            foreach (var p in model.Participants)
-                participantEntities.Add(MeetingParticipantMapper.ToEntity(p/*, teamEntity*/));
+            //List<MeetingParticipantEntity> participantEntities = new List<MeetingParticipantEntity>();
+            //foreach (var p in model.Participants)
+                //participantEntities.Add(MeetingParticipantMapper.ToEntity(p/*, teamEntity*/));
 
             return new MeetingEntity
             {
@@ -34,15 +34,15 @@ namespace GalaxyUML.Data.Mappers
                 StartingTime = model.StartingTime,
                 EndingTime = model.EndingTime,
                 IdOrganizer = model.IdOrganizer,
-                Organizer = MeetingParticipantMapper.ToEntity(model.Organizer/*, teamEntity*/),
+                //Organizer = MeetingParticipantMapper.ToEntity(model.Organizer/*, teamEntity*/),
                 IdTeam = model.IdTeam,
                 // IdTeam = teamEntity.Id,
                 //Team = teamEntity,
-                Participants = participantEntities,
+                //Participants = participantEntities,
                 IdChat = model.IdChat,
-                Chat = ChatMapper.ToEntity(model.Chat/*, teamEntity*/),
+                //Chat = ChatMapper.ToEntity(model.Chat/*, teamEntity*/),
                 IdBoard = model.IdBoard,
-                Board = DiagramMapper.ToEntity(model.Board/*, null/*, teamEntity*/),  // board nema parent-a!
+                //Board = DiagramMapper.ToEntity(model.Board/*, null/*, teamEntity*/),  // board nema parent-a!
                 IsActive = model.IsActive
             };
         }

@@ -78,13 +78,13 @@ namespace GalaxyUML.Data.Mappers
                     {
                         var boxModel = (Box)model;
 
-                        var lineStartEntities = boxModel.LinesAsStart?
-                            .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
-                            .ToList() ?? new List<LineEntity>();
+                        // var lineStartEntities = boxModel.LinesAsStart?
+                        //     .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
+                        //     .ToList() ?? new List<LineEntity>();
 
-                        var lineEndEntities = boxModel.LinesAsEnd?
-                            .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
-                            .ToList() ?? new List<LineEntity>();
+                        // var lineEndEntities = boxModel.LinesAsEnd?
+                        //     .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
+                        //     .ToList() ?? new List<LineEntity>();
 
                         return new BoxEntity
                         {
@@ -99,8 +99,8 @@ namespace GalaxyUML.Data.Mappers
                             IdParent = model.IdParent,
                             //Parent = parent,
                             Objects = null,
-                            LinesAsStart = lineStartEntities,
-                            LinesAsEnd = lineEndEntities
+                            //LinesAsStart = lineStartEntities,
+                            //LinesAsEnd = lineEndEntities
                         };
                     }
 
@@ -108,13 +108,13 @@ namespace GalaxyUML.Data.Mappers
                     {
                         var classBoxModel = (ClassBox)model;
 
-                        var lineStartEntities = classBoxModel.LinesAsStart?
-                            .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
-                            .ToList() ?? new List<LineEntity>();
+                        // var lineStartEntities = classBoxModel.LinesAsStart?
+                        //     .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
+                        //     .ToList() ?? new List<LineEntity>();
 
-                        var lineEndEntities = classBoxModel.LinesAsEnd?
-                            .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
-                            .ToList() ?? new List<LineEntity>();
+                        // var lineEndEntities = classBoxModel.LinesAsEnd?
+                        //     .Select(l => (LineEntity)ToEntity(l/*, parent/*, teamEntity*/))
+                        //     .ToList() ?? new List<LineEntity>();
 
                         return new ClassBoxEntity
                         {
@@ -125,13 +125,13 @@ namespace GalaxyUML.Data.Mappers
                             EndX = classBoxModel.EndingPoint.X,
                             EndY = classBoxModel.EndingPoint.Y,
                             IdMeeting = classBoxModel.IdMeeting,
-                            Meeting = MeetingMapper.ToEntity(classBoxModel.Meeting/*, teamEntity*/),
+                            //Meeting = MeetingMapper.ToEntity(classBoxModel.Meeting/*, teamEntity*/),
                             IdParent = model.IdParent,
                             //IdParent = parent.Id,
                             //Parent = parent,
-                            Objects = null,
-                            LinesAsStart = lineStartEntities,
-                            LinesAsEnd = lineEndEntities
+                            //Objects = null,
+                            //LinesAsStart = lineStartEntities,
+                            //LinesAsEnd = lineEndEntities
                         };
                     }
 
@@ -146,7 +146,7 @@ namespace GalaxyUML.Data.Mappers
                         EndX = textModel.EndingPoint.X,
                         EndY = textModel.EndingPoint.Y,
                         IdMeeting = textModel.IdMeeting,
-                        Meeting = MeetingMapper.ToEntity(textModel.Meeting/*, teamEntity*/),
+                        //Meeting = MeetingMapper.ToEntity(textModel.Meeting/*, teamEntity*/),
                         // IdParent = parent.Id,
                         // Parent = parent,
                         IdParent = model.IdParent,
@@ -175,13 +175,13 @@ namespace GalaxyUML.Data.Mappers
                         EndX = lineModel.EndingPoint.X,
                         EndY = lineModel.EndingPoint.Y,
                         IdMeeting = lineModel.IdMeeting,
-                        Meeting = MeetingMapper.ToEntity(lineModel.Meeting/*, teamEntity*/),
+                        //Meeting = MeetingMapper.ToEntity(lineModel.Meeting/*, teamEntity*/),
                         // IdParent = parent.Id,
                         // Parent = parent,
                         IdParent = model.IdParent,
                         Objects = null,
-                        Box1 = (BoxEntity)ToEntity(lineModel.Box1/*, parent, teamEntity*/),
-                        Box2 = (BoxEntity)ToEntity(lineModel.Box2/*, parent, teamEntity*/)
+                        //Box1 = (BoxEntity)ToEntity(lineModel.Box1/*, parent, teamEntity*/),
+                        //Box2 = (BoxEntity)ToEntity(lineModel.Box2/*, parent, teamEntity*/)
                     };
 
                 default:
