@@ -32,6 +32,7 @@ builder.Services.AddScoped<IMeetingRepo, MeetingRepo>();
 builder.Services.AddScoped<IMeetingParticipantRepo, MeetingParticipantRepo>();
 builder.Services.AddScoped<IMessageRepo, MessageRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>(); 
+builder.Services.AddScoped<ITeamRepo, TeamRepo>();
 
 // 3. Dodavanje kontrolera
 builder.Services.AddControllers();

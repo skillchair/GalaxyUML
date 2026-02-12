@@ -1,6 +1,8 @@
+using GalaxyUML.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using ITeamRepo = GalaxyUML.Data.Repositories.ITeamRepo;
 using Team = GalaxyUML.Core.Models.Team;
+using TeamDto = GalaxyUML.Core.Models.DTOs.TeamDto;
 
 namespace GalaxyUML.Api.Controllers
 {
@@ -9,10 +11,12 @@ namespace GalaxyUML.Api.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamRepo _teamRepo;
+        private readonly IUserRepo _userRepo;
 
-        public TeamController(ITeamRepo teamRepo)
+        public TeamController(ITeamRepo teamRepo, IUserRepo userRepo)
         {
             _teamRepo = teamRepo;
+            _userRepo = userRepo;
         }
 
         [HttpGet("{id:guid}")]
@@ -46,31 +50,31 @@ namespace GalaxyUML.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] Team team)
+        public async Task<IActionResult> CreateTeamAsync([FromBody] TeamDto dto)
         {
-            try
-            {
-                await _teamRepo.CreateAsync(team);
-                return Ok(team);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            // Fetch the user from DB using dto.IdOwner
+            var user = await _userRepo.GetByIdAsync(dto.IdTeamOwner);
+            if (user == null) return NotFound("User not found.");
+
+            // Now construct the domain object properly
+            var team = new Team(Guid.NewGuid(), dto.IdTeamOwner, dto.TeamName, user);
+
+            await _teamRepo.CreateAsync(team);
+            return Ok();
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] Team team)
+        public async Task<IActionResult> UpdateTeamAsync(Guid id, [FromBody] TeamDto dto)
         {
-            try
-            {
-                await _teamRepo.UpdateAsync(id, team);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            // Fetch the user from DB using dto.IdOwner
+            var user = await _userRepo.GetByIdAsync(dto.IdTeamOwner);
+            if (user == null) return NotFound("User not found.");
+
+            // Now construct the domain object properly
+            var team = new Team(Guid.NewGuid(), dto.IdTeamOwner, dto.TeamName, user);
+
+            await _teamRepo.UpdateAsync(id, team);
+            return Ok();
         }
 
         [HttpDelete("{id:guid}")]

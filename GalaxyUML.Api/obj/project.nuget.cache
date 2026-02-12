@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+6jL/Xhc+F4=",
+  "dgSpecHash": "W4bTjtmSwAY=",
   "success": true,
-  "projectFilePath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
+  "projectFilePath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\strucnjak\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using IAuthRepo = GalaxyUML.Data.Repositories.IAuthRepo;
-using LoginDto = GalaxyUML.Core.Models.LoginDto;
+using LoginDto = GalaxyUML.Core.Models.DTOs.LoginDto;
 
 namespace GalaxyUML.Api
 {
