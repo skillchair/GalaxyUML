@@ -33,8 +33,8 @@ namespace GalaxyUML.Core.Models
 
         public override void CleanUp(Diagram parent)
         {
-            Box1.UnlinkLine(this);
-            Box2.UnlinkLine(this);
+            Box1.UnlinkLineStart(this);
+            Box2.UnlinkLineEnd(this);
             parent.Remove(this);
         }
     }

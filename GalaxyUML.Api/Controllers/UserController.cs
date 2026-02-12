@@ -52,7 +52,8 @@ namespace GalaxyUML.Api.Controllers
             try
             {
                 await _userRepo.CreateAsync(user);
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = user.IdUser }, user);
+                //return CreatedAtAction(nameof(GetByIdAsync), new { id = user.IdUser }, user);
+                return Ok(user);
             }
             catch (Exception ex)
             {

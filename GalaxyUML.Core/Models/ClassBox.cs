@@ -10,8 +10,8 @@ namespace GalaxyUML.Core.Models
         public List<Attribute> AttributeRows { get; private set; }
         public List<Method> MethodRows { get; private set; }
 
-        public ClassBox(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<Line> lines) 
-            : base(/*id, */startingPoint, endingPoint, meeting, lines)
+        public ClassBox(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<Line> linesStart, List<Line> linesEnd) 
+            : base(/*id, */startingPoint, endingPoint, meeting, linesStart, linesEnd)
         {
             base.Type = ObjectType.ClassBox;
             ClassName = "Class";

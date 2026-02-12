@@ -5,6 +5,7 @@ using DiagramEntity = GalaxyUML.Data.Entities.DiagramEntity;
 using DrawableEntity = GalaxyUML.Data.Entities.DrawableEntity;
 using ObjectType = GalaxyUML.Core.Models.ObjectType;
 using GalaxyUML.Data.Entities;
+using System.Drawing;
 
 namespace GalaxyUML.Data.Mappers
 {
@@ -27,8 +28,10 @@ namespace GalaxyUML.Data.Mappers
                     }
             return new Diagram(
                 entity.IdMeeting,
-                entity.StartingPoint,
-                entity.EndingPoint,
+                new Point(entity.StartX,
+                entity.StartY),
+                new Point(entity.EndX,
+                entity.EndY),
                 MeetingMapper.ToModel(entity.Meeting),
                 objs
             );
@@ -40,8 +43,10 @@ namespace GalaxyUML.Data.Mappers
             {
                 //Id = model.IdDiagram,
                 Type = model.Type,
-                StartingPoint = model.StartingPoint,
-                EndingPoint = model.EndingPoint,
+                StartX = model.StartingPoint.X,
+                StartY = model.StartingPoint.Y,
+                EndX = model.EndingPoint.X,
+                EndY = model.EndingPoint.Y,
                 IdMeeting = model.IdMeeting,
                 Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
                 // IdParent = parent?.Id,

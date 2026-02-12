@@ -13,11 +13,23 @@ namespace GalaxyUML.Data.Entities
         [Required]
         public ObjectType Type { get; set; }
 
-        [Required]
-        public Point StartingPoint { get; set; }
+        // [Required]
+        // public Point StartingPoint { get; set; }
 
+        // [Required]
+        // public Point EndingPoint { get; set; }
+
+        // Razbijanje StartingPoint na proste tipove
         [Required]
-        public Point EndingPoint { get; set; }
+        public int StartX { get; set; }
+        [Required]
+        public int StartY { get; set; }
+
+        // Razbijanje EndingPoint na proste tipove
+        [Required]
+        public int EndX { get; set; }
+        [Required]
+        public int EndY { get; set; }
 
         [Required]
         public Guid IdMeeting { get; set; }
