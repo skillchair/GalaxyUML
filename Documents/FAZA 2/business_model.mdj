@@ -1952,7 +1952,7 @@
 											"top": 900,
 											"width": 329.40234375,
 											"height": 13,
-											"text": "-organizer: MeetingParticipant",
+											"text": "-organizer: TeamMember",
 											"horizontalAlignment": 0
 										},
 										{
@@ -4212,7 +4212,7 @@
 											"top": 709,
 											"width": 309.166015625,
 											"height": 13,
-											"text": "-teamOwner: TeamMember",
+											"text": "-teamOwner: User",
 											"horizontalAlignment": 0
 										},
 										{
@@ -4248,7 +4248,7 @@
 											"top": 739,
 											"width": 309.166015625,
 											"height": 13,
-											"text": "-idOwner",
+											"text": "-idOwner: Guid",
 											"horizontalAlignment": 0
 										}
 									],
@@ -17377,7 +17377,7 @@
 							"name": "organizer",
 							"visibility": "private",
 							"type": {
-								"$ref": "AAAAAAGb+km4gInGq6s="
+								"$ref": "AAAAAAGb8Y/x+iaC1ik="
 							}
 						},
 						{
@@ -17909,7 +17909,7 @@
 							"name": "teamOwner",
 							"visibility": "private",
 							"type": {
-								"$ref": "AAAAAAGb8Y/x+iaC1ik="
+								"$ref": "AAAAAAGb8Pdd2Yyw7fE="
 							}
 						},
 						{
@@ -17930,7 +17930,7 @@
 							},
 							"name": "idOwner",
 							"visibility": "private",
-							"type": ""
+							"type": "Guid"
 						}
 					],
 					"operations": [

@@ -11,7 +11,9 @@
           "GalaxyUML.Core": "1.0.0",
           "GalaxyUML.Data": "1.0.0",
           "Microsoft.AspNetCore.OpenApi": "10.0.2",
+          "Microsoft.EntityFrameworkCore": "10.0.3",
           "Microsoft.EntityFrameworkCore.Design": "10.0.3",
+          "Microsoft.EntityFrameworkCore.SqlServer": "10.0.3",
           "Swashbuckle.AspNetCore": "10.1.2"
         },
         "runtime": {
@@ -508,15 +510,15 @@
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.SqlServer/10.0.2": {
+      "Microsoft.EntityFrameworkCore.SqlServer/10.0.3": {
         "dependencies": {
           "Microsoft.Data.SqlClient": "6.1.1",
           "Microsoft.EntityFrameworkCore.Relational": "10.0.3"
         },
         "runtime": {
           "lib/net10.0/Microsoft.EntityFrameworkCore.SqlServer.dll": {
-            "assemblyVersion": "10.0.2.0",
-            "fileVersion": "10.0.225.61305"
+            "assemblyVersion": "10.0.3.0",
+            "fileVersion": "10.0.326.7603"
           }
         }
       },
@@ -827,7 +829,7 @@
       "GalaxyUML.Data/1.0.0": {
         "dependencies": {
           "GalaxyUML.Core": "1.0.0",
-          "Microsoft.EntityFrameworkCore.SqlServer": "10.0.2"
+          "Microsoft.EntityFrameworkCore.SqlServer": "10.0.3"
         },
         "runtime": {
           "GalaxyUML.Data.dll": {
@@ -977,12 +979,12 @@
       "path": "microsoft.entityframeworkcore.relational/10.0.3",
       "hashPath": "microsoft.entityframeworkcore.relational.10.0.3.nupkg.sha512"
     },
-    "Microsoft.EntityFrameworkCore.SqlServer/10.0.2": {
+    "Microsoft.EntityFrameworkCore.SqlServer/10.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-x4ZO21dxzUeA2wvH5sdNBVVHuH+9+3DF3VV2pdENyHEZz+u0AyMi1a/NHzytPhn6IXBhqA8n6y9FAsdUWp8jyA==",
-      "path": "microsoft.entityframeworkcore.sqlserver/10.0.2",
-      "hashPath": "microsoft.entityframeworkcore.sqlserver.10.0.2.nupkg.sha512"
+      "sha512": "sha512-q0fUFQ4PG4uhKwP+D5dsvlDQbwNpEfWsag3HaoGzkkKj+OQ90ya9W0HuFtwigwEEqc/H1SzDZYUAv7Ya1hh5ow==",
+      "path": "microsoft.entityframeworkcore.sqlserver/10.0.3",
+      "hashPath": "microsoft.entityframeworkcore.sqlserver.10.0.3.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyModel/10.0.3": {
       "type": "package",

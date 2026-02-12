@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "W4bTjtmSwAY=",
+  "dgSpecHash": "QbG65YqGZro=",
   "success": true,
-  "projectFilePath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
+  "projectFilePath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\strucnjak\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -25,7 +25,8 @@
     "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.3\\microsoft.entityframeworkcore.analyzers.10.0.3.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.entityframeworkcore.design\\10.0.3\\microsoft.entityframeworkcore.design.10.0.3.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.3\\microsoft.entityframeworkcore.relational.10.0.3.nupkg.sha512",
-    "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\10.0.2\\microsoft.entityframeworkcore.sqlserver.10.0.2.nupkg.sha512",
+    "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\10.0.3\\microsoft.entityframeworkcore.sqlserver.10.0.3.nupkg.sha512",
+    "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\10.0.3\\microsoft.entityframeworkcore.tools.10.0.3.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.extensions.apidescription.server\\10.0.0\\microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.3\\microsoft.extensions.dependencymodel.10.0.3.nupkg.sha512",
     "C:\\Users\\strucnjak\\.nuget\\packages\\microsoft.identity.client\\4.73.1\\microsoft.identity.client.4.73.1.nupkg.sha512",

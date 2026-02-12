@@ -28,16 +28,22 @@ namespace GalaxyUML.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attributes",
+                name: "Teams",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdClassBox = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    TeamName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IdTeamOwner = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TeamCode = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attributes", x => x.Id);
+                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Teams_Users_IdTeamOwner",
+                        column: x => x.IdTeamOwner,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -52,10 +58,28 @@ namespace GalaxyUML.Data.Migrations
                 {
                     table.PrimaryKey("PK_BannedUsers", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_BannedUsers_Teams_IdTeam",
+                        column: x => x.IdTeam,
+                        principalTable: "Teams",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_BannedUsers_Users_IdUser",
                         column: x => x.IdUser,
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attributes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdClassBox = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attributes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -117,6 +141,36 @@ namespace GalaxyUML.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdTeam = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdMember = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    TextEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Members_Diagrams_TextEntityId",
+                        column: x => x.TextEntityId,
+                        principalTable: "Diagrams",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Members_Teams_IdTeam",
+                        column: x => x.IdTeam,
+                        principalTable: "Teams",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Members_Users_IdMember",
+                        column: x => x.IdMember,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Methods",
                 columns: table => new
                 {
@@ -153,30 +207,10 @@ namespace GalaxyUML.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Meetings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdTeam = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdMember = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    TextEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Members_Diagrams_TextEntityId",
-                        column: x => x.TextEntityId,
-                        principalTable: "Diagrams",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Members_Users_IdMember",
-                        column: x => x.IdMember,
-                        principalTable: "Users",
+                        name: "FK_Meetings_Teams_TeamEntityId",
+                        column: x => x.TeamEntityId,
+                        principalTable: "Teams",
                         principalColumn: "Id");
                 });
 
@@ -200,25 +234,6 @@ namespace GalaxyUML.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Participants_Members_IdParticipant",
                         column: x => x.IdParticipant,
-                        principalTable: "Members",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Teams",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TeamName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IdTeamOwner = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TeamCode = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Teams", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Teams_Members_IdTeamOwner",
-                        column: x => x.IdTeamOwner,
                         principalTable: "Members",
                         principalColumn: "Id");
                 });
@@ -357,13 +372,6 @@ namespace GalaxyUML.Data.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_BannedUsers_Teams_IdTeam",
-                table: "BannedUsers",
-                column: "IdTeam",
-                principalTable: "Teams",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Chats_Meetings_IdMeeting",
                 table: "Chats",
                 column: "IdMeeting",
@@ -382,20 +390,6 @@ namespace GalaxyUML.Data.Migrations
                 table: "Meetings",
                 column: "IdOrganizer",
                 principalTable: "Participants",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Meetings_Teams_TeamEntityId",
-                table: "Meetings",
-                column: "TeamEntityId",
-                principalTable: "Teams",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Members_Teams_IdTeam",
-                table: "Members",
-                column: "IdTeam",
-                principalTable: "Teams",
                 principalColumn: "Id");
         }
 

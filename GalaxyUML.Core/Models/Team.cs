@@ -7,7 +7,7 @@ namespace GalaxyUML.Core.Models
     {
         //public Guid IdTeam { get; private set; }
         public string TeamName { get; private set; } = null!;
-        public TeamMember TeamOwner { get; private set; } = null!;
+        public User TeamOwner { get; private set; } = null!;
         public string TeamCode { get; private set; } = null!;
         public List<Meeting> Meetings { get; private set; } = null!;
         public List<TeamMember> Members { get; set; }
@@ -30,8 +30,8 @@ namespace GalaxyUML.Core.Models
             //IdTeam = id;
             TeamName = teamName;
             IdOwner = idTeamOwner;
-            TeamOwner = new TeamMember(id, this, teamOwner, RoleEnum.Owner);
-            Members = [TeamOwner];
+            TeamOwner = teamOwner;
+            Members = [new (id, this, TeamOwner, RoleEnum.Owner)];
             TeamCode = TeamCodeGenerator();
             Meetings = new List<Meeting>();
             BannedUsers = new List<BannedUser>();

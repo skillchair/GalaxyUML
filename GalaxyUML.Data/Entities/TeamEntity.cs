@@ -13,7 +13,7 @@ namespace GalaxyUML.Data.Entities
 
         [Required]
         public Guid IdTeamOwner { get; set; }
-        public virtual TeamMemberEntity TeamOwner { get; set; } = null!;
+        public virtual UserEntity TeamOwner { get; set; } = null!;
 
         [Required]
         [StringLength(6)]

@@ -4,7 +4,6 @@ using GalaxyUML.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GalaxyUML.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260212091009_InitialCreate")]
-    partial class InitialCreate
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -549,7 +546,7 @@ namespace GalaxyUML.Data.Migrations
 
             modelBuilder.Entity("GalaxyUML.Data.Entities.TeamEntity", b =>
                 {
-                    b.HasOne("GalaxyUML.Data.Entities.TeamMemberEntity", "TeamOwner")
+                    b.HasOne("GalaxyUML.Data.Entities.UserEntity", "TeamOwner")
                         .WithMany()
                         .HasForeignKey("IdTeamOwner")
                         .OnDelete(DeleteBehavior.NoAction)

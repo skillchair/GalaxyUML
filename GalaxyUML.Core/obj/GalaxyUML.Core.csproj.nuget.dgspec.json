@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {}
+    "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
+    "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj",
+        "projectUniqueName": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj",
         "projectName": "GalaxyUML.Core",
-        "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj",
+        "projectPath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj",
         "packagesPath": "C:\\Users\\strucnjak\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\obj\\",
+        "outputPath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

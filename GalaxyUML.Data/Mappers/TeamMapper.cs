@@ -12,7 +12,7 @@ namespace GalaxyUML.Data.Mappers
                 entity.Id,
                 entity.IdTeamOwner,
                 entity.TeamName,
-                UserMapper.ToModel(entity.TeamOwner.Member)
+                UserMapper.ToModel(entity.TeamOwner)
             );
         }
 
@@ -23,7 +23,7 @@ namespace GalaxyUML.Data.Mappers
                 //Id = team.IdTeam,
                 TeamName = team.TeamName,
                 IdTeamOwner = team.IdOwner,
-                TeamOwner = TeamMemberMapper.ToEntity(team.TeamOwner),
+                //TeamOwner = TeamMemberMapper.ToEntity(team.TeamOwner),
                 TeamCode = team.TeamCode,
                 //Meetings = new List<MeetingEntity>(),   // prazno za sad
                 //Members = new List<TeamMemberEntity>(),
