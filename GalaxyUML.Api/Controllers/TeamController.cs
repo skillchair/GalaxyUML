@@ -1,94 +1,62 @@
-using GalaxyUML.Data.Repositories;
+using GalaxyUML.Core.Models;
+using GalaxyUML.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using ITeamRepo = GalaxyUML.Data.Repositories.ITeamRepo;
-using Team = GalaxyUML.Core.Models.Team;
-using TeamDto = GalaxyUML.Core.Models.DTOs.TeamDto;
 
-namespace GalaxyUML.Api.Controllers
+namespace GalaxyUML.Api.Controllers;
+
+[ApiController]
+[Route("api/teams")]
+public class TeamsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/teams")]
-    public class TeamController : ControllerBase
+    private readonly TeamService _svc;
+    public TeamsController(TeamService svc) => _svc = svc;
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTeamDto dto)
     {
-        private readonly ITeamRepo _teamRepo;
-        private readonly IUserRepo _userRepo;
+        var id = await _svc.CreateAsync(dto.TeamName, dto.OwnerId);
+        return Ok(id);
+    }
 
-        public TeamController(ITeamRepo teamRepo, IUserRepo userRepo)
-        {
-            _teamRepo = teamRepo;
-            _userRepo = userRepo;
-        }
+    [HttpPost("{id:guid}/join")]
+    public async Task<IActionResult> Join(Guid id, [FromBody] JoinTeamDto dto)
+    {
+        await _svc.JoinAsync(id, dto.UserId, dto.JoinCode);
+        return NoContent();
+    }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
-        {
-            var team = await _teamRepo.GetByIdAsync(id);
-            if (team == null) return NotFound();
-            return Ok(team);
-        }
+    [HttpPost("{id:guid}/leave")]
+    public async Task<IActionResult> Leave(Guid id, [FromBody] UserIdDto dto)
+    {
+        await _svc.LeaveAsync(id, dto.UserId);
+        return NoContent();
+    }
 
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetByCodeAsync(string code)
-        {
-            var team = _teamRepo.GetByCodeAsync(code);
-            if (team == null) return NotFound();
-            return Ok(team);
-        }
+    [HttpPost("{id:guid}/role")]
+    public async Task<IActionResult> ChangeRole(Guid id, [FromBody] ChangeRoleDto dto)
+    {
+        var role = Enum.Parse<RoleEnum>(dto.Role, true);
+        await _svc.ChangeRoleAsync(id, dto.ActorId, dto.TargetUserId, role);
+        return NoContent();
+    }
 
-        [HttpGet("owner/{idOwner:guid}")]
-        public async Task<IActionResult> GetByOwnerAsync(Guid idOwner)
-        {
-            var teams = _teamRepo.GetByOwnerAsync(idOwner);
-            return Ok(teams);
-        }
+    [HttpPost("{id:guid}/ban")]
+    public async Task<IActionResult> Ban(Guid id, [FromBody] BanDto dto)
+    {
+        await _svc.BanAsync(id, dto.ActorId, dto.TargetUserId, dto.Reason);
+        return NoContent();
+    }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var teams = _teamRepo.GetAllAsync();
-            return Ok(teams);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateTeamAsync([FromBody] TeamDto dto)
-        {
-            // Fetch the user from DB using dto.IdOwner
-            var user = await _userRepo.GetByIdAsync(dto.IdTeamOwner);
-            if (user == null) return NotFound("User not found.");
-
-            // Now construct the domain object properly
-            var team = new Team(Guid.NewGuid(), dto.IdTeamOwner, dto.TeamName, user);
-
-            await _teamRepo.CreateAsync(team);
-            return Ok();
-        }
-
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateTeamAsync(Guid id, [FromBody] TeamDto dto)
-        {
-            // Fetch the user from DB using dto.IdOwner
-            var user = await _userRepo.GetByIdAsync(dto.IdTeamOwner);
-            if (user == null) return NotFound("User not found.");
-
-            // Now construct the domain object properly
-            var team = new Team(Guid.NewGuid(), dto.IdTeamOwner, dto.TeamName, user);
-
-            await _teamRepo.UpdateAsync(id, team);
-            return Ok();
-        }
-
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteAsync(Guid id)
-        {
-            try
-            {
-                await _teamRepo.DeleteAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id, [FromBody] UserIdDto dto)
+    {
+        await _svc.DeleteAsync(id, dto.UserId);
+        return NoContent();
     }
 }
+
+public record CreateTeamDto(string TeamName, Guid OwnerId);
+public record JoinTeamDto(Guid UserId, string JoinCode);
+public record ChangeRoleDto(Guid ActorId, Guid TargetUserId, string Role);
+public record BanDto(Guid ActorId, Guid TargetUserId, string? Reason);
+public record UserIdDto(Guid UserId);

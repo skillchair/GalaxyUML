@@ -1,27 +1,146 @@
-@GalaxyUML.Api_HostAddress = http://localhost:5248
+@host = https://localhost:5000
 
-### Testiranje Autentifikacije
-POST {{GalaxyUML.Api_HostAddress}}/api/auths/login 
+### Users - register
+POST {{host}}/api/users
 Content-Type: application/json
 
 {
-  "username": "testuser",
-  "password": "password123"
+  "firstName": "Ana",
+  "lastName": "Test",
+  "username": "ana1",
+  "email": "ana@test.com",
+  "password": "Passw0rd!"
 }
 
-### Dobavljanje svih metoda
-GET {{GalaxyUML.Api_HostAddress}}/api/methods/all 
-Accept: application/json
-
-### Dobavljanje svih atributa
-GET {{GalaxyUML.Api_HostAddress}}/api/attributes/all 
-Accept: application/json
-
-### Kreiranje novog dijagrama
-POST {{GalaxyUML.Api_HostAddress}}/api/diagrams 
+### Teams - create
+POST {{host}}/api/teams
 Content-Type: application/json
 
 {
-  "name": "Novi UML Dijagram",
-  "type": 1
+  "teamName": "Dev Team",
+  "ownerId": "PUT-OWNER-GUID-HERE"
 }
+
+### Teams - join
+POST {{host}}/api/teams/PUT-TEAM-ID-HERE/join
+Content-Type: application/json
+
+{
+  "userId": "PUT-USER-GUID-HERE",
+  "joinCode": "ABC123"
+}
+
+### Teams - change role
+POST {{host}}/api/teams/PUT-TEAM-ID-HERE/role
+Content-Type: application/json
+
+{
+  "actorId": "PUT-OWNER-OR-ORG-GUID",
+  "targetUserId": "PUT-USER-GUID",
+  "role": "Organizer"
+}
+
+### Teams - ban
+POST {{host}}/api/teams/PUT-TEAM-ID-HERE/ban
+Content-Type: application/json
+
+{
+  "actorId": "PUT-OWNER-GUID",
+  "targetUserId": "PUT-USER-GUID",
+  "reason": "spam"
+}
+
+### Teams - leave
+POST {{host}}/api/teams/PUT-TEAM-ID-HERE/leave
+Content-Type: application/json
+
+{
+  "userId": "PUT-USER-GUID"
+}
+
+### Teams - delete
+DELETE {{host}}/api/teams/PUT-TEAM-ID-HERE
+Content-Type: application/json
+
+{
+  "userId": "PUT-OWNER-GUID"
+}
+
+### Meetings - create
+POST {{host}}/api/meetings
+Content-Type: application/json
+
+{
+  "teamId": "PUT-TEAM-ID",
+  "organizerId": "PUT-OWNER-OR-ORG-GUID"
+}
+
+### Meetings - join
+POST {{host}}/api/meetings/PUT-MEETING-ID/join
+Content-Type: application/json
+
+{
+  "userId": "PUT-USER-GUID"
+}
+
+### Meetings - grant draw
+POST {{host}}/api/meetings/PUT-MEETING-ID/grant-draw
+Content-Type: application/json
+
+{
+  "actorId": "PUT-ORGANIZER-GUID",
+  "targetId": "PUT-USER-GUID",
+  "canDraw": true
+}
+
+### Meetings - send message
+POST {{host}}/api/meetings/PUT-MEETING-ID/message
+Content-Type: application/json
+
+{
+  "senderId": "PUT-USER-GUID",
+  "content": "Hello team!"
+}
+
+### Meetings - leave
+POST {{host}}/api/meetings/PUT-MEETING-ID/leave
+Content-Type: application/json
+
+{
+  "userId": "PUT-USER-GUID"
+}
+
+### Meetings - delete
+DELETE {{host}}/api/meetings/PUT-MEETING-ID
+
+### Diagram - move element
+POST {{host}}/api/diagram/PUT-ELEMENT-ID/move
+Content-Type: application/json
+
+{
+  "dx": 10,
+  "dy": -5
+}
+
+### Diagram - resize element
+POST {{host}}/api/diagram/PUT-ELEMENT-ID/resize
+Content-Type: application/json
+
+{
+  "width": 200,
+  "height": 120
+}
+
+### Diagram - edit text
+POST {{host}}/api/diagram/PUT-TEXT-ID/text
+Content-Type: application/json
+
+{
+  "content": "Updated text",
+  "fontSize": 16,
+  "color": "#ff0000",
+  "format": "bold"
+}
+
+### Diagram - delete element
+DELETE {{host}}/api/diagram/PUT-ELEMENT-ID

@@ -1,69 +1,58 @@
+using GalaxyUML.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using IMeetingRepo = GalaxyUML.Data.Repositories.IMeetingRepo;
-using Meeting = GalaxyUML.Core.Models.Meeting;
 
-namespace GalaxyUML.Api.Controllers
+namespace GalaxyUML.Api.Controllers;
+
+[ApiController]
+[Route("api/meetings")]
+public class MeetingController : ControllerBase
 {
-    [ApiController]
-    [Route("api/meetings")]
-    public class MeetingController : ControllerBase
+    private readonly MeetingService _svc;
+    public MeetingController(MeetingService svc) => _svc = svc;
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateMeetingDto dto)
     {
-        private readonly IMeetingRepo _meetingRepo;
+        var id = await _svc.CreateAsync(dto.TeamId, dto.OrganizerId);
+        return Ok(id);
+    }
 
-        public MeetingController(IMeetingRepo meetingRepo)
-        {
-            _meetingRepo = meetingRepo;
-        }
+    [HttpPost("{id:guid}/join")]
+    public async Task<IActionResult> Join(Guid id, [FromBody] UserIdDto dto)
+    {
+        await _svc.JoinAsync(id, dto.UserId);
+        return NoContent();
+    }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
-        {
-            var meeting = await _meetingRepo.GetByIdAsync(id);
-            if (meeting == null) return NotFound();
-            return Ok(meeting);
-        }
+    [HttpPost("{id:guid}/leave")]
+    public async Task<IActionResult> Leave(Guid id, [FromBody] UserIdDto dto)
+    {
+        await _svc.LeaveAsync(id, dto.UserId);
+        return NoContent();
+    }
 
-        [HttpGet("team/{idTeam:guid}")] // Ispravljeno: bilo je {id}
-        public async Task<IActionResult> GetByTeamAsync(Guid idTeam)
-        {
-            var meetings = await _meetingRepo.GetByTeamAsync(idTeam);
-            return Ok(meetings);
-        }
+    [HttpPost("{id:guid}/grant-draw")]
+    public async Task<IActionResult> Grant(Guid id, [FromBody] GrantDrawDto dto)
+    {
+        await _svc.GrantDrawAsync(id, dto.ActorId, dto.TargetId, dto.CanDraw);
+        return NoContent();
+    }
 
-        [HttpGet("active/team/{idTeam:guid}")] // Izmenjeno: sklonjen :bool jer pravi konflikt
-        public async Task<IActionResult> GetByTeamIfActiveAsync(Guid idTeam)
-        {
-            var meeting = await _meetingRepo.GetByTeamIfActiveAsync(idTeam);
-            if (meeting == null) return NotFound();
-            return Ok(meeting);
-        }
+    [HttpPost("{id:guid}/message")]
+    public async Task<IActionResult> Message(Guid id, [FromBody] SendMessageDto dto)
+    {
+        await _svc.AddMessageAsync(id, dto.SenderId, dto.Content);
+        return NoContent();
+    }
 
-        [HttpGet("organizer/{idOrganizer:guid}")]
-        public async Task<IActionResult> GetByOrganizerAsync(Guid idOrganizer)
-        {
-            var meetings = await _meetingRepo.GetByOrganizerAsync(idOrganizer);
-            return Ok(meetings);
-        }
-
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var meetings = await _meetingRepo.GetAllAsync();
-            return Ok(meetings);
-        }
-
-        [HttpDelete("{id:guid}")] // Dodat :guid radi sigurnosti
-        public async Task<IActionResult> DeleteAsync(Guid id)
-        {
-            try
-            {
-                await _meetingRepo.DeleteAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _svc.DeleteAsync(id);
+        return NoContent();
     }
 }
+
+public record CreateMeetingDto(Guid TeamId, Guid OrganizerId);
+public record GrantDrawDto(Guid ActorId, Guid TargetId, bool CanDraw);
+public record SendMessageDto(Guid SenderId, string Content);
