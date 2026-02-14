@@ -1,128 +1,83 @@
-using System.Text.Json.Serialization;
-using GalaxyUML.Core.Models.Commands.TeamCommands;
-
 namespace GalaxyUML.Core.Models
 {
-    public class Team : ITeamObservable
+    public class Team
     {
-        //public Guid IdTeam { get; private set; }
-        public string TeamName { get; private set; } = null!;
-        public User TeamOwner { get; private set; } = null!;
-        public string TeamCode { get; private set; } = null!;
-        public List<Meeting> Meetings { get; private set; } = null!;
-        public List<TeamMember> Members { get; set; }
-        public List<BannedUser> BannedUsers { get; private set; }
-        public Guid IdOwner { get; private set; }
+        private readonly List<TeamMember> _members = new();
+        private readonly List<BannedUser> _bans = new();
 
-        private List<ITeamObserver> _observers;
+        public Guid Id { get; }
+        public string TeamName { get; private set; }
+        public string TeamCode { get; private set; }
+        public Guid OwnerId { get; private set; }
+        public Guid? CurrentMeetingId { get; private set; }
 
-        public Team() 
+        public IReadOnlyCollection<TeamMember> Members => _members.AsReadOnly();
+        public IReadOnlyCollection<BannedUser> BannedUsers => _bans.AsReadOnly();
+
+        public Team(Guid id, Guid ownerId, string teamName, string teamCode)
         {
-            _observers = new List<ITeamObserver>();
-            Meetings = new List<Meeting>();
-            Members = new List<TeamMember>();
-            BannedUsers = new List<BannedUser>();
-        }
-
-        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
-        public Team(/*Guid id, */Guid id, Guid idTeamOwner, string teamName, User teamOwner)
-        {
-            //IdTeam = id;
+            Id = id;
+            OwnerId = ownerId;
             TeamName = teamName;
-            IdOwner = idTeamOwner;
-            TeamOwner = teamOwner;
-            Members = [new (id, this, TeamOwner, RoleEnum.Owner)];
-            TeamCode = TeamCodeGenerator();
-            Meetings = new List<Meeting>();
-            BannedUsers = new List<BannedUser>();
-
-            _observers = new List<ITeamObserver>();
+            TeamCode = teamCode;
+            _members.Add(new TeamMember(ownerId, RoleEnum.Owner));
         }
 
-        public void AddMember(Guid idTeam, User user)
+        public static Team Create(string name, Guid ownerId) =>
+            new(Guid.NewGuid(), ownerId, name, Guid.NewGuid().ToString("N")[..6].ToUpper());
+
+        public void Join(Guid userId, string code)
         {
-            // moze i da se napravi pa da se proba i po primarnom kljucu da se trazi; nisam siguran sta je bolja praksa...
-            var memberInAList = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
-            if (memberInAList != null)
-                throw new Exception("User is already this team's member.");
-
-            var bannedUser = BannedUsers.FirstOrDefault(b => b.User.IdUser == user.IdUser);
-            if (bannedUser != null)
-                throw new Exception("This user can not join because they are banned.");
-
-            Members.Add(new TeamMember(idTeam, this, user, RoleEnum.Member));
-            user.JoinTeam(this);
+            if (code != TeamCode) throw new InvalidOperationException("Bad join code");
+            if (_bans.Any(b => b.UserId == userId)) throw new InvalidOperationException("User banned");
+            if (_members.Any(m => m.UserId == userId)) return;
+            _members.Add(new TeamMember(userId, RoleEnum.Member));
         }
 
-        public void RemoveMember(TeamMember member)
+        public void Leave(Guid userId)
         {
-            var teamMember = Members.FirstOrDefault(member);
-            if (teamMember == null)
-                throw new Exception("User is not this team's member.");
-            
-            Members.Remove(teamMember);
-            member.LeaveTeam(this);
+            var member = _members.SingleOrDefault(m => m.UserId == userId)
+                         ?? throw new InvalidOperationException("Not a member");
+            if (member.Role == RoleEnum.Owner) throw new InvalidOperationException("Owner cannot leave");
+            _members.Remove(member);
         }
 
-        public void ChangeRole(TeamMember member, RoleEnum newRole)
+        public void ChangeRole(Guid actorId, Guid targetUserId, RoleEnum newRole)
         {
-            if (member.Role == RoleEnum.Owner)
-                throw new Exception("Owner's role can not be changed.");
-
-            var teamMember = Members.FirstOrDefault(member);
-            if (teamMember == null)
-                throw new Exception("User is not this team's member.");
-
-            if (newRole == RoleEnum.Member || newRole == RoleEnum.Organizer)
-                throw new Exception("There can only be one owner of a team.");
-                
-            teamMember.ChangeRole(newRole);
+            var actor = RequireMember(actorId);
+            if (actor.Role is not (RoleEnum.Owner or RoleEnum.Organizer))
+                throw new InvalidOperationException("Forbidden");
+            var target = RequireMember(targetUserId);
+            if (target.Role == RoleEnum.Owner && actor.Role != RoleEnum.Owner)
+                throw new InvalidOperationException("Cannot change owner");
+            target.SetRole(newRole);
         }
-        // treba razmisliti
-        public void OrganizeMeeting(Guid idTeam, Guid idMeeting, Guid idChat, Guid idBoard, Guid idOrganizer, TeamMember organizer)
+
+        public void Ban(Guid actorId, Guid targetUserId, string? reason = null)
         {
-            if (organizer.Role is not RoleEnum.Organizer || organizer.Role is not RoleEnum.Owner)
-                throw new Exception("Only organizers can organize meetings");
-
-            Meetings.Add(new Meeting(idTeam, idMeeting, idOrganizer, idChat, idBoard, organizer));
+            var actor = RequireMember(actorId);
+            if (actor.Role != RoleEnum.Owner) throw new InvalidOperationException("Only owner bans");
+            if (_bans.Any(b => b.UserId == targetUserId)) return;
+            _bans.Add(new BannedUser(targetUserId, reason));
+            _members.RemoveAll(m => m.UserId == targetUserId);
         }
 
-        public void EndMeeting(Meeting meeting)
+        public void StartMeeting(Guid meetingId, Guid organizerId)
         {
-            if (meeting == null)
-                throw new Exception("Meeting does not exist.");
-
-            meeting.EndMeeting();
+            var org = RequireMember(organizerId);
+            if (org.Role is not (RoleEnum.Owner or RoleEnum.Organizer))
+                throw new InvalidOperationException("Only owner/organizer");
+            if (CurrentMeetingId != null) throw new InvalidOperationException("Meeting already active");
+            CurrentMeetingId = meetingId;
         }
 
-        public void Ban(Guid idTeam, Guid idUser, User user)
+        public void EndMeeting(Guid meetingId)
         {
-            var member = Members.FirstOrDefault(m => m.Member.IdUser == user.IdUser);
-            if (member == null)
-                throw new Exception("User not in this team.");
-
-            //member.ClearEntry();        // brisemo i iz team-a i member napusta
-            BannedUsers.Add(new BannedUser(idTeam, idUser, this, user));      // dodajemo u lokalnu listu banovanih
-        }
-        private string TeamCodeGenerator()
-        {
-            return Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper();
+            if (CurrentMeetingId == meetingId) CurrentMeetingId = null;
         }
 
-        public void Attach(ITeamObserver observer)
-        {
-            _observers.Add(observer);
-        }
-
-        public void Detach(ITeamObserver observer)
-        {
-            _observers.Remove(observer);
-        }
-
-        public void Notify(TeamEventType eventType, ITeamCommand command)
-        {
-            foreach (var observer in _observers)
-                observer.Update(eventType, command);
-        }
+        private TeamMember RequireMember(Guid userId) =>
+            _members.SingleOrDefault(m => m.UserId == userId)
+            ?? throw new InvalidOperationException("Member missing");
     }
 }

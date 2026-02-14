@@ -1,16 +1,11 @@
-using User = GalaxyUML.Core.Models.User;
+using GalaxyUML.Core.Models;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories;
+
+public interface IUserRepo
 {
-    public interface IUserRepo
-    {
-        Task<User?> GetByIdAsync(Guid id);
-        Task<User?> GetByUsernameAsync(string username);
-        Task<User?> GetByEmailAsync(string email);
-        Task<IEnumerable<User>> GetAllAsync();
-
-        Task CreateAsync(User user);
-        Task UpdateAsync(Guid id, User user);
-        Task DeleteAsync(Guid id);
-    }
+    Task<User?> GetByIdAsync(Guid id);
+    Task<User?> GetByUsernameAsync(string username);
+    Task AddAsync(User user);
+    Task SaveAsync();
 }

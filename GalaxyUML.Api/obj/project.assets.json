@@ -64,6 +64,25 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/8.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "7.0.3"
+        },
+        "compile": {
+          "lib/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.OpenApi/10.0.2": {
         "type": "package",
         "dependencies": {
@@ -1171,6 +1190,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
           "GalaxyUML.Core": "1.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.2"
         },
@@ -1271,6 +1291,21 @@
         "lib/netstandard2.0/Humanizer.dll",
         "lib/netstandard2.0/Humanizer.xml",
         "logo.png"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/8.0.0": {
+      "sha512": "rwxaZYHips5M9vqxRkGfJthTx+Ws4O4yCuefn17J371jL3ouC5Ker43h2hXb5yd9BMnImE9rznT75KJHm6bMgg==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+        "lib/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.xml",
+        "microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
       ]
     },
     "Microsoft.AspNetCore.OpenApi/10.0.2": {
@@ -3643,6 +3678,7 @@
     "net10.0": [
       "GalaxyUML.Core >= 1.0.0",
       "GalaxyUML.Data >= 1.0.0",
+      "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.0",
       "Microsoft.AspNetCore.OpenApi >= 10.0.2",
       "Microsoft.EntityFrameworkCore >= 10.0.3",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.3",
@@ -3658,11 +3694,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
+      "projectUniqueName": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
       "projectName": "GalaxyUML.Api",
-      "projectPath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
+      "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\GalaxyUML.Api.csproj",
       "packagesPath": "C:\\Users\\strucnjak\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\obj\\",
+      "outputPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3683,8 +3719,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
-              "projectPath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
+            "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
+              "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
             },
             "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Data\\GalaxyUML.Data.csproj": {
               "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Data\\GalaxyUML.Data.csproj"
@@ -3708,6 +3744,10 @@
       "net10.0": {
         "targetAlias": "net10.0",
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.JwtBearer": {
+            "target": "Package",
+            "version": "[8.0.0, )"
+          },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
             "version": "[10.0.2, )"

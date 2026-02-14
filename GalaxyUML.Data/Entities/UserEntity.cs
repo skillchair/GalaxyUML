@@ -1,33 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GalaxyUML.Data.Entities
+namespace GalaxyUML.Data.Entities;
+public class UserEntity
 {
-    public class UserEntity
-    {
-        [Key]
-        public Guid Id { get; set; } = new Guid();
-        
-        [Required]
-        [StringLength(100)]
-        public string FirstName { get; set; } = null!;
-        
-        [Required]
-        [StringLength(100)]
-        public string LastName { get; set; } = null!;
-        
-        [Required]
-        [StringLength(100)]
-        public string Username { get; set; } = null!;
-        
-        [Required]
-        [StringLength(255)]
-        public string Email { get; set; } = null!;
-        
-        [Required]
-        [StringLength(255), MinLength(6)]
-        public string Password { get; set; } = null!;
-        
-        public virtual ICollection<TeamMemberEntity>? Teams { get; set; }
-        public virtual ICollection<BannedUserEntity>? BannedTeams { get; set; }
-    }
+    [Key] public Guid Id { get; set; }
+    [Required, MaxLength(80)]  public string FirstName { get; set; } = null!;
+    [Required, MaxLength(80)]  public string LastName { get; set; } = null!;
+    [Required, MaxLength(80)]  public string Username { get; set; } = null!;
+    [Required, MaxLength(200)] public string Email { get; set; } = null!;
+    [Required, MaxLength(200)] public string Password { get; set; } = null!;
+
+    public ICollection<TeamMemberEntity> Teams { get; set; } = new List<TeamMemberEntity>();
+    public ICollection<BannedUserEntity> Bans { get; set; } = new List<BannedUserEntity>();
 }

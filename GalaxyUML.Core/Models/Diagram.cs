@@ -1,67 +1,58 @@
 using System.Drawing;
-using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
     public class Diagram : IDiagram
     {
-        public List<IDiagram> Objs { get; private set; }
+        private readonly List<IDiagram> _children = new();
+        public Diagram() : base(ObjectType.Diagram, Constants.Constants.MinPoint, Constants.Constants.MaxPoint) { }
+        public Diagram(Point start, Point end) : base(ObjectType.Diagram, start, end) { }
+        // Only resize/move allowed; no extra state
 
-        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
-        public Diagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting) 
-                : base(/*id, */startingPoint, endingPoint, meeting)
+        public void Attach(Diagram child)
         {
-            base.Type = ObjectType.Diagram;
-            Objs = new List<IDiagram>();
+            child.Parent = this;
+            _children.Add(child);
         }
 
-        public Diagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting, List<IDiagram> objs)
-    : base(/*id, */startingPoint, endingPoint, meeting)
+        public void Detach(Guid childId)
         {
-            base.Type = ObjectType.Diagram;
-            Objs = objs ?? new List<IDiagram>();
+            var c = _children.FirstOrDefault(c => c.Id == childId);
+            if (c != null)
+            {
+                c.OnRemovedFromParent();
+                _children.Remove(c);
+            }
         }
 
-        public void Add(IDiagram obj)
+        public override void Move(Point newTopLeft)
         {
-            var objInAList = Objs.FirstOrDefault(obj);
-            if (objInAList == null)
-                throw new Exception("Object already on this diagram.");
+            var dx = newTopLeft.X - StartingPoint.X;
+            var dy = newTopLeft.Y - StartingPoint.Y;
+            StartingPoint = newTopLeft;
+            EndingPoint = new Point(EndingPoint.X + dx, EndingPoint.Y + dy);
+            foreach (var c in _children) c.Move(new Point(c.StartingPoint.X + dx, c.StartingPoint.Y + dy));
 
-            // ne sme da bude van dijagrama
-            if (obj.StartingPoint.X > StartingPoint.X || obj.StartingPoint.Y > StartingPoint.Y
-                || obj.EndingPoint.X > EndingPoint.X || obj.EndingPoint.Y > EndingPoint.Y)
-                throw new Exception("Can't add object out of parent's bounds.");
-
-            Objs.Add(obj);
+            base.Move(newTopLeft);
         }
 
-        public override void Move(Point newStartingPoint)
+        public override void Resize(Point newBottomRight)
         {
-            foreach (var obj in Objs)
-                obj.Move(newStartingPoint);
+            foreach (var c in _children)
+            {
+                var difX = EndingPoint.X - newBottomRight.X;
+                var difY = EndingPoint.Y - newBottomRight.Y;
+
+                Point newBottomRightC = new Point(c.EndingPoint.X + difX, c.EndingPoint.Y + difY);
+                c.Resize(newBottomRightC);
+            }
+            base.Resize(newBottomRight);
         }
 
-        public override void Resize(Point newEndingPoint)
+        public override void OnRemovedFromParent()
         {
-            foreach (var obj in Objs)
-                obj.Resize(newEndingPoint);
-        }
-
-        public override void CleanUp(Diagram parent)
-        {
-            foreach (var obj in Objs)
-                obj.CleanUp(parent);
-        }
-
-        public void Remove(IDiagram obj)
-        {
-            var objInAList = Objs.FirstOrDefault(obj);
-            if (objInAList == null)
-                throw new Exception("Object not on this diagram.");
-
-            obj.CleanUp(this);  // da se unlinkuje ako je linija ili kutija                
-            Objs.Remove(obj);
+            foreach (var c in _children)
+                c.OnRemovedFromParent();
         }
     }
 }

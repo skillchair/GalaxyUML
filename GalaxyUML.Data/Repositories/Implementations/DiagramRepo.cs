@@ -1,101 +1,37 @@
 using GalaxyUML.Core.Models;
 using GalaxyUML.Data.Entities;
+using GalaxyUML.Data.Mappers;
 using Microsoft.EntityFrameworkCore;
-using Diagram = GalaxyUML.Core.Models.Diagram;
-using DiagramMapper = GalaxyUML.Data.Mappers.DiagramMapper;
-using Team = GalaxyUML.Core.Models.Team;
 
-namespace GalaxyUML.Data.Repositories.Implementations
+namespace GalaxyUML.Data.Repositories.Implementations;
+
+public class DiagramRepo : IDiagramRepo
 {
-    public class DiagramRepo : IDiagramRepo
+    private readonly AppDbContext _db;
+    public DiagramRepo(AppDbContext db) => _db = db;
+
+    public async Task<IDiagram?> GetByIdAsync(Guid id)
     {
-        AppDbContext _context;
-
-        public DiagramRepo(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task CreateAsync(Diagram diagram/*, Diagram? parent, Team team*/)
-        {
-            // var teamEntity = await _context.Teams.FindAsync(team.IdTeam);
-            // if (teamEntity == null) throw new Exception("Team not found.");
-
-            // if (await _context.Diagrams.AnyAsync(d => d.Id == diagram.IdDiagram))
-            //     throw new Exception("Diagram with this ID already exists.");
-
-            // DiagramEntity? parentEntity = null;
-            // if (parent != null)
-            // {
-            //     parentEntity = await _context.Diagrams.FindAsync(parent.IdDiagram);
-            //     if (parentEntity == null) throw new Exception("Parent diagram not found.");
-            // }
-
-            var entity = DiagramMapper.ToEntity(diagram/*, parentEntity, teamEntity*/);
-
-            _context.Diagrams.Add(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == id);
-            if (entity == null)
-                throw new Exception("Diagram with this id doesn't exist.");
-
-            _context.Diagrams.Remove(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<Diagram>> GetAllAsync()
-        {
-            return await _context.Diagrams
-                            .AsNoTracking()
-                            .Select(d => DiagramMapper.ToModel(d))
-                            .ToListAsync();
-        }
-
-        public async Task<Diagram?> GetByIdAsync(Guid id)
-        {
-            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == id);
-            return entity == null ? null : DiagramMapper.ToModel(entity);
-        }
-
-        public async Task<IEnumerable<Diagram>> GetByMeetingAsync(Guid idMeeting)
-        {
-            return await _context.Diagrams
-                            .AsNoTracking()
-                            .Where(d => d.IdMeeting == idMeeting)
-                            .Select(d => DiagramMapper.ToModel(d))
-                            .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Diagram>> GetByMeetingParentAsync(Guid idMeeting, Guid idParent)
-        {
-            return await _context.Diagrams
-                            .AsNoTracking()
-                            .Where(d => d.IdMeeting == idMeeting && d.IdParent == idParent)
-                            .Select(d => DiagramMapper.ToModel(d))
-                            .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Diagram>> GetByMeetingTypeAsync(Guid idMeeting, ObjectType type)
-        {
-            return await _context.Diagrams
-                            .AsNoTracking()
-                            .Where(d => d.IdMeeting == idMeeting && d.Type == type)
-                            .Select(d => DiagramMapper.ToModel(d))
-                            .ToListAsync();
-        }
-
-        public async Task UpdateAsync(Guid id, Diagram diagram)
-        {
-            var entity = await _context.Diagrams.FirstOrDefaultAsync(d => d.Id == id);
-            if (entity == null)
-                throw new Exception("Diagram with this id doesn't exist.");
-
-            _context.Diagrams.Update(entity);
-            await _context.SaveChangesAsync();
-        }
+        var e = await _db.Diagrams
+            .Include(d => d.Children)
+            .FirstOrDefaultAsync(d => d.Id == id);
+        return e == null ? null : DiagramMapper.ToDomain(e, new Diagram());
     }
+
+    public async Task AddAsync(IDiagram diagram)
+    {
+        var entity = DiagramMapper.ToEntity(diagram); // returns DiagramElementEntity
+        _db.Set<DiagramElementEntity>().Add(entity);  // or cast to DiagramEntity if you only add roots
+        await _db.SaveChangesAsync();
+    }
+
+
+    public async Task RemoveAsync(Guid id)
+    {
+        var entity = await _db.Diagrams.FindAsync(id) ?? throw new InvalidOperationException("Diagram not found");
+        _db.Diagrams.Remove(entity);
+        await _db.SaveChangesAsync();
+    }
+
+    public Task SaveAsync() => _db.SaveChangesAsync();
 }

@@ -1,40 +1,40 @@
 using System.Drawing;
-using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
     public abstract class IDiagram
     {
-        //public Guid IdDiagram { get; private set; }
+        public Guid Id { get; }
         public ObjectType Type { get; protected set; }
+        //public Guid? ParentId { get; private set; }
+        public Diagram? Parent { get; protected set; }
+        //public IReadOnlyCollection<IDiagram> Children => _children.AsReadOnly();
         public Point StartingPoint { get; protected set; }
         public Point EndingPoint { get; protected set; }
-        public Meeting Meeting { get; private set; }
-        public Guid IdParent { get; private set; }
-        public Guid IdMeeting { get; private set; }
 
-        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
-        public IDiagram(/*Guid id, */Guid idMeeting, Point startingPoint, Point endingPoint, Meeting meeting, Guid? idParent = null)
+        protected IDiagram(ObjectType type, Point start, Point end, Diagram? parent = null)
         {
-            //IdDiagram = id;
-            IdMeeting = idMeeting;
-            StartingPoint = startingPoint;
-            EndingPoint = endingPoint;
-            Meeting = meeting;
-            IdParent = idParent ?? IdParent;
+            Id = Guid.NewGuid();
+            Type = type;
+            StartingPoint = start;
+            EndingPoint = end;
+            Parent = parent;
+            //ParentId = parent?.Id;
         }
 
-        public IDiagram(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting)
+        //public void SetParent(IDiagram element, Diagram parent) { element.Parent = parent; }
+
+        public virtual void Move(Point newTopLeft)
         {
-            //IdDiagram = Guid.NewGuid();
-            StartingPoint = startingPoint;
-            EndingPoint = endingPoint;
-            Meeting = meeting;
+            StartingPoint = new Point(newTopLeft.X, newTopLeft.Y);
+
+            var difX = StartingPoint.X - newTopLeft.X;
+            var difY = StartingPoint.Y - newTopLeft.Y;
+            EndingPoint = new Point(EndingPoint.X + difX, EndingPoint.Y + difY);
         }
 
-        // nek ostane za sad da nemamo proveru za out of bounds... videcemo kako cemo
-        public abstract void Move(Point newStartingPoint);
-        public abstract void Resize(Point newEndingPoint);
-        public abstract void CleanUp(Diagram parent);
+        public virtual void Resize(Point newBottomRight) => EndingPoint = newBottomRight;
+
+        public virtual void OnRemovedFromParent() {}
     }
 }

@@ -1,26 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GalaxyUML.Data.Entities
+namespace GalaxyUML.Data.Entities;
+public class TeamEntity
 {
-    public class TeamEntity
-    {
-        [Key]
-        public Guid Id { get; set; } = new Guid();
+    [Key] public Guid Id { get; set; }
+    [Required, MaxLength(120)] public string TeamName { get; set; } = null!;
+    [Required, MaxLength(6)]  public string TeamCode { get; set; } = null!;
+    [Required] public Guid OwnerId { get; set; }
+    public UserEntity Owner { get; set; } = null!;
 
-        [Required]
-        [StringLength(100)]
-        public string TeamName { get; set; } = null!;
-
-        [Required]
-        public Guid IdTeamOwner { get; set; }
-        public virtual UserEntity TeamOwner { get; set; } = null!;
-
-        [Required]
-        [StringLength(6)]
-        public string TeamCode { get; set; } = null!;
-
-        public virtual ICollection<TeamMemberEntity> Members { get; set; } = null!;
-        public virtual ICollection<MeetingEntity>? Meetings { get; set; }
-        public virtual ICollection<BannedUserEntity>? BannedUsers { get; set; }
-    }
+    public Guid? CurrentMeetingId { get; set; }
+    public ICollection<TeamMemberEntity> Members { get; set; } = new List<TeamMemberEntity>();
+    public ICollection<BannedUserEntity> BannedUsers { get; set; } = new List<BannedUserEntity>();
+    public ICollection<MeetingEntity> Meetings { get; set; } = new List<MeetingEntity>();
 }

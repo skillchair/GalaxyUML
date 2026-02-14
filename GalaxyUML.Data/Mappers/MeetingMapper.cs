@@ -1,50 +1,64 @@
-using TeamEntity = GalaxyUML.Data.Entities.TeamEntity;
-using Meeting = GalaxyUML.Core.Models.Meeting;
-using MeetingEntity = GalaxyUML.Data.Entities.MeetingEntity;
-using MeetingParticipantEntity = GalaxyUML.Data.Entities.MeetingParticipantEntity;
+using System.Reflection;
+using GalaxyUML.Core.Models;
+using GalaxyUML.Data.Entities;
 
-namespace GalaxyUML.Data.Mappers
+namespace GalaxyUML.Data.Mappers;
+
+public static class MeetingMapper
 {
-    static class MeetingMapper
+    static void SetPrivate<TObj, TVal>(TObj obj, string fieldName, TVal value)
     {
-        public static Meeting ToModel(MeetingEntity entity)
+        var f = typeof(TObj).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        f?.SetValue(obj, value);
+    }
+
+    public static Meeting ToDomain(MeetingEntity e)
+    {
+        var meeting = Meeting.Create(e.TeamId, e.OrganizedById);
+        SetPrivate(meeting, "<Id>k__BackingField", e.Id);
+
+        // Board
+        if (e.Board is DiagramEntity de)
         {
-            return new Meeting(
-                entity.IdTeam,
-                //entity.Id,
-                entity.IdOrganizer,
-                entity.IdChat,
-                entity.IdBoard,
-                MeetingParticipantMapper.ToModel(entity.Organizer),
-                //MeetingParticipantMapper.ToModel(entity.Organizer).TeamMember,
-                DiagramMapper.ToModel(entity.Board),
-                ChatMapper.ToModel(entity.Chat)
-            );
+            var board = DiagramMapper.FromDiagram(de, new Diagram()); // temp parent
+            SetPrivate(meeting, "<Board>k__BackingField", board);
         }
 
-        public static MeetingEntity ToEntity(Meeting model/*, TeamEntity teamEntity*/)
-        {
-            //List<MeetingParticipantEntity> participantEntities = new List<MeetingParticipantEntity>();
-            //foreach (var p in model.Participants)
-                //participantEntities.Add(MeetingParticipantMapper.ToEntity(p/*, teamEntity*/));
+        // Chat + messages
+        var chat = ChatMapper.ToDomain(e.Chat);
+        SetPrivate(meeting, "<_chat>k__BackingField", chat);
 
-            return new MeetingEntity
-            {
-                //Id = model.IdMeeting,
-                StartingTime = model.StartingTime,
-                EndingTime = model.EndingTime,
-                IdOrganizer = model.IdOrganizer,
-                //Organizer = MeetingParticipantMapper.ToEntity(model.Organizer/*, teamEntity*/),
-                IdTeam = model.IdTeam,
-                // IdTeam = teamEntity.Id,
-                //Team = teamEntity,
-                //Participants = participantEntities,
-                IdChat = model.IdChat,
-                //Chat = ChatMapper.ToEntity(model.Chat/*, teamEntity*/),
-                IdBoard = model.IdBoard,
-                //Board = DiagramMapper.ToEntity(model.Board/*, null/*, teamEntity*/),  // board nema parent-a!
-                IsActive = model.IsActive
-            };
+        // participants
+        foreach (var p in e.Participants.Where(p => p.TeamMemberId != e.OrganizedById))
+            meeting.Join(p.TeamMemberId);
+        foreach (var p in meeting.Participants)
+        {
+            var src = e.Participants.First(x => x.TeamMemberId == p.UserId);
+            if (src.CanDraw) p.SetDraw(true);
         }
+
+        return meeting;
+    }
+
+    public static MeetingEntity ToEntity(Meeting d)
+    {
+        var board = DiagramMapper.ToEntity(d.Board);
+        var chat = ChatMapper.ToEntity(d.Id, d.Chat);
+
+        var entity = new MeetingEntity
+        {
+            Id = d.Id,
+            TeamId = d.TeamId,
+            OrganizedById = d.OrganizedBy,
+            BoardId = board.Id,
+            Board = board,
+            ChatId = chat.Id,
+            Chat = chat,
+            IsActive = true,
+            StartingTime = DateTime.UtcNow
+        };
+
+        entity.Participants = d.Participants.Select(p => MeetingParticipantMapper.ToEntity(d.Id, p)).ToList();
+        return entity;
     }
 }

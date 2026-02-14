@@ -1,192 +1,151 @@
-using Microsoft.EntityFrameworkCore;
+using GalaxyUML.Core.Models; // ObjectType
 using GalaxyUML.Data.Entities;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
-namespace GalaxyUML.Data
+namespace GalaxyUML.Data;
+
+public class AppDbContext : DbContext
 {
-    public class AppDbContext : DbContext
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<UserEntity> Users => Set<UserEntity>();
+    public DbSet<TeamEntity> Teams => Set<TeamEntity>();
+    public DbSet<TeamMemberEntity> TeamMembers => Set<TeamMemberEntity>();
+    public DbSet<BannedUserEntity> BannedUsers => Set<BannedUserEntity>();
+    public DbSet<MeetingEntity> Meetings => Set<MeetingEntity>();
+    public DbSet<MeetingParticipantEntity> MeetingParticipants => Set<MeetingParticipantEntity>();
+    public DbSet<ChatEntity> Chats => Set<ChatEntity>();
+    public DbSet<MessageEntity> Messages => Set<MessageEntity>();
+    public DbSet<DiagramElementEntity> DiagramElements => Set<DiagramElementEntity>();
+    public DbSet<DiagramEntity> Diagrams => Set<DiagramEntity>();
+    public DbSet<TextEntity> Texts => Set<TextEntity>();
+    public DbSet<BoxEntity> Boxes => Set<BoxEntity>();
+    public DbSet<ClassBoxEntity> ClassBoxes => Set<ClassBoxEntity>();
+    public DbSet<LineEntity> Lines => Set<LineEntity>();
+    public DbSet<ClassAttributeEntity> ClassAttributes => Set<ClassAttributeEntity>();
+    public DbSet<ClassMethodEntity> ClassMethods => Set<ClassMethodEntity>();
+
+    protected override void OnModelCreating(ModelBuilder b)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        base.OnModelCreating(b);
 
-        public DbSet<UserEntity> Users { get; set; }
-        public DbSet<TeamEntity> Teams { get; set; }
-        public DbSet<TeamMemberEntity> Members { get; set; }
-        public DbSet<BannedUserEntity> BannedUsers { get; set; }
-        public DbSet<MeetingEntity> Meetings { get; set; }
-        public DbSet<MeetingParticipantEntity> Participants { get; set; }
-        public DbSet<ChatEntity> Chats { get; set; }
-        public DbSet<MessageEntity> Messages { get; set; }
-        public DbSet<DiagramEntity> Diagrams { get; set; }
-        public DbSet<DrawableEntity> Drawables { get; set; }
-        public DbSet<BoxEntity> Boxes { get; set; }
-        public DbSet<ClassBoxEntity> ClassBoxes { get; set; }
-        public DbSet<TextEntity> Texts { get; set; }
-        public DbSet<LineEntity> Lines { get; set; }
-        public DbSet<AttributeEntity> Attributes { get; set; }
-        public DbSet<MethodEntity> Methods { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // TEAM MEMBER
+        b.Entity<TeamMemberEntity>(e =>
         {
-            base.OnModelCreating(modelBuilder);
-
-            // --- 1. GLOBAL CASCADE RESET ---
-            // This runs first, but explicit configs below will override where needed
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes()
-                         .SelectMany(e => e.GetForeignKeys()))
-            {
-                relationship.DeleteBehavior = DeleteBehavior.NoAction;
-            }
-
-            // --- 2. USER ---
-            // No outgoing FKs, only referenced by others
-
-            // --- 3. TEAM MEMBER ---
-            modelBuilder.Entity<TeamMemberEntity>(entity =>
-            {
-                entity.HasKey(tm => tm.Id);
-                entity.HasIndex(tm => new { tm.IdTeam, tm.IdMember }).IsUnique();
-
-                // TeamMember -> Team (configured below on TeamEntity side)
-                entity.HasOne(tm => tm.Team)
-                    .WithMany(t => t.Members)
-                    .HasForeignKey(tm => tm.IdTeam)
-                    .OnDelete(DeleteBehavior.NoAction);
-
-                // TeamMember -> User
-                entity.HasOne(tm => tm.Member)
-                    .WithMany(u => u.Teams)
-                    .HasForeignKey(tm => tm.IdMember)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 4. TEAM ---
-            modelBuilder.Entity<TeamEntity>(entity =>
-            {
-                // Team -> TeamOwner (TeamMember)
-                entity.HasOne(t => t.TeamOwner)
-                    .WithMany()
-                    .HasForeignKey(t => t.IdTeamOwner)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 5. BANNED USERS ---
-            modelBuilder.Entity<BannedUserEntity>(entity =>
-            {
-                entity.HasKey(b => b.Id);
-                entity.HasIndex(b => new { b.IdUser, b.IdTeam }).IsUnique();
-
-                entity.HasOne(b => b.User)
-                    .WithMany(u => u.BannedTeams)
-                    .HasForeignKey(b => b.IdUser)
-                    .OnDelete(DeleteBehavior.NoAction);
-
-                entity.HasOne(b => b.Team)
-                    .WithMany(t => t.BannedUsers)
-                    .HasForeignKey(b => b.IdTeam)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 6. MEETING ---
-            modelBuilder.Entity<MeetingEntity>(entity =>
-            {
-                // Meeting -> Organizer (MeetingParticipant)
-                entity.HasOne(m => m.Organizer)
-                    .WithMany()
-                    .HasForeignKey(m => m.IdOrganizer)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 7. MEETING PARTICIPANT ---
-            modelBuilder.Entity<MeetingParticipantEntity>(entity =>
-            {
-                // MeetingParticipant -> Meeting (Cascade: deleting meeting removes participants)
-                entity.HasOne(mp => mp.Meeting)
-                    .WithMany(m => m.Participants)
-                    .HasForeignKey(mp => mp.IdMeeting)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // MeetingParticipant -> TeamMember
-                entity.HasOne(mp => mp.Participant)
-                    .WithMany(tm => tm.Meetings)
-                    .HasForeignKey(mp => mp.IdParticipant)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 8. CHAT ---
-            modelBuilder.Entity<ChatEntity>(entity =>
-            {
-                // Chat <-> Meeting (one-to-one)
-                entity.HasOne(c => c.Meeting)
-                    .WithOne(m => m.Chat)
-                    .HasForeignKey<ChatEntity>(c => c.IdMeeting)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 9. MESSAGE ---
-            modelBuilder.Entity<MessageEntity>(entity =>
-            {
-                // Message -> Chat (Cascade: deleting chat removes messages)
-                entity.HasOne(m => m.Chat)
-                    .WithMany(c => c.Messages)
-                    .HasForeignKey(m => m.IdChat)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                // Message -> Sender (MeetingParticipant)
-                entity.HasOne(m => m.Sender)
-                    .WithMany()
-                    .HasForeignKey(m => m.IdSender)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
-            // --- 10. DIAGRAM (TPH hierarchy) ---
-
-            // Self-referencing parent/child
-            modelBuilder.Entity<DiagramEntity>()
-                .HasOne(d => d.Parent)
-                .WithMany(p => p.Objects)
-                .HasForeignKey(d => d.IdParent)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Diagram <-> Meeting (Board, one-to-one)
-            modelBuilder.Entity<DiagramEntity>()
-                .HasOne(d => d.Meeting)
-                .WithOne(m => m.Board)
-                .HasForeignKey<DiagramEntity>(d => d.IdMeeting)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Line -> Box1 / Box2
-            modelBuilder.Entity<LineEntity>()
-                .HasOne(l => l.Box1)
-                .WithMany(b => b.LinesAsStart)
-                .HasForeignKey(l => l.IdBox1)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<LineEntity>()
-                .HasOne(l => l.Box2)
-                .WithMany(b => b.LinesAsEnd)
-                .HasForeignKey(l => l.IdBox2)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // ClassBox -> Attributes (Cascade: deleting class removes its attributes)
-            modelBuilder.Entity<AttributeEntity>()
-                .HasOne(a => a.ClassBox)
-                .WithMany(c => c.Attributes)
-                .HasForeignKey(a => a.IdClassBox)
+            e.HasIndex(x => new { x.TeamId, x.UserId }).IsUnique();
+            e.HasOne(x => x.Team).WithMany(t => t.Members)
+                .HasForeignKey(x => x.TeamId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // ClassBox -> Methods (Cascade: deleting class removes its methods)
-            modelBuilder.Entity<MethodEntity>()
-                .HasOne(m => m.ClassBox)
-                .WithMany(c => c.Methods)
-                .HasForeignKey(m => m.IdClassBox)
+            e.HasOne(x => x.User).WithMany(u => u.Teams)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
 
-            // TextEntity has a collection of TeamMembers — this seems like a design issue,
-            // but we configure it explicitly to prevent shadow FKs
-            modelBuilder.Entity<TextEntity>()
-                .HasMany(t => t.TeamMembers)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-        }
+        // TEAM
+        b.Entity<TeamEntity>(e =>
+        {
+            e.HasOne(t => t.Owner).WithMany()
+                .HasForeignKey(t => t.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            e.HasMany(t => t.BannedUsers).WithOne(bu => bu.Team)
+                .HasForeignKey(bu => bu.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(t => t.Meetings).WithOne(m => m.Team)
+                .HasForeignKey(m => m.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // BANNED USER
+        b.Entity<BannedUserEntity>(e =>
+        {
+            e.HasIndex(x => new { x.TeamId, x.UserId }).IsUnique();
+            e.HasOne(x => x.User).WithMany(u => u.Bans)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // MEETING
+        b.Entity<MeetingEntity>(e =>
+        {
+            e.HasOne(m => m.Team).WithMany(t => t.Meetings)
+                .HasForeignKey(m => m.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(m => m.OrganizedBy).WithMany()
+                .HasForeignKey(m => m.OrganizedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(m => m.Board).WithOne()
+                .HasForeignKey<MeetingEntity>(m => m.BoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(m => m.Chat).WithOne(c => c.Meeting)
+                .HasForeignKey<MeetingEntity>(m => m.ChatId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // MEETING PARTICIPANT
+        b.Entity<MeetingParticipantEntity>(e =>
+        {
+            e.HasIndex(x => new { x.MeetingId, x.TeamMemberId }).IsUnique();
+            e.HasOne(x => x.Meeting).WithMany(m => m.Participants)
+                .HasForeignKey(x => x.MeetingId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.TeamMember).WithMany(tm => tm.Meetings)
+                .HasForeignKey(x => x.TeamMemberId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // CHAT / MESSAGE
+        b.Entity<ChatEntity>(e =>
+        {
+            e.HasOne(c => c.Meeting).WithOne(m => m.Chat)
+                .HasForeignKey<ChatEntity>(c => c.MeetingId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        b.Entity<MessageEntity>(e =>
+        {
+            e.HasOne(m => m.Chat).WithMany(c => c.Messages)
+                .HasForeignKey(m => m.ChatId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(m => m.Sender).WithMany()
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // DIAGRAM TPH
+        b.Entity<DiagramElementEntity>().ToTable("DiagramElements")
+            .HasDiscriminator<ObjectType>("ObjectType")
+            .HasValue<DiagramEntity>(ObjectType.Diagram)
+            .HasValue<TextEntity>(ObjectType.Text)
+            .HasValue<BoxEntity>(ObjectType.Box)
+            .HasValue<ClassBoxEntity>(ObjectType.ClassBox)
+            .HasValue<LineEntity>(ObjectType.Line);
+
+        // self-parent
+        b.Entity<DiagramElementEntity>()
+            .HasMany(d => d.Children).WithOne(c => c.Parent)
+            .HasForeignKey(c => c.ParentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Box - Line (start/end)
+        b.Entity<LineEntity>()
+            .HasOne(l => l.StartBox).WithMany(bx => bx.Outgoing)
+            .HasForeignKey(l => l.StartBoxId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        b.Entity<LineEntity>()
+            .HasOne(l => l.EndBox).WithMany(bx => bx.Incoming)
+            .HasForeignKey(l => l.EndBoxId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ClassBox owns attributes/methods
+        b.Entity<ClassAttributeEntity>()
+            .HasOne(a => a.ClassBox).WithMany(cb => cb.Attributes)
+            .HasForeignKey(a => a.ClassBoxId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        b.Entity<ClassMethodEntity>()
+            .HasOne(m => m.ClassBox).WithMany(cb => cb.Methods)
+            .HasForeignKey(m => m.ClassBoxId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

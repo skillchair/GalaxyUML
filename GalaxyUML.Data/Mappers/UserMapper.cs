@@ -1,34 +1,20 @@
-using User = GalaxyUML.Core.Models.User;
-using UserEntity = GalaxyUML.Data.Entities.UserEntity;
+using GalaxyUML.Core.Models;
+using GalaxyUML.Data.Entities;
 
-namespace GalaxyUML.Data.Mappers
+namespace GalaxyUML.Data.Mappers;
+
+public static class UserMapper
 {
-    static class UserMapper
+    public static User ToDomain(UserEntity e) =>
+        new User(e.Id, e.FirstName, e.LastName, e.Username, e.Email, e.Password);
+
+    public static UserEntity ToEntity(User d) => new()
     {
-        public static User ToModel(UserEntity entity)
-        {
-            return new User(
-                entity.Id,
-                entity.FirstName,
-                entity.LastName,
-                entity.Username,
-                entity.Email,
-                entity.Password // vec hash
-            );
-        }
-
-        public static UserEntity ToEntity(User model)
-        {
-            return new UserEntity
-            {
-                Id = model.IdUser,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Username = model.Username,
-                Email = model.Email,
-                Password = model.Password // hash
-            };
-        }
-    }
-
+        Id = d.IdUser,
+        FirstName = d.FirstName,
+        LastName = d.LastName,
+        Username = d.Username,
+        Email = d.Email,
+        Password = d.Password
+    };
 }

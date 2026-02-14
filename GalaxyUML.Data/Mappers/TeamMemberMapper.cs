@@ -1,30 +1,19 @@
-using TeamMember = GalaxyUML.Core.Models.TeamMember;
-using TeamMemberEntity = GalaxyUML.Data.Entities.TeamMemberEntity;
+using GalaxyUML.Core.Models;
+using GalaxyUML.Data.Entities;
 
-namespace GalaxyUML.Data.Mappers
+namespace GalaxyUML.Data.Mappers;
+
+public static class TeamMemberMapper
 {
-    static class TeamMemberMapper
-    {
-        public static TeamMember ToModel(TeamMemberEntity entity)
-        {
-            return new TeamMember(
-                entity.IdTeam,
-                TeamMapper.ToModel(entity.Team),
-                UserMapper.ToModel(entity.Member),
-                entity.Role
-            );
-        }
+    public static TeamMember ToDomain(TeamMemberEntity e) =>
+        new TeamMember(e.UserId, e.Role);
 
-        public static TeamMemberEntity ToEntity(TeamMember model)
-        {
-            return new TeamMemberEntity
-            {
-                //Id = model.IdTeamMember,
-                IdTeam = model.IdTeam,
-                //Team = TeamMapper.ToEntity(model.Team),
-                IdMember = model.Member.IdUser,
-                //Member = UserMapper.ToEntity(model.Member)
-            };
-        }
-    }
+    public static TeamMemberEntity ToEntity(Guid teamId, TeamMember d) => new()
+    {
+        Id = Guid.NewGuid(),
+        TeamId = teamId,
+        UserId = d.UserId,
+        Role = d.Role,
+        JoinedAt = d.JoinedAt
+    };
 }

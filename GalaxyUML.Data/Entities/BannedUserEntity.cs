@@ -1,18 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GalaxyUML.Data.Entities
+namespace GalaxyUML.Data.Entities;
+public class BannedUserEntity
 {
-    public class BannedUserEntity
-    {
-        [Key]
-        public Guid Id { get; set; } = new Guid();
-
-        [Required]
-        public Guid IdUser { get; set; }
-        public UserEntity User { get; set; } = null!;
-
-        [Required]
-        public Guid IdTeam { get; set; }
-        public TeamEntity Team { get; set; } = null!;
-    }
+    [Key] public Guid Id { get; set; }
+    [Required] public Guid TeamId { get; set; }
+    public TeamEntity Team { get; set; } = null!;
+    [Required] public Guid UserId { get; set; }
+    public UserEntity User { get; set; } = null!;
+    public DateTime BannedAt { get; set; } = DateTime.UtcNow;
+    public string? Reason { get; set; }
 }

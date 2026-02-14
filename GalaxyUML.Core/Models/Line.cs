@@ -1,41 +1,25 @@
-using System.Drawing;
-
 namespace GalaxyUML.Core.Models
 {
-    public class Line : IDrawable      // PRETPOSTAVLJAMO DA JE SMER UVEK OD CLASS1 KA CLASS2 DA NE BISMO DODATNO PAMTILI SMER!
+    public class Line : IDrawable
     {
-        public Box Box1 { get; private set; }
-        public Box Box2 { get; private set; }
-        public string Text1 { get; private set; }
-        public string Text2 { get; private set; }
-        public string MiddleText { get; private set; }
+        public Guid BoxId { get; }
+        public string? MiddleText { get; private set; }
+        public string? Text1 { get; private set; }
+        public string? Text2 { get; private set; }
 
-        public Line(/*Guid id, */Point startingPoint, Point endingPoint, Meeting meeting,
-                    Box box1, Box box2)  // default = null
-            : base(/*id, */startingPoint, endingPoint, meeting)
+        internal Line(Box box, string? middle, string? t1, string? t2)
+            : base(ObjectType.Line, box.StartingPoint, box.EndingPoint, box.Parent!)
         {
-            base.Type = ObjectType.Line;
-            Box1 = box1;
-            Box2 = box2;
-            Text1 = "";
-            Text2 = "";
-            MiddleText = "";
+            BoxId = box.Id;
+            MiddleText = middle; Text1 = t1; Text2 = t2;
         }
 
-        public void ChangeConnections(Box box1, Box box2)
-        {
-            Box1 = box1;
-            Box2 = box2;
-        }
-        public void ChangeText1(string text) { Text1 = text; }
-        public void ChangeText2(string text) { Text2 = text; }
-        public void ChangeMiddleText(string text) { MiddleText = text; }
+        public void UpdateTexts(string? middle, string? t1, string? t2)
+        { MiddleText = middle; Text1 = t1; Text2 = t2; }
 
-        public override void CleanUp(Diagram parent)
+        public override void OnRemovedFromParent()
         {
-            Box1.UnlinkLineStart(this);
-            Box2.UnlinkLineEnd(this);
-            parent.Remove(this);
+            Parent!.Detach(BoxId);
         }
     }
 }

@@ -1,18 +1,11 @@
-using Diagram = GalaxyUML.Core.Models.Diagram;
-using ObjectType = GalaxyUML.Core.Models.ObjectType;
+using GalaxyUML.Core.Models;
 
-namespace GalaxyUML.Data.Repositories
+namespace GalaxyUML.Data.Repositories;
+
+public interface IDiagramRepo
 {
-    public interface IDiagramRepo
-    {
-        Task<Diagram?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Diagram>> GetByMeetingAsync(Guid idMeeting);
-        Task<IEnumerable<Diagram>> GetByMeetingTypeAsync(Guid idMeeting, ObjectType type);
-        Task<IEnumerable<Diagram>> GetByMeetingParentAsync(Guid idMeeting, Guid idParent);   // namerno i idMeeting iz sigurnosnih razloga
-        Task<IEnumerable<Diagram>> GetAllAsync();
-
-        Task CreateAsync(Diagram diagram/*, Diagram? parent, Team team*/);
-        Task UpdateAsync(Guid id, Diagram diagram);
-        Task DeleteAsync(Guid id);
-    }
+    Task<IDiagram?> GetByIdAsync(Guid id);
+    Task AddAsync(IDiagram diagram);
+    Task RemoveAsync(Guid id);
+    Task SaveAsync();
 }

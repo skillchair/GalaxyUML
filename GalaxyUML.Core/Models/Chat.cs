@@ -1,30 +1,25 @@
-using System.Text.Json.Serialization;
-
 namespace GalaxyUML.Core.Models
 {
     public class Chat
     {
-        //public Guid IdChat { get; private set; }
-        public List<Message> Messages { get; private set; }
-        public Meeting Meeting { get; private set; }
-        public Guid IdMeeting { get; private set; }
+        private readonly List<Message> _messages = new();
+        public IReadOnlyCollection<Message> Messages => _messages.AsReadOnly();
 
-        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
-        public Chat(/*Guid id, */Guid idMeeting, Meeting meeting)
+        public void AddMessage(Guid senderId, string content)
         {
-            //IdChat = id;
-            IdMeeting = idMeeting;
-            Messages = new List<Message>();
-            Meeting = meeting;
+            if (string.IsNullOrWhiteSpace(content)) throw new ArgumentException("Empty message");
+            _messages.Add(new Message(Guid.NewGuid(), senderId, content, DateTime.UtcNow));
         }
+    }
 
-        public void AddMessage(Message message)
-        {
-            var msg = Messages.FirstOrDefault(m => m.IdMessage == message.IdMessage);
-            if (msg != null)
-                throw new Exception("This message is already in this chat.");
-                
-            Messages.Add(message);
-        }
+    public class Message
+    {
+        public Guid Id { get; }
+        public Guid SenderId { get; }
+        public string Content { get; }
+        public DateTime SentAt { get; }
+
+        public Message(Guid id, Guid senderId, string content, DateTime sentAt)
+        { Id = id; SenderId = senderId; Content = content; SentAt = sentAt; }
     }
 }

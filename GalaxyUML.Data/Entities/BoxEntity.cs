@@ -1,11 +1,9 @@
-namespace GalaxyUML.Data.Entities
+using ObjectType = GalaxyUML.Core.Models.ObjectType;
+
+namespace GalaxyUML.Data.Entities;
+public class BoxEntity : DiagramElementEntity
 {
-    public class BoxEntity : DrawableEntity
-{
-    // Linije koje polaze iz ove kutije (Box1)
-    public virtual ICollection<LineEntity> LinesAsStart { get; set; } = new HashSet<LineEntity>();
-    
-    // Linije koje ulaze u ovu kutiju (Box2)
-    public virtual ICollection<LineEntity> LinesAsEnd { get; set; } = new HashSet<LineEntity>();
-}
+    public BoxEntity() { ObjectType = ObjectType.Box; }
+    public ICollection<LineEntity> Outgoing { get; set; } = new List<LineEntity>();
+    public ICollection<LineEntity> Incoming { get; set; } = new List<LineEntity>();
 }

@@ -1,54 +1,43 @@
+using System.Reflection;
+using GalaxyUML.Core.Models;
 using GalaxyUML.Data.Entities;
-using Team = GalaxyUML.Core.Models.Team;
-using TeamEntity = GalaxyUML.Data.Entities.TeamEntity;
 
-namespace GalaxyUML.Data.Mappers
+namespace GalaxyUML.Data.Mappers;
+
+public static class TeamMapper
 {
-    static class TeamMapper
+    public static Team ToDomain(TeamEntity e)
     {
-        public static Team ToModel(TeamEntity entity)
+        var team = new Team(e.Id, e.OwnerId, e.TeamName, e.TeamCode);
+
+        foreach (var m in e.Members)
+            team.Join(m.UserId, e.TeamCode);
+
+        foreach (var m in e.Members.Where(x => x.Role != RoleEnum.Member))
+            team.ChangeRole(e.OwnerId, m.UserId, m.Role);
+
+        foreach (var b in e.BannedUsers)
+            team.Ban(e.OwnerId, b.UserId, b.Reason);
+
+        if (e.CurrentMeetingId is Guid mid)
+            team.StartMeeting(mid, e.OwnerId);
+
+        return team;
+    }
+
+    public static TeamEntity ToEntity(Team d)
+    {
+        var e = new TeamEntity
         {
-            return new Team(
-                entity.Id,
-                entity.IdTeamOwner,
-                entity.TeamName,
-                UserMapper.ToModel(entity.TeamOwner)
-            );
-        }
+            Id = d.Id,
+            OwnerId = d.OwnerId,
+            TeamName = d.TeamName,
+            TeamCode = d.TeamCode,
+            CurrentMeetingId = d.CurrentMeetingId
+        };
 
-        public static TeamEntity ToEntity(Team team)
-        {
-            TeamEntity teamEntity = new TeamEntity
-            {
-                //Id = team.IdTeam,
-                TeamName = team.TeamName,
-                IdTeamOwner = team.IdOwner,
-                //TeamOwner = TeamMemberMapper.ToEntity(team.TeamOwner),
-                TeamCode = team.TeamCode,
-                //Meetings = new List<MeetingEntity>(),   // prazno za sad
-                //Members = new List<TeamMemberEntity>(),
-                //BannedUsers = new List<BannedUserEntity>()
-            };
-
-            //List<TeamMemberEntity> memberEntities = new List<TeamMemberEntity>();
-            //foreach (var m in team.Members)
-                //memberEntities.Add(TeamMemberMapper.ToEntity(m));
-
-            // teamEntity.Members = memberEntities;
-
-            // List<MeetingEntity> meetingEntities = new List<MeetingEntity>();
-            // foreach (var m in team.Meetings)
-            //     meetingEntities.Add(MeetingMapper.ToEntity(m/*, teamEntity*/));
-
-            // teamEntity.Meetings = meetingEntities;
-
-            // List<BannedUserEntity> bannedUserEntities = new List<BannedUserEntity>();
-            // foreach (var b in team.BannedUsers)
-            //     bannedUserEntities.Add(BannedUserMapper.ToEntity(b));
-
-            // teamEntity.BannedUsers = bannedUserEntities;
-
-            return teamEntity;
-        }
+        e.Members = d.Members.Select(m => TeamMemberMapper.ToEntity(d.Id, m)).ToList();
+        e.BannedUsers = d.BannedUsers.Select(b => BannedUserMapper.ToEntity(d.Id, b)).ToList();
+        return e;
     }
 }

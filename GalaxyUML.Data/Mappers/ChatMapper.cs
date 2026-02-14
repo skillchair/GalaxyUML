@@ -1,37 +1,22 @@
-using MessageEntity = GalaxyUML.Data.Entities.MessageEntity;
-using Chat = GalaxyUML.Core.Models.Chat;
-using ChatEntity = GalaxyUML.Data.Entities.ChatEntity;
-using TeamEntity = GalaxyUML.Data.Entities.TeamEntity;
+using GalaxyUML.Core.Models;
 using GalaxyUML.Data.Entities;
 
-namespace GalaxyUML.Data.Mappers
+namespace GalaxyUML.Data.Mappers;
+
+public static class ChatMapper
 {
-    static class ChatMapper
+    public static Chat ToDomain(ChatEntity e)
     {
-        public static Chat ToModel(ChatEntity entity)
-        {
-            return new Chat(
-                entity.IdMeeting,
-                MeetingMapper.ToModel(entity.Meeting)
-            );
-        }
+        var chat = new Chat();
+        foreach (var msg in e.Messages)
+            chat.AddMessage(msg.SenderId, msg.Content); // SentAt kept by entity
+        return chat;
+    }
 
-        public static ChatEntity ToEntity(Chat model/*, TeamEntity teamEntity*/)
-        {
-            // List<MessageEntity> messages = new List<MessageEntity>();
-            // var modelEntity = ChatMapper.ToEntity(model/*, teamEntity*/);
-            // foreach (var msg in model.Messages)
-            // {
-            //     messages.Add(MessageMapper.ToEntity(msg/*, modelEntity*//*, teamEntity*/));
-            // }
-
-            return new ChatEntity
-            {
-                //Id = model.IdChat,
-                IdMeeting = model.IdMeeting,
-                //Meeting = MeetingMapper.ToEntity(model.Meeting/*, teamEntity*/),
-                //Messages = messages
-            };
-        }
+    public static ChatEntity ToEntity(Guid meetingId, Chat d)
+    {
+        var chat = new ChatEntity { Id = Guid.NewGuid(), MeetingId = meetingId };
+        chat.Messages = d.Messages.Select(m => MessageMapper.ToEntity(chat.Id, m)).ToList();
+        return chat;
     }
 }

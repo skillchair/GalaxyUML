@@ -1,24 +1,16 @@
-using System.ComponentModel.DataAnnotations;
+using ObjectType = GalaxyUML.Core.Models.ObjectType;
 
-namespace GalaxyUML.Data.Entities
+namespace GalaxyUML.Data.Entities;
+public class LineEntity : DiagramElementEntity
 {
-    public class LineEntity : DrawableEntity
-    {   
-        [Required]
-        public Guid IdBox1 { get; set; }
-        public virtual BoxEntity Box1 { get; set; } = null!;
+    public LineEntity() { ObjectType = ObjectType.Line; }
 
-        [Required]
-        public Guid IdBox2 { get; set; }
-        public virtual BoxEntity Box2 { get; set; } = null!;
+    public Guid StartBoxId { get; set; }
+    public BoxEntity StartBox { get; set; } = null!;
+    public Guid EndBoxId { get; set; }
+    public BoxEntity EndBox { get; set; } = null!;
 
-        [MaxLength(50)]
-        public string Text1 { get; set; } = "";
-
-        [MaxLength(50)]
-        public string Text2 { get; set; } = "";
-
-        [MaxLength(50)]
-        public string MiddleText { get; set; } = "";
-    }
+    public string? MiddleText { get; set; }
+    public string? Text1 { get; set; }
+    public string? Text2 { get; set; }
 }

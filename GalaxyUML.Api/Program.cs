@@ -1,8 +1,12 @@
+using GalaxyUML.Api.Services;
 using GalaxyUML.Core.Services;
 using GalaxyUML.Data;
 using GalaxyUML.Data.Repositories;
 using GalaxyUML.Data.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,7 @@ builder.Services.AddScoped<TeamService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<DiagramService>();
+builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddControllers();
 
@@ -32,6 +37,21 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "GalaxyUML API", Version = "v1" });
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -47,6 +67,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(p => p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

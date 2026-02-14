@@ -1,35 +1,18 @@
 using System.Drawing;
-using System.Text.Json.Serialization;
 
 namespace GalaxyUML.Core.Models
 {
     public class Text : IDrawable
     {
-        public string Content { get; private set; }
-        public string Format { get; private set; }
-        public double Size { get; private set; }    // wpf koristi double
-        public string Color { get; private set; }   // HEXA ZA WPF
+        public string Content { get; private set; } = "";
+        public string? Format { get; private set; }
+        public int FontSize { get; private set; } = 14;
+        public string Color { get; private set; } = "#000";
 
-        [JsonConstructor] // Kažeš JSON-u: "Koristi BAŠ ovaj konstruktor"
-        public Text(Point startingPoint, Point endingPoint, Meeting meeting,
-                    string content, string format, double size, string color)  // default = null
-            : base(startingPoint, endingPoint, meeting)
-        {
-            base.Type = ObjectType.Text;
-            Content = content;
-            Format = format;
-            Size = size;
-            Color = color;
-        }
+        public Text(Point start, Point end, Diagram parent)
+            : base(ObjectType.Text, start, end, parent) { }
 
-        public void ChangeTextContent(string content) { Content = content; }
-        public void ChangeTextFormat(string format) { Format = format; }
-        public void ChangeTextSize(double size) { Size = size; }
-        public void ChangeTextColor(string color) { Color = color; }
-
-        public override void CleanUp(Diagram parent)
-        {
-            return;
-        }
+        public void Update(string content, int fontSize, string color, string? format)
+        { Content = content; FontSize = fontSize; Color = color; Format = format; }
     }
 }

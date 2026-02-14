@@ -1732,6 +1732,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "BCrypt.Net-Next >= 4.0.3",
       "GalaxyUML.Core >= 1.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.2"
     ]
@@ -1768,8 +1769,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
-              "projectPath": "c:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
+            "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
+              "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
             }
           }
         }
@@ -1790,6 +1791,10 @@
       "net10.0": {
         "targetAlias": "net10.0",
         "dependencies": {
+          "BCrypt.Net-Next": {
+            "target": "Package",
+            "version": "[4.0.3, )"
+          },
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[10.0.2, )"
