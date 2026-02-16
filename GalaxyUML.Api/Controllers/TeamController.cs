@@ -14,15 +14,50 @@ public class TeamsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTeamDto dto)
     {
-        var id = await _svc.CreateAsync(dto.TeamName, dto.OwnerId);
-        return Ok(id);
+        try
+        {
+            var team = await _svc.CreateAsync(dto.TeamName, dto.OwnerId);
+            return Ok(team);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/join")]
     public async Task<IActionResult> Join(Guid id, [FromBody] JoinTeamDto dto)
     {
-        await _svc.JoinAsync(id, dto.UserId, dto.JoinCode);
-        return NoContent();
+        try
+        {
+            await _svc.JoinAsync(id, dto.UserId, dto.JoinCode);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("by-code/{code}")]
+    public async Task<IActionResult> FindByCode(string code)
+    {
+        var team = await _svc.FindByCodeAsync(code);
+        return team is null ? NotFound() : Ok(team);
+    }
+
+    [HttpPost("join-by-code")]
+    public async Task<IActionResult> JoinByCode([FromBody] JoinByCodeDto dto)
+    {
+        try
+        {
+            var team = await _svc.JoinByCodeAsync(dto.UserId, dto.JoinCode);
+            return Ok(team);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/leave")]
@@ -57,6 +92,7 @@ public class TeamsController : ControllerBase
 
 public record CreateTeamDto(string TeamName, Guid OwnerId);
 public record JoinTeamDto(Guid UserId, string JoinCode);
+public record JoinByCodeDto(Guid UserId, string JoinCode);
 public record ChangeRoleDto(Guid ActorId, Guid TargetUserId, string Role);
 public record BanDto(Guid ActorId, Guid TargetUserId, string? Reason);
 public record UserIdDto(Guid UserId);

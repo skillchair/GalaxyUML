@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "GalaxyUML.UI\\GalaxyUML.UI.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "GalaxyUML.Api\\GalaxyUML.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

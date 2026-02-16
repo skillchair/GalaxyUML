@@ -22,6 +22,34 @@ public class DiagramController : ControllerBase
     public async Task<IActionResult> EditText(Guid id, [FromBody] EditTextDto dto)
     { await _svc.EditTextAsync(id, dto.Content, dto.FontSize, dto.Color, dto.Format); return NoContent(); }
 
+    [HttpPost("{id:guid}/class-box")]
+    public async Task<IActionResult> AddClassBox(Guid id, [FromBody] AddClassBoxDto dto)
+    {
+        try
+        {
+            var elementId = await _svc.AddClassBoxAsync(id, dto.X1, dto.Y1, dto.X2, dto.Y2, dto.Attributes, dto.Methods);
+            return Ok(new { id = elementId });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("{id:guid}/line")]
+    public async Task<IActionResult> AddLine(Guid id, [FromBody] AddLineDto dto)
+    {
+        try
+        {
+            var elementId = await _svc.AddLineAsync(id, dto.StartBoxId, dto.EndBoxId, dto.MiddleText, dto.Text1, dto.Text2);
+            return Ok(new { id = elementId });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     { await _svc.DeleteAsync(id); return NoContent(); }
@@ -30,3 +58,5 @@ public class DiagramController : ControllerBase
 public record MoveDto(int Dx, int Dy);
 public record ResizeDto(int Width, int Height);
 public record EditTextDto(string Content, int FontSize, string Color, string? Format);
+public record AddClassBoxDto(int X1, int Y1, int X2, int Y2, IReadOnlyCollection<string>? Attributes, IReadOnlyCollection<string>? Methods);
+public record AddLineDto(Guid StartBoxId, Guid EndBoxId, string? MiddleText, string? Text1, string? Text2);

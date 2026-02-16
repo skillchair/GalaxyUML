@@ -7,7 +7,6 @@ public class TeamEntity
     [Required, MaxLength(120)] public string TeamName { get; set; } = null!;
     [Required, MaxLength(6)]  public string TeamCode { get; set; } = null!;
     [Required] public Guid OwnerId { get; set; }
-    public UserEntity Owner { get; set; } = null!;
 
     public Guid? CurrentMeetingId { get; set; }
     public ICollection<TeamMemberEntity> Members { get; set; } = new List<TeamMemberEntity>();

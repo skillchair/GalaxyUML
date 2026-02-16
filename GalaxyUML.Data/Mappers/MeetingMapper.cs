@@ -14,7 +14,7 @@ public static class MeetingMapper
 
     public static Meeting ToDomain(MeetingEntity e)
     {
-        var meeting = Meeting.Create(e.TeamId, e.OrganizedById);
+        var meeting = Meeting.Create(e.TeamId, e.OrganizedBy.UserId);
         SetPrivate(meeting, "<Id>k__BackingField", e.Id);
 
         // Board
@@ -30,17 +30,20 @@ public static class MeetingMapper
 
         // participants
         foreach (var p in e.Participants.Where(p => p.TeamMemberId != e.OrganizedById))
-            meeting.Join(p.TeamMemberId);
+            meeting.Join(p.TeamMember.UserId);
         foreach (var p in meeting.Participants)
         {
-            var src = e.Participants.First(x => x.TeamMemberId == p.UserId);
+            var src = e.Participants.First(x => x.TeamMember.UserId == p.UserId);
             if (src.CanDraw) p.SetDraw(true);
         }
 
         return meeting;
     }
 
-    public static MeetingEntity ToEntity(Meeting d)
+    public static MeetingEntity ToEntity(
+        Meeting d,
+        Guid organizerTeamMemberId,
+        IReadOnlyDictionary<Guid, Guid> teamMemberIdByUserId)
     {
         var board = DiagramMapper.ToEntity(d.Board);
         var chat = ChatMapper.ToEntity(d.Id, d.Chat);
@@ -49,7 +52,7 @@ public static class MeetingMapper
         {
             Id = d.Id,
             TeamId = d.TeamId,
-            OrganizedById = d.OrganizedBy,
+            OrganizedById = organizerTeamMemberId,
             BoardId = board.Id,
             Board = board,
             ChatId = chat.Id,
@@ -58,7 +61,12 @@ public static class MeetingMapper
             StartingTime = DateTime.UtcNow
         };
 
-        entity.Participants = d.Participants.Select(p => MeetingParticipantMapper.ToEntity(d.Id, p)).ToList();
+        entity.Participants = d.Participants.Select(p =>
+        {
+            if (!teamMemberIdByUserId.TryGetValue(p.UserId, out var teamMemberId))
+                throw new InvalidOperationException($"Team member for user {p.UserId} not found in team {d.TeamId}");
+            return MeetingParticipantMapper.ToEntity(d.Id, teamMemberId, p);
+        }).ToList();
         return entity;
     }
 }

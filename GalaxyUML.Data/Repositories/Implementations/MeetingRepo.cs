@@ -13,6 +13,7 @@ public class MeetingRepo : IMeetingRepo
     public async Task<Meeting?> GetByIdAsync(Guid id)
     {
         var e = await _db.Meetings
+            .Include(m => m.OrganizedBy)
             .Include(m => m.Board).ThenInclude(d => d.Children)
             .Include(m => m.Chat).ThenInclude(c => c.Messages)
             .Include(m => m.Participants).ThenInclude(p => p.TeamMember)
@@ -23,7 +24,18 @@ public class MeetingRepo : IMeetingRepo
 
     public async Task AddAsync(Meeting meeting)
     {
-        _db.Meetings.Add(MeetingMapper.ToEntity(meeting));
+        var teamMembers = await _db.TeamMembers
+            .Where(tm => tm.TeamId == meeting.TeamId)
+            .ToListAsync();
+
+        var teamMemberIdByUserId = teamMembers
+            .GroupBy(tm => tm.UserId)
+            .ToDictionary(g => g.Key, g => g.First().Id);
+
+        if (!teamMemberIdByUserId.TryGetValue(meeting.OrganizedBy, out var organizerTeamMemberId))
+            throw new InvalidOperationException("Organizer is not a team member");
+
+        _db.Meetings.Add(MeetingMapper.ToEntity(meeting, organizerTeamMemberId, teamMemberIdByUserId));
         await _db.SaveChangesAsync();
     }
 

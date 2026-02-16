@@ -6,7 +6,7 @@ public class MeetingEntity
     [Key] public Guid Id { get; set; }
     [Required] public Guid TeamId { get; set; }
     public TeamEntity Team { get; set; } = null!;
-    [Required] public Guid OrganizedById { get; set; }   // UserId
+    [Required] public Guid OrganizedById { get; set; }
     public TeamMemberEntity OrganizedBy { get; set; } = null!;
     public DateTime StartingTime { get; set; } = DateTime.UtcNow;
     public DateTime? EndingTime { get; set; }

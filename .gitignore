@@ -1,7 +1,3 @@
 continue/
-GalaxyUML.Core/bin/
-GalaxyUML.Core/obj/
-GalaxyUML.Data/bin/
-GalaxyUML.Data/obj/
-GalaxyUML.UI/bin/
-GalaxyUML.UI/obj/
+bin/
+obj/

@@ -13,8 +13,15 @@ public class MeetingController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateMeetingDto dto)
     {
-        var id = await _svc.CreateAsync(dto.TeamId, dto.OrganizerId);
-        return Ok(id);
+        try
+        {
+            var created = await _svc.CreateAsync(dto.TeamId, dto.OrganizerId);
+            return Ok(created);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/join")]
@@ -43,6 +50,20 @@ public class MeetingController : ControllerBase
     {
         await _svc.AddMessageAsync(id, dto.SenderId, dto.Content);
         return NoContent();
+    }
+
+    [HttpPost("{id:guid}/end")]
+    public async Task<IActionResult> End(Guid id, [FromBody] UserIdDto dto)
+    {
+        try
+        {
+            await _svc.EndAsync(id, dto.UserId);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{id:guid}")]

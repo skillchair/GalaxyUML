@@ -9,7 +9,4 @@ public class UserEntity
     [Required, MaxLength(80)]  public string Username { get; set; } = null!;
     [Required, MaxLength(200)] public string Email { get; set; } = null!;
     [Required, MaxLength(200)] public string Password { get; set; } = null!;
-
-    public ICollection<TeamMemberEntity> Teams { get; set; } = new List<TeamMemberEntity>();
-    public ICollection<BannedUserEntity> Bans { get; set; } = new List<BannedUserEntity>();
 }

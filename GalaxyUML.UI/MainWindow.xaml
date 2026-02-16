@@ -1,12 +1,192 @@
-﻿<Window x:Class="GalaxyUML.UI.MainWindow"
+<Window x:Class="GalaxyUML.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GalaxyUML.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="GalaxyUML Test UI" Height="760" Width="1240" MinHeight="680" MinWidth="1040">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <Border Grid.Row="0" Padding="12" CornerRadius="8" Background="#FFEDEDED" BorderBrush="#FFD0D0D0" BorderThickness="1" Margin="0,0,0,12">
+            <DockPanel LastChildFill="False">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <TextBlock Text="GalaxyUML API Test UI" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="API URL:" Margin="20,0,8,0" VerticalAlignment="Center" />
+                    <TextBox x:Name="ApiBaseUrlTextBox" Width="240" Text="http://localhost:5248" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock x:Name="SessionStatusText"
+                           DockPanel.Dock="Right"
+                           Text="Niste ulogovani"
+                           VerticalAlignment="Center"
+                           Foreground="#FF444444"
+                           FontWeight="SemiBold" />
+            </DockPanel>
+        </Border>
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Auth">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Header="Login" Grid.Column="0" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Username" />
+                            <TextBox x:Name="LoginUsernameTextBox" Margin="0,4,0,10" MinWidth="260" />
+
+                            <TextBlock Text="Password" />
+                            <PasswordBox x:Name="LoginPasswordBox" Margin="0,4,0,14" />
+
+                            <Button Content="Login" Height="34" Width="140" Click="LoginButton_Click" />
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Register" Grid.Column="2" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="First name" />
+                            <TextBox x:Name="RegisterFirstNameTextBox" Margin="0,4,0,8" />
+
+                            <TextBlock Text="Last name" />
+                            <TextBox x:Name="RegisterLastNameTextBox" Margin="0,4,0,8" />
+
+                            <TextBlock Text="Username" />
+                            <TextBox x:Name="RegisterUsernameTextBox" Margin="0,4,0,8" />
+
+                            <TextBlock Text="Email" />
+                            <TextBox x:Name="RegisterEmailTextBox" Margin="0,4,0,8" />
+
+                            <TextBlock Text="Password" />
+                            <PasswordBox x:Name="RegisterPasswordBox" Margin="0,4,0,14" />
+
+                            <Button Content="Register" Height="34" Width="140" Click="RegisterButton_Click" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Tim">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Header="Kreiranje tima" Grid.Column="0" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Naziv tima" />
+                            <TextBox x:Name="CreateTeamNameTextBox" Margin="0,4,0,12" />
+
+                            <Button Content="Kreiraj tim" Height="34" Width="140" Click="CreateTeamButton_Click" />
+
+                            <TextBlock Text="Moji ucitani timovi" Margin="0,14,0,6" FontWeight="SemiBold" />
+                            <ListBox x:Name="TeamsListBox" Height="230" DisplayMemberPath="Display" />
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Kod tima" Grid.Column="2" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Team code" />
+                            <TextBox x:Name="JoinCodeTextBox" Margin="0,4,0,10" />
+
+                            <WrapPanel>
+                                <Button Content="Pronadji tim po kodu" Height="34" Margin="0,0,10,0" Click="FindTeamByCodeButton_Click" />
+                                <Button Content="Uclani se po kodu" Height="34" Click="JoinByCodeButton_Click" />
+                            </WrapPanel>
+
+                            <TextBlock Text="Status" Margin="0,14,0,4" FontWeight="SemiBold" />
+                            <TextBlock x:Name="TeamStatusText" TextWrapping="Wrap" Foreground="#FF333333" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Miting">
+                <Grid Margin="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Header="Startovanje mitinga (samo owner)" Grid.Column="0" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Tim" />
+                            <ComboBox x:Name="MeetingTeamComboBox"
+                                      Margin="0,4,0,12"
+                                      DisplayMemberPath="Display"
+                                      SelectedValuePath="Id" />
+
+                            <Button Content="Start meeting" Height="34" Width="160" Click="StartMeetingButton_Click" />
+                            <Button Content="Zavrsi selektovani meeting"
+                                    Height="34"
+                                    Width="200"
+                                    Margin="0,8,0,0"
+                                    Click="EndMeetingButton_Click" />
+
+                            <TextBlock Text="Aktivni mitinzi" Margin="0,14,0,6" FontWeight="SemiBold" />
+                            <ListBox x:Name="MeetingsListBox" Height="230" DisplayMemberPath="Display" />
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Detalji" Grid.Column="2" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Status" FontWeight="SemiBold" />
+                            <TextBlock x:Name="MeetingStatusText" TextWrapping="Wrap" Foreground="#FF333333" Margin="0,6,0,12" />
+
+                            <TextBlock Text="Aktivni board" FontWeight="SemiBold" />
+                            <TextBlock x:Name="BoardInfoText" TextWrapping="Wrap" Foreground="#FF333333" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Tabla / Dijagram">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Padding="8" CornerRadius="6" Background="#FFF4F4F4" BorderBrush="#FFD5D5D5" BorderThickness="1" Margin="0,0,0,10">
+                        <StackPanel>
+                            <WrapPanel VerticalAlignment="Center" Margin="0,0,0,8">
+                                <TextBlock Text="Alat:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <ComboBox x:Name="ToolComboBox" Width="140" Margin="0,0,10,0" SelectionChanged="ToolComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="ClassBox" IsSelected="True" />
+                                    <ComboBoxItem Content="Line" />
+                                </ComboBox>
+
+                                <Button Content="Ocisti tablu" Height="30" Width="120" Margin="0,0,10,0" Click="ClearBoardButton_Click" />
+                                <TextBlock x:Name="BoardStatusText" VerticalAlignment="Center" Foreground="#FF333333" />
+                            </WrapPanel>
+
+                            <WrapPanel x:Name="LineControlsWrap">
+                                <TextBlock Text="Start box:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <ComboBox x:Name="StartBoxComboBox" Width="220" DisplayMemberPath="Display" Margin="0,0,12,0" />
+                                <TextBlock Text="End box:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <ComboBox x:Name="EndBoxComboBox" Width="220" DisplayMemberPath="Display" Margin="0,0,12,0" />
+                                <Button Content="Dodaj line" Height="30" Width="120" Click="CreateLineButton_Click" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" BorderBrush="#FFB0B0B0" BorderThickness="1" Background="White">
+                        <Canvas x:Name="BoardCanvas"
+                                Background="White"
+                                MouseLeftButtonDown="BoardCanvas_MouseLeftButtonDown"
+                                MouseMove="BoardCanvas_MouseMove"
+                                MouseLeftButtonUp="BoardCanvas_MouseLeftButtonUp" />
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

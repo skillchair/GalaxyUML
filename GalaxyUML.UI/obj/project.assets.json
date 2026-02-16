@@ -74,23 +74,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\strucnjak\\.nuget\\packages\\": {},
+    "C:\\Users\\Korisnik\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.UI\\GalaxyUML.UI.csproj",
+      "projectUniqueName": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.UI\\GalaxyUML.UI.csproj",
       "projectName": "GalaxyUML.UI",
-      "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.UI\\GalaxyUML.UI.csproj",
-      "packagesPath": "C:\\Users\\strucnjak\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.UI\\obj\\",
+      "projectPath": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.UI\\GalaxyUML.UI.csproj",
+      "packagesPath": "C:\\Users\\Korisnik\\.nuget\\packages\\",
+      "outputPath": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.UI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\strucnjak\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Korisnik\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -105,8 +105,8 @@
         "net10.0-windows7.0": {
           "targetAlias": "net10.0-windows",
           "projectReferences": {
-            "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
-              "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
+            "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
+              "projectPath": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
             }
           }
         }
@@ -438,13 +438,5 @@
         }
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  }
 }

@@ -262,8 +262,6 @@ namespace GalaxyUML.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
-
                     b.ToTable("Teams");
                 });
 
@@ -413,7 +411,7 @@ namespace GalaxyUML.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("GalaxyUML.Data.Entities.UserEntity", "User")
-                        .WithMany("Bans")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -531,17 +529,6 @@ namespace GalaxyUML.Data.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("GalaxyUML.Data.Entities.TeamEntity", b =>
-                {
-                    b.HasOne("GalaxyUML.Data.Entities.UserEntity", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("GalaxyUML.Data.Entities.TeamMemberEntity", b =>
                 {
                     b.HasOne("GalaxyUML.Data.Entities.TeamEntity", "Team")
@@ -551,7 +538,7 @@ namespace GalaxyUML.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("GalaxyUML.Data.Entities.UserEntity", "User")
-                        .WithMany("Teams")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -619,13 +606,6 @@ namespace GalaxyUML.Data.Migrations
             modelBuilder.Entity("GalaxyUML.Data.Entities.TeamMemberEntity", b =>
                 {
                     b.Navigation("Meetings");
-                });
-
-            modelBuilder.Entity("GalaxyUML.Data.Entities.UserEntity", b =>
-                {
-                    b.Navigation("Bans");
-
-                    b.Navigation("Teams");
                 });
 
             modelBuilder.Entity("GalaxyUML.Data.Entities.BoxEntity", b =>

@@ -36,7 +36,7 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Team).WithMany(t => t.Members)
                 .HasForeignKey(x => x.TeamId)
                 .OnDelete(DeleteBehavior.Cascade);
-            e.HasOne(x => x.User).WithMany(u => u.Teams)
+            e.HasOne(x => x.User).WithMany()
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
@@ -44,9 +44,6 @@ public class AppDbContext : DbContext
         // TEAM
         b.Entity<TeamEntity>(e =>
         {
-            e.HasOne(t => t.Owner).WithMany()
-                .HasForeignKey(t => t.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
             e.HasMany(t => t.BannedUsers).WithOne(bu => bu.Team)
                 .HasForeignKey(bu => bu.TeamId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -59,7 +56,7 @@ public class AppDbContext : DbContext
         b.Entity<BannedUserEntity>(e =>
         {
             e.HasIndex(x => new { x.TeamId, x.UserId }).IsUnique();
-            e.HasOne(x => x.User).WithMany(u => u.Bans)
+            e.HasOne(x => x.User).WithMany()
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
