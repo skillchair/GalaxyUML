@@ -46,6 +46,20 @@ public class TeamsController : ControllerBase
         return team is null ? NotFound() : Ok(team);
     }
 
+    [HttpGet("by-user/{userId:guid}")]
+    public async Task<IActionResult> GetByUser(Guid userId)
+    {
+        try
+        {
+            var teams = await _svc.GetUserTeamsAsync(userId);
+            return Ok(teams);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpPost("join-by-code")]
     public async Task<IActionResult> JoinByCode([FromBody] JoinByCodeDto dto)
     {

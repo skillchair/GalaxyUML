@@ -86,7 +86,7 @@
 
                             <Button Content="Kreiraj tim" Height="34" Width="140" Click="CreateTeamButton_Click" />
 
-                            <TextBlock Text="Moji ucitani timovi" Margin="0,14,0,6" FontWeight="SemiBold" />
+                            <TextBlock Text="Timovi loginovanog korisnika" Margin="0,14,0,6" FontWeight="SemiBold" />
                             <ListBox x:Name="TeamsListBox" Height="230" DisplayMemberPath="Display" />
                         </StackPanel>
                     </GroupBox>
@@ -125,6 +125,11 @@
                                       SelectedValuePath="Id" />
 
                             <Button Content="Start meeting" Height="34" Width="160" Click="StartMeetingButton_Click" />
+                            <Button Content="Pridruzi se selektovanom meetingu"
+                                    Height="34"
+                                    Width="240"
+                                    Margin="0,8,0,0"
+                                    Click="JoinMeetingButton_Click" />
                             <Button Content="Zavrsi selektovani meeting"
                                     Height="34"
                                     Width="200"
@@ -132,7 +137,10 @@
                                     Click="EndMeetingButton_Click" />
 
                             <TextBlock Text="Aktivni mitinzi" Margin="0,14,0,6" FontWeight="SemiBold" />
-                            <ListBox x:Name="MeetingsListBox" Height="230" DisplayMemberPath="Display" />
+                            <ListBox x:Name="MeetingsListBox"
+                                     Height="230"
+                                     DisplayMemberPath="Display"
+                                     SelectionChanged="MeetingsListBox_SelectionChanged" />
                         </StackPanel>
                     </GroupBox>
 
@@ -143,6 +151,9 @@
 
                             <TextBlock Text="Aktivni board" FontWeight="SemiBold" />
                             <TextBlock x:Name="BoardInfoText" TextWrapping="Wrap" Foreground="#FF333333" Margin="0,6,0,0" />
+
+                            <TextBlock Text="Meeting participants" FontWeight="SemiBold" Margin="0,12,0,6" />
+                            <ListBox x:Name="MeetingParticipantsListBox" Height="220" DisplayMemberPath="Display" />
                         </StackPanel>
                     </GroupBox>
                 </Grid>

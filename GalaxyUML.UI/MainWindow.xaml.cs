@@ -15,7 +15,12 @@ public partial class MainWindow : Window
 {
     private readonly ObservableCollection<TeamViewItem> _teams = [];
     private readonly ObservableCollection<MeetingViewItem> _meetings = [];
+    private readonly ObservableCollection<MeetingParticipantViewItem> _meetingParticipants = [];
     private readonly ObservableCollection<BoxViewItem> _boxes = [];
+    private readonly Dictionary<Guid, BoxViewItem> _boxesById = [];
+    private readonly Dictionary<Guid, Rectangle> _boxShapesById = [];
+    private readonly Dictionary<Rectangle, BoxViewItem> _shapeToBox = [];
+    private readonly List<LineViewItem> _lineLinks = [];
 
     private Guid? _currentUserId;
     private string? _jwtToken;
@@ -26,6 +31,12 @@ public partial class MainWindow : Window
     private Point _dragStart;
     private Rectangle? _previewRectangle;
     private bool _isDragging;
+    private bool _isMovingBox;
+    private Rectangle? _movingBoxShape;
+    private BoxViewItem? _movingBox;
+    private Point _moveStartPoint;
+    private double _moveStartLeft;
+    private double _moveStartTop;
 
     public MainWindow()
     {
@@ -34,6 +45,7 @@ public partial class MainWindow : Window
         TeamsListBox.ItemsSource = _teams;
         MeetingTeamComboBox.ItemsSource = _teams;
         MeetingsListBox.ItemsSource = _meetings;
+        MeetingParticipantsListBox.ItemsSource = _meetingParticipants;
         StartBoxComboBox.ItemsSource = _boxes;
         EndBoxComboBox.ItemsSource = _boxes;
 
@@ -88,6 +100,7 @@ public partial class MainWindow : Window
             SessionStatusText.Text = $"Ulogovan: {response.User.Username} ({response.User.IdUser})";
             TeamStatusText.Text = "Spreman za tim operacije.";
             MeetingStatusText.Text = "Spreman za pokretanje mitinga.";
+            await RefreshLoggedInUserTeamsAsync();
         }
         catch (Exception ex)
         {
@@ -113,9 +126,9 @@ public partial class MainWindow : Window
         try
         {
             var created = await PostAndReadAsync<TeamResponse>("/api/teams", new { teamName, ownerId = _currentUserId.Value });
-            UpsertTeam(created);
             CreateTeamNameTextBox.Clear();
             TeamStatusText.Text = $"Kreiran tim '{created.TeamName}'. Kod: {created.TeamCode}";
+            await RefreshLoggedInUserTeamsAsync();
         }
         catch (Exception ex)
         {
@@ -135,7 +148,6 @@ public partial class MainWindow : Window
         try
         {
             var found = await GetAsync<TeamResponse>($"/api/teams/by-code/{code}");
-            UpsertTeam(found);
             TeamStatusText.Text = $"Pronadjen tim '{found.TeamName}' (owner: {found.OwnerId}, clanova: {found.MemberCount}).";
         }
         catch (Exception ex)
@@ -162,8 +174,8 @@ public partial class MainWindow : Window
         try
         {
             var joined = await PostAndReadAsync<TeamResponse>("/api/teams/join-by-code", new { userId = _currentUserId.Value, joinCode = code });
-            UpsertTeam(joined);
             TeamStatusText.Text = $"Uclanjen u tim '{joined.TeamName}' po kodu '{joined.TeamCode}'.";
+            await RefreshLoggedInUserTeamsAsync();
         }
         catch (Exception ex)
         {
@@ -203,10 +215,40 @@ public partial class MainWindow : Window
             _meetings.Add(meetingItem);
             MeetingsListBox.SelectedItem = meetingItem;
             ResetLocalBoard();
+            await RefreshMeetingParticipantsAsync(created.MeetingId);
         }
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message, "Start meeting", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private async void JoinMeetingButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentUserId is null)
+        {
+            MessageBox.Show("Prvo se uloguj.", "Miting", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (MeetingsListBox.SelectedItem is not MeetingViewItem selectedMeeting)
+        {
+            MessageBox.Show("Izaberi meeting.", "Miting", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        try
+        {
+            await PostAsync($"/api/meetings/{selectedMeeting.Id}/join", new { userId = _currentUserId.Value });
+            _activeMeetingId = selectedMeeting.Id;
+            _activeBoardId = selectedMeeting.BoardId;
+            BoardInfoText.Text = $"Board ID: {selectedMeeting.BoardId}";
+            MeetingStatusText.Text = $"Uspesno ste pridruzeni meeting-u {selectedMeeting.Id}.";
+            await RefreshMeetingParticipantsAsync(selectedMeeting.Id);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Join meeting", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -235,6 +277,7 @@ public partial class MainWindow : Window
                 _activeBoardId = null;
                 ResetLocalBoard();
                 BoardInfoText.Text = "Board nije aktivan.";
+                _meetingParticipants.Clear();
             }
 
             MeetingStatusText.Text = $"Miting {selectedMeeting.Id} je zavrsen.";
@@ -244,6 +287,19 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(ex.Message, "End meeting", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+    }
+
+    private async void MeetingsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (MeetingsListBox.SelectedItem is not MeetingViewItem selectedMeeting)
+        {
+            return;
+        }
+
+        _activeMeetingId = selectedMeeting.Id;
+        _activeBoardId = selectedMeeting.BoardId;
+        BoardInfoText.Text = $"Board ID: {selectedMeeting.BoardId}";
+        await RefreshMeetingParticipantsAsync(selectedMeeting.Id);
     }
 
     private void ToolComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -283,6 +339,20 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (e.OriginalSource is Rectangle existingShape &&
+            _shapeToBox.TryGetValue(existingShape, out var existingBox))
+        {
+            _isMovingBox = true;
+            _movingBoxShape = existingShape;
+            _movingBox = existingBox;
+            _moveStartPoint = e.GetPosition(BoardCanvas);
+            _moveStartLeft = Canvas.GetLeft(existingShape);
+            _moveStartTop = Canvas.GetTop(existingShape);
+            BoardCanvas.CaptureMouse();
+            e.Handled = true;
+            return;
+        }
+
         _dragStart = e.GetPosition(BoardCanvas);
         _isDragging = true;
         BoardCanvas.CaptureMouse();
@@ -299,6 +369,16 @@ public partial class MainWindow : Window
 
     private void BoardCanvas_MouseMove(object sender, MouseEventArgs e)
     {
+        if (_isMovingBox && _movingBoxShape is not null && _movingBox is not null)
+        {
+            var movePoint = e.GetPosition(BoardCanvas);
+            var newLeft = _moveStartLeft + (movePoint.X - _moveStartPoint.X);
+            var newTop = _moveStartTop + (movePoint.Y - _moveStartPoint.Y);
+            SetBoxPosition(_movingBox, newLeft, newTop);
+            UpdateConnectedLines(_movingBox.Id);
+            return;
+        }
+
         if (!_isDragging || _previewRectangle is null)
         {
             return;
@@ -319,6 +399,39 @@ public partial class MainWindow : Window
 
     private async void BoardCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
+        if (_isMovingBox && _movingBoxShape is not null && _movingBox is not null)
+        {
+            _isMovingBox = false;
+            BoardCanvas.ReleaseMouseCapture();
+
+            var currentLeft = Canvas.GetLeft(_movingBoxShape);
+            var currentTop = Canvas.GetTop(_movingBoxShape);
+            var dx = (int)Math.Round(currentLeft - _moveStartLeft);
+            var dy = (int)Math.Round(currentTop - _moveStartTop);
+
+            try
+            {
+                if (dx != 0 || dy != 0)
+                {
+                    await PostAsync($"/api/diagram/{_movingBox.Id}/move", new { dx, dy });
+                    BoardStatusText.Text = $"Pomeran ClassBox: {_movingBox.Id}";
+                }
+            }
+            catch (Exception ex)
+            {
+                SetBoxPosition(_movingBox, _moveStartLeft, _moveStartTop);
+                UpdateConnectedLines(_movingBox.Id);
+                MessageBox.Show(ex.Message, "Move class box", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                _movingBoxShape = null;
+                _movingBox = null;
+            }
+
+            return;
+        }
+
         if (!_isDragging || _previewRectangle is null)
         {
             return;
@@ -361,6 +474,9 @@ public partial class MainWindow : Window
 
             var box = new BoxViewItem(created.Id, left, top, left + side, top + side);
             _boxes.Add(box);
+            _boxesById[box.Id] = box;
+            _boxShapesById[box.Id] = _previewRectangle;
+            _shapeToBox[_previewRectangle] = box;
             StartBoxComboBox.Items.Refresh();
             EndBoxComboBox.Items.Refresh();
             BoardStatusText.Text = $"Dodat ClassBox: {created.Id}";
@@ -420,6 +536,7 @@ public partial class MainWindow : Window
             };
             Panel.SetZIndex(line, 20);
             BoardCanvas.Children.Add(line);
+            _lineLinks.Add(new LineViewItem(created.Id, start.Id, end.Id, line));
             BoardStatusText.Text = $"Dodat Line: {created.Id}";
         }
         catch (Exception ex)
@@ -428,27 +545,86 @@ public partial class MainWindow : Window
         }
     }
 
-    private void UpsertTeam(TeamResponse team)
+    private async Task RefreshLoggedInUserTeamsAsync()
     {
-        var existing = _teams.FirstOrDefault(t => t.Id == team.Id);
-        if (existing is not null)
+        if (_currentUserId is null)
         {
-            existing.TeamName = team.TeamName;
-            existing.TeamCode = team.TeamCode;
-            existing.OwnerId = team.OwnerId;
-            existing.MemberCount = team.MemberCount;
-            TeamsListBox.Items.Refresh();
-            MeetingTeamComboBox.Items.Refresh();
             return;
         }
 
-        _teams.Add(new TeamViewItem(team.Id, team.TeamName, team.TeamCode, team.OwnerId, team.MemberCount));
+        var teams = await GetAsync<IReadOnlyCollection<TeamResponse>>($"/api/teams/by-user/{_currentUserId.Value}");
+        _teams.Clear();
+        foreach (var team in teams)
+        {
+            _teams.Add(new TeamViewItem(team.Id, team.TeamName, team.TeamCode, team.OwnerId, team.MemberCount));
+        }
+
+        MeetingTeamComboBox.Items.Refresh();
+        TeamsListBox.Items.Refresh();
+    }
+
+    private async Task RefreshMeetingParticipantsAsync(Guid meetingId)
+    {
+        var participants = await GetAsync<IReadOnlyCollection<MeetingParticipantResponse>>($"/api/meetings/{meetingId}/participants");
+        _meetingParticipants.Clear();
+        foreach (var participant in participants)
+        {
+            _meetingParticipants.Add(new MeetingParticipantViewItem(
+                participant.UserId,
+                participant.Username,
+                participant.Role,
+                participant.CanDraw,
+                participant.JoinedAtUtc));
+        }
     }
 
     private void ResetLocalBoard()
     {
         BoardCanvas.Children.Clear();
         _boxes.Clear();
+        _boxesById.Clear();
+        _boxShapesById.Clear();
+        _shapeToBox.Clear();
+        _lineLinks.Clear();
+    }
+
+    private void SetBoxPosition(BoxViewItem box, double left, double top)
+    {
+        if (!_boxShapesById.TryGetValue(box.Id, out var shape))
+        {
+            return;
+        }
+
+        Canvas.SetLeft(shape, left);
+        Canvas.SetTop(shape, top);
+
+        var size = box.X2 - box.X1;
+        box.X1 = (int)Math.Round(left);
+        box.Y1 = (int)Math.Round(top);
+        box.X2 = box.X1 + size;
+        box.Y2 = box.Y1 + size;
+    }
+
+    private void UpdateConnectedLines(Guid boxId)
+    {
+        foreach (var link in _lineLinks.Where(l => l.StartBoxId == boxId || l.EndBoxId == boxId))
+        {
+            UpdateLineGeometry(link);
+        }
+    }
+
+    private void UpdateLineGeometry(LineViewItem link)
+    {
+        if (!_boxesById.TryGetValue(link.StartBoxId, out var start) ||
+            !_boxesById.TryGetValue(link.EndBoxId, out var end))
+        {
+            return;
+        }
+
+        link.Shape.X1 = (start.X1 + start.X2) / 2d;
+        link.Shape.Y1 = (start.Y1 + start.Y2) / 2d;
+        link.Shape.X2 = (end.X1 + end.X2) / 2d;
+        link.Shape.Y2 = (end.Y1 + end.Y2) / 2d;
     }
 
     private async Task PostAsync(string path, object payload)
@@ -540,16 +716,35 @@ public partial class MainWindow : Window
     private sealed class BoxViewItem(Guid id, int x1, int y1, int x2, int y2)
     {
         public Guid Id { get; init; } = id;
-        public int X1 { get; init; } = x1;
-        public int Y1 { get; init; } = y1;
-        public int X2 { get; init; } = x2;
-        public int Y2 { get; init; } = y2;
+        public int X1 { get; set; } = x1;
+        public int Y1 { get; set; } = y1;
+        public int X2 { get; set; } = x2;
+        public int Y2 { get; set; } = y2;
         public string Display => $"{Id} ({X1},{Y1})-({X2},{Y2})";
+    }
+
+    private sealed class LineViewItem(Guid id, Guid startBoxId, Guid endBoxId, Line shape)
+    {
+        public Guid Id { get; init; } = id;
+        public Guid StartBoxId { get; init; } = startBoxId;
+        public Guid EndBoxId { get; init; } = endBoxId;
+        public Line Shape { get; init; } = shape;
+    }
+
+    private sealed class MeetingParticipantViewItem(Guid userId, string username, string role, bool canDraw, DateTime joinedAtUtc)
+    {
+        public Guid UserId { get; init; } = userId;
+        public string Username { get; init; } = username;
+        public string Role { get; init; } = role;
+        public bool CanDraw { get; init; } = canDraw;
+        public DateTime JoinedAtUtc { get; init; } = joinedAtUtc;
+        public string Display => $"{Username} ({Role}) | draw: {(CanDraw ? "da" : "ne")} | {UserId}";
     }
 
     private sealed record LoginResponse(string Token, LoginUserResponse User);
     private sealed record LoginUserResponse(Guid IdUser, string Username, string Email);
     private sealed record TeamResponse(Guid Id, string TeamName, string TeamCode, Guid OwnerId, int MemberCount);
     private sealed record MeetingStartedResponse(Guid MeetingId, Guid BoardId, Guid TeamId, DateTime StartedAtUtc);
+    private sealed record MeetingParticipantResponse(Guid UserId, string Username, string Role, bool CanDraw, DateTime JoinedAtUtc);
     private sealed record ElementCreateResponse(Guid Id);
 }

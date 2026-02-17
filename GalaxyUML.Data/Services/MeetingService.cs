@@ -2,6 +2,7 @@ using System.Reflection;
 using GalaxyUML.Core.Models;
 using GalaxyUML.Data.Repositories;
 using GalaxyUML.Data;
+using GalaxyUML.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GalaxyUML.Core.Services;
@@ -47,16 +48,57 @@ public class MeetingService
 
     public async Task JoinAsync(Guid meetingId, Guid userId)
     {
-        var meeting = await _meetings.GetByIdAsync(meetingId) ?? throw new InvalidOperationException("Meeting not found");
-        meeting.Join(userId);
-        await _meetings.SaveAsync();
+        _ = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId) ?? throw new InvalidOperationException("User not found");
+        var meeting = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == meetingId) ?? throw new InvalidOperationException("Meeting not found");
+        if (!meeting.IsActive) throw new InvalidOperationException("Meeting is not active");
+
+        var teamMember = await _db.TeamMembers
+            .FirstOrDefaultAsync(tm => tm.TeamId == meeting.TeamId && tm.UserId == userId)
+            ?? throw new InvalidOperationException("User must be a team member to join meeting");
+
+        var exists = await _db.MeetingParticipants.AnyAsync(p => p.MeetingId == meetingId && p.TeamMemberId == teamMember.Id);
+        if (exists)
+            return;
+
+        _db.MeetingParticipants.Add(new MeetingParticipantEntity
+        {
+            Id = Guid.NewGuid(),
+            MeetingId = meetingId,
+            TeamMemberId = teamMember.Id,
+            CanDraw = false,
+            JoinedAt = DateTime.UtcNow
+        });
+
+        await _db.SaveChangesAsync();
     }
 
     public async Task LeaveAsync(Guid meetingId, Guid userId)
     {
-        var meeting = await _meetings.GetByIdAsync(meetingId) ?? throw new InvalidOperationException("Meeting not found");
-        meeting.Leave(userId);
-        await _meetings.SaveAsync();
+        var meeting = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == meetingId) ?? throw new InvalidOperationException("Meeting not found");
+        var teamMember = await _db.TeamMembers
+            .FirstOrDefaultAsync(tm => tm.TeamId == meeting.TeamId && tm.UserId == userId)
+            ?? throw new InvalidOperationException("User is not a team member");
+
+        var participant = await _db.MeetingParticipants
+            .FirstOrDefaultAsync(p => p.MeetingId == meetingId && p.TeamMemberId == teamMember.Id);
+
+        if (participant is null)
+            return;
+
+        var hadDraw = participant.CanDraw;
+        _db.MeetingParticipants.Remove(participant);
+
+        if (hadDraw)
+        {
+            var organizer = await _db.MeetingParticipants
+                .FirstOrDefaultAsync(p => p.MeetingId == meetingId && p.TeamMemberId == meeting.OrganizedById);
+            if (organizer is not null)
+            {
+                organizer.CanDraw = true;
+            }
+        }
+
+        await _db.SaveChangesAsync();
     }
 
     public async Task GrantDrawAsync(Guid meetingId, Guid actorId, Guid targetId, bool canDraw)
@@ -112,6 +154,27 @@ public class MeetingService
 
         await _db.SaveChangesAsync();
     }
+
+    public async Task<IReadOnlyCollection<MeetingParticipantSummaryDto>> GetParticipantsAsync(Guid meetingId)
+    {
+        var meetingExists = await _db.Meetings.AnyAsync(m => m.Id == meetingId);
+        if (!meetingExists)
+            throw new InvalidOperationException("Meeting not found");
+
+        return await _db.MeetingParticipants
+            .Where(p => p.MeetingId == meetingId)
+            .Include(p => p.TeamMember)
+            .ThenInclude(tm => tm.User)
+            .OrderBy(p => p.JoinedAt)
+            .Select(p => new MeetingParticipantSummaryDto(
+                p.TeamMember.UserId,
+                p.TeamMember.User.Username,
+                p.TeamMember.Role.ToString(),
+                p.CanDraw,
+                p.JoinedAt))
+            .ToListAsync();
+    }
 }
 
 public record MeetingStartedDto(Guid MeetingId, Guid BoardId, Guid TeamId, DateTime StartedAtUtc);
+public record MeetingParticipantSummaryDto(Guid UserId, string Username, string Role, bool CanDraw, DateTime JoinedAtUtc);

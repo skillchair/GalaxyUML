@@ -64,6 +64,22 @@ public class TeamService
         return new TeamSummaryDto(team.Id, team.TeamName, team.TeamCode, team.OwnerId, team.Members.Count);
     }
 
+    public async Task<IReadOnlyCollection<TeamSummaryDto>> GetUserTeamsAsync(Guid userId)
+    {
+        _ = await _users.GetByIdAsync(userId) ?? throw new InvalidOperationException("User not found");
+
+        return await _db.Teams
+            .Where(t => _db.TeamMembers.Any(tm => tm.TeamId == t.Id && tm.UserId == userId))
+            .AsNoTracking()
+            .Select(t => new TeamSummaryDto(
+                t.Id,
+                t.TeamName,
+                t.TeamCode,
+                t.OwnerId,
+                _db.TeamMembers.Count(tm => tm.TeamId == t.Id)))
+            .ToListAsync();
+    }
+
     public async Task LeaveAsync(Guid teamId, Guid userId)
     {
         var team = await _teams.GetByIdAsync(teamId) ?? throw new InvalidOperationException("Team not found");

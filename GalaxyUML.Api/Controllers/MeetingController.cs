@@ -27,15 +27,29 @@ public class MeetingController : ControllerBase
     [HttpPost("{id:guid}/join")]
     public async Task<IActionResult> Join(Guid id, [FromBody] UserIdDto dto)
     {
-        await _svc.JoinAsync(id, dto.UserId);
-        return NoContent();
+        try
+        {
+            await _svc.JoinAsync(id, dto.UserId);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/leave")]
     public async Task<IActionResult> Leave(Guid id, [FromBody] UserIdDto dto)
     {
-        await _svc.LeaveAsync(id, dto.UserId);
-        return NoContent();
+        try
+        {
+            await _svc.LeaveAsync(id, dto.UserId);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/grant-draw")]
@@ -59,6 +73,20 @@ public class MeetingController : ControllerBase
         {
             await _svc.EndAsync(id, dto.UserId);
             return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id:guid}/participants")]
+    public async Task<IActionResult> Participants(Guid id)
+    {
+        try
+        {
+            var participants = await _svc.GetParticipantsAsync(id);
+            return Ok(participants);
         }
         catch (InvalidOperationException ex)
         {

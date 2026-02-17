@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "D:\\AIPS projekat\\GalaxyUML\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Data\\Migrations\\20260216224857_RevertMeetingsToTeamMember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:GalaxyUML.Data\\Migrations\\20260216224857_RevertMeetingsToTeamMember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FAAFE4A4-DC0A-A85A-CD02-B7EF7CFECA43}|GalaxyUML.Data\\GalaxyUML.Data.csproj|d:\\aips projekat\\galaxyuml\\galaxyuml.data\\migrations\\20260216224857_revertmeetingstoteammember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FAAFE4A4-DC0A-A85A-CD02-B7EF7CFECA43}|GalaxyUML.Data\\GalaxyUML.Data.csproj|solutionrelative:galaxyuml.data\\migrations\\20260216224857_revertmeetingstoteammember.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FAAFE4A4-DC0A-A85A-CD02-B7EF7CFECA43}|GalaxyUML.Data\\GalaxyUML.Data.csproj|d:\\aips projekat\\galaxyuml\\galaxyuml.data\\repositories\\implementations\\meetingrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -75,8 +75,7 @@
               "RelativeToolTip": "GalaxyUML.Data\\Repositories\\Implementations\\MeetingRepo.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAA6wCYAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T21:15:11.967Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T21:15:11.967Z"
             },
             {
               "$type": "Document",
@@ -88,8 +87,7 @@
               "RelativeToolTip": "GalaxyUML.Api\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-16T21:08:05.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T21:08:05.319Z"
             },
             {
               "$type": "Document",
@@ -101,8 +99,7 @@
               "RelativeToolTip": "GalaxyUML.Api\\Program.cs",
               "ViewState": "AgIAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T21:08:01.373Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T21:08:01.373Z"
             },
             {
               "$type": "Document",
@@ -114,8 +111,7 @@
               "RelativeToolTip": "GalaxyUML.Api\\GalaxyUML.Api.http",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2026-02-16T21:07:52.633Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T21:07:52.633Z"
             },
             {
               "$type": "Document",
@@ -127,8 +123,7 @@
               "RelativeToolTip": "GalaxyUML.UI\\MainWindow.xaml.cs",
               "ViewState": "AgIAACYCAAAAAAAAAAAzwCsCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T21:01:33.023Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T21:01:33.023Z"
             },
             {
               "$type": "Document",
@@ -139,8 +134,7 @@
               "ToolTip": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.UI\\MainWindow.xaml",
               "RelativeToolTip": "GalaxyUML.UI\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-02-16T21:01:29.65Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T21:01:29.65Z"
             },
             {
               "$type": "Document",
@@ -152,21 +146,19 @@
               "RelativeToolTip": "GalaxyUML.UI\\AssemblyInfo.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T20:44:46.857Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T20:44:46.857Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "GalaxyUML.UI",
+              "Title": "GalaxyUML.UI.csproj",
               "DocumentMoniker": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.UI\\GalaxyUML.UI.csproj",
               "RelativeDocumentMoniker": "GalaxyUML.UI\\GalaxyUML.UI.csproj",
               "ToolTip": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.UI\\GalaxyUML.UI.csproj",
               "RelativeToolTip": "GalaxyUML.UI\\GalaxyUML.UI.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-16T20:34:00.313Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T20:34:00.313Z"
             }
           ]
         }
