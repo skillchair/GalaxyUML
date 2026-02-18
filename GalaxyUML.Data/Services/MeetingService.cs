@@ -4,6 +4,7 @@ using GalaxyUML.Data.Repositories;
 using GalaxyUML.Data;
 using GalaxyUML.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using GalaxyUML.Data.Mappers;
 
 namespace GalaxyUML.Core.Services;
 
@@ -31,8 +32,8 @@ public class MeetingService
         if (team.CurrentMeetingId is not null)
             throw new InvalidOperationException("Meeting already active");
 
-        if (!team.Members.Any(m => m.UserId == organizerId))
-            throw new InvalidOperationException("Organizer is not a team member");
+        var organizerMember = team.Members.FirstOrDefault(m => m.UserId == organizerId)
+            ?? throw new InvalidOperationException("Organizer is not a team member");
 
         var meetingId = Guid.NewGuid();
         team.CurrentMeetingId = meetingId;
@@ -42,7 +43,52 @@ public class MeetingService
         typeof(Meeting).GetField("<Id>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)!
                        .SetValue(meeting, meetingId);
 
+        // Add meeting to repository (this will handle the domain model)
         await _meetings.AddAsync(meeting);
+
+        // Verify meeting was saved to database
+        var meetingEntity = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == meetingId);
+        if (meetingEntity == null)
+        {
+            throw new InvalidOperationException($"Meeting {meetingId} was not saved to database after AddAsync");
+        }
+
+        // CRITICAL FIX: Set MeetingId on Board entity
+        var boardEntity = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == meetingEntity.BoardId);
+        if (boardEntity != null && boardEntity.MeetingId == null)
+        {
+            boardEntity.MeetingId = meetingId;
+            await _db.SaveChangesAsync();
+            Console.WriteLine($"[MeetingService] Fixed Board MeetingId: BoardId={boardEntity.Id}, MeetingId={meetingId}");
+        }
+
+        // Check if participant already exists (to avoid duplicate key error)
+        var participantExists = await _db.MeetingParticipants
+            .AnyAsync(p => p.MeetingId == meetingId && p.TeamMemberId == organizerMember.Id);
+
+        if (!participantExists)
+        {
+            _db.MeetingParticipants.Add(new MeetingParticipantEntity
+            {
+                Id = Guid.NewGuid(),
+                MeetingId = meetingId,
+                TeamMemberId = organizerMember.Id,
+                CanDraw = true,
+                JoinedAt = DateTime.UtcNow
+            });
+
+            await _db.SaveChangesAsync();
+
+            // Verify participant was saved
+            var savedParticipant = await _db.MeetingParticipants
+                .FirstOrDefaultAsync(p => p.MeetingId == meetingId && p.TeamMemberId == organizerMember.Id);
+            
+            if (savedParticipant == null || !savedParticipant.CanDraw)
+            {
+                throw new InvalidOperationException($"Owner participant not saved correctly. TeamMemberId: {organizerMember.Id}, MeetingId: {meetingId}");
+            }
+        }
+
         return new MeetingStartedDto(meetingId, meeting.Board.Id, teamId, DateTime.UtcNow);
     }
 
@@ -173,6 +219,23 @@ public class MeetingService
                 p.CanDraw,
                 p.JoinedAt))
             .ToListAsync();
+    }
+
+    public async Task<MeetingStartedDto?> GetByTeamIfActiveAsync(Guid teamId)
+    {
+        var entity = await _db.Meetings
+            .Include(m => m.Board)
+            .FirstOrDefaultAsync(m => m.TeamId == teamId && m.IsActive);
+
+        if (entity is null)
+            return null;
+
+        return new MeetingStartedDto(
+            entity.Id,
+            entity.Board.Id,
+            entity.TeamId,
+            entity.StartingTime
+        );
     }
 }
 

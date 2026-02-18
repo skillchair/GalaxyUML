@@ -94,6 +94,14 @@ public class MeetingController : ControllerBase
         }
     }
 
+    [HttpGet("by-team/{teamId:guid}/active")]
+    public async Task<IActionResult> ActiveMeeting(Guid teamId)
+    {
+        var meeting = await _svc.GetByTeamIfActiveAsync(teamId);
+        if (meeting is null) return NoContent();
+        return Ok(meeting);
+    }
+
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {

@@ -1,0 +1,163 @@
+﻿using GalaxyUML.Data;
+using GalaxyUML.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
+using GalaxyUML.Core.Hubs;
+
+namespace GalaxyUML.Core.Services;
+
+public class DiagramService
+{
+    private readonly IHubContext<DiagramHub> _hubContext;
+    private readonly AppDbContext _db;
+
+    public DiagramService(AppDbContext db, IHubContext<DiagramHub> hubContext)
+    {
+        _db = db;
+        _hubContext = hubContext;
+    }
+
+    public async Task MoveAsync(Guid id, int dx, int dy)
+    {
+        var el = await _db.DiagramElements.FirstOrDefaultAsync(e => e.Id == id) ?? throw new InvalidOperationException("Not found");
+        el.X1 += dx;
+        el.Y1 += dy;
+        el.X2 += dx;
+        el.Y2 += dy;
+        await _db.SaveChangesAsync();
+
+        // Broadcast move to all clients in the meeting
+        var board = await _db.DiagramElements
+            .Where(e => e.Id == id)
+            .Select(e => e.Parent)
+            .Include(b => b.Meeting)
+            .FirstOrDefaultAsync();
+
+        if (board?.Meeting is not null)
+        {
+            await _hubContext.Clients.Group(board.Meeting.Id.ToString())
+                .SendAsync("ElementMoved", new { elementId = id, dx, dy });
+        }
+    }
+
+    public async Task ResizeAsync(Guid id, int width, int height)
+    {
+        var el = await _db.DiagramElements.FirstOrDefaultAsync(e => e.Id == id) ?? throw new InvalidOperationException("Not found");
+        el.X2 = el.X1 + width;
+        el.Y2 = el.Y1 + height;
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task EditTextAsync(Guid id, string content, int fontSize, string color, string? format)
+    {
+        if (await _db.Texts.FirstOrDefaultAsync(t => t.Id == id) is not TextEntity t) throw new InvalidOperationException("Not a text");
+        t.Content = content;
+        t.FontSize = fontSize;
+        t.Color = color;
+        t.Format = format;
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<Guid> AddClassBoxAsync(Guid diagramId, int x1, int y1, int x2, int y2, IReadOnlyCollection<string>? attributes, IReadOnlyCollection<string>? methods)
+    {
+        var diagram = await _db.Diagrams.Include(d => d.Meeting).FirstOrDefaultAsync(d => d.Id == diagramId)
+            ?? throw new InvalidOperationException("Diagram not found");
+
+        var entity = new ClassBoxEntity
+        {
+            Id = Guid.NewGuid(),
+            ParentId = diagram.Id,
+            X1 = x1,
+            Y1 = y1,
+            X2 = x2,
+            Y2 = y2
+        };
+
+        if (attributes is not null)
+        {
+            foreach (var attribute in attributes.Where(a => !string.IsNullOrWhiteSpace(a)))
+            {
+                entity.Attributes.Add(new ClassAttributeEntity
+                {
+                    Id = Guid.NewGuid(),
+                    ClassBoxId = entity.Id,
+                    Name = attribute.Trim()
+                });
+            }
+        }
+
+        if (methods is not null)
+        {
+            foreach (var method in methods.Where(m => !string.IsNullOrWhiteSpace(m)))
+            {
+                entity.Methods.Add(new ClassMethodEntity
+                {
+                    Id = Guid.NewGuid(),
+                    ClassBoxId = entity.Id,
+                    Signature = method.Trim()
+                });
+            }
+        }
+
+        _db.ClassBoxes.Add(entity);
+        await _db.SaveChangesAsync();
+
+        // Broadcast to all clients in the meeting
+        if (diagram.Meeting is not null)
+        {
+            await _hubContext.Clients.Group(diagram.Meeting.Id.ToString())
+                .SendAsync("ClassBoxAdded", new
+                {
+                    id = entity.Id,
+                    x1 = entity.X1,
+                    y1 = entity.Y1,
+                    x2 = entity.X2,
+                    y2 = entity.Y2
+                });
+        }
+
+        return entity.Id;
+    }
+
+    public async Task<Guid> AddLineAsync(Guid diagramId, Guid startBoxId, Guid endBoxId, string? middleText, string? text1, string? text2)
+    {
+        _ = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == diagramId)
+            ?? throw new InvalidOperationException("Diagram not found");
+
+        var start = await _db.Boxes.FirstOrDefaultAsync(b => b.Id == startBoxId)
+            ?? throw new InvalidOperationException("Start box not found");
+        var end = await _db.Boxes.FirstOrDefaultAsync(b => b.Id == endBoxId)
+            ?? throw new InvalidOperationException("End box not found");
+
+        if (start.ParentId != diagramId || end.ParentId != diagramId)
+            throw new InvalidOperationException("Boxes must belong to the same diagram");
+
+        var entity = new LineEntity
+        {
+            Id = Guid.NewGuid(),
+            ParentId = diagramId,
+            StartBoxId = startBoxId,
+            EndBoxId = endBoxId,
+            X1 = (start.X1 + start.X2) / 2d,
+            Y1 = (start.Y1 + start.Y2) / 2d,
+            X2 = (end.X1 + end.X2) / 2d,
+            Y2 = (end.Y1 + end.Y2) / 2d,
+            MiddleText = middleText,
+            Text1 = text1,
+            Text2 = text2
+        };
+
+        _db.Lines.Add(entity);
+        await _db.SaveChangesAsync();
+        return entity.Id;
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var entity = await _db.DiagramElements.FirstOrDefaultAsync(e => e.Id == id)
+            ?? throw new InvalidOperationException("Diagram element not found");
+
+        _db.DiagramElements.Remove(entity);
+        await _db.SaveChangesAsync();
+    }
+}

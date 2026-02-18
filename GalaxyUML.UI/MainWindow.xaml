@@ -122,7 +122,8 @@
                             <ComboBox x:Name="MeetingTeamComboBox"
                                       Margin="0,4,0,12"
                                       DisplayMemberPath="Display"
-                                      SelectedValuePath="Id" />
+                                      SelectedValuePath="Id"
+                                      SelectionChanged="MeetingTeamComboBox_SelectionChanged" />
 
                             <Button Content="Start meeting" Height="34" Width="160" Click="StartMeetingButton_Click" />
                             <Button Content="Pridruzi se selektovanom meetingu"

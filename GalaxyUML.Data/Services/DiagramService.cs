@@ -7,7 +7,11 @@ namespace GalaxyUML.Core.Services;
 public class DiagramService
 {
     private readonly AppDbContext _db;
-    public DiagramService(AppDbContext db) => _db = db;
+
+    public DiagramService(AppDbContext db)
+    {
+        _db = db;
+    }
 
     public async Task MoveAsync(Guid id, int dx, int dy)
     {
@@ -85,7 +89,7 @@ public class DiagramService
 
     public async Task<Guid> AddLineAsync(Guid diagramId, Guid startBoxId, Guid endBoxId, string? middleText, string? text1, string? text2)
     {
-        _ = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == diagramId)
+        var diagram = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == diagramId)
             ?? throw new InvalidOperationException("Diagram not found");
 
         var start = await _db.Boxes.FirstOrDefaultAsync(b => b.Id == startBoxId)

@@ -1,0 +1,16 @@
+using Microsoft.AspNetCore.SignalR;
+
+namespace GalaxyUML.Api.Hubs;
+
+public class DiagramHub : Hub
+{
+    public async Task JoinMeeting(string meetingId)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, meetingId);
+    }
+
+    public async Task LeaveMeeting(string meetingId)
+    {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, meetingId);
+    }
+}

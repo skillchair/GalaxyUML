@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace GalaxyUML.UI;
 
@@ -26,6 +27,8 @@ public partial class MainWindow : Window
     private string? _jwtToken;
     private Guid? _activeBoardId;
     private Guid? _activeMeetingId;
+    private HubConnection? _hubConnection;
+    private bool _currentUserCanDraw;
 
     private string _selectedTool = "ClassBox";
     private Point _dragStart;
@@ -216,6 +219,7 @@ public partial class MainWindow : Window
             MeetingsListBox.SelectedItem = meetingItem;
             ResetLocalBoard();
             await RefreshMeetingParticipantsAsync(created.MeetingId);
+            await ConnectToSignalRAsync(created.MeetingId);
         }
         catch (Exception ex)
         {
@@ -245,6 +249,7 @@ public partial class MainWindow : Window
             BoardInfoText.Text = $"Board ID: {selectedMeeting.BoardId}";
             MeetingStatusText.Text = $"Uspesno ste pridruzeni meeting-u {selectedMeeting.Id}.";
             await RefreshMeetingParticipantsAsync(selectedMeeting.Id);
+            await ConnectToSignalRAsync(selectedMeeting.Id);
         }
         catch (Exception ex)
         {
@@ -278,6 +283,12 @@ public partial class MainWindow : Window
                 ResetLocalBoard();
                 BoardInfoText.Text = "Board nije aktivan.";
                 _meetingParticipants.Clear();
+
+                if (_hubConnection is not null)
+                {
+                    await _hubConnection.InvokeAsync("LeaveMeeting", selectedMeeting.Id.ToString());
+                    await _hubConnection.StopAsync();
+                }
             }
 
             MeetingStatusText.Text = $"Miting {selectedMeeting.Id} je zavrsen.";
@@ -326,16 +337,54 @@ public partial class MainWindow : Window
         LineControlsWrap.Visibility = _selectedTool == "Line" ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void ClearBoardButton_Click(object sender, RoutedEventArgs e)
+    private async void ClearBoardButton_Click(object sender, RoutedEventArgs e)
     {
-        ResetLocalBoard();
-        BoardStatusText.Text = "Lokalni prikaz table je ociscen.";
+        if (!_currentUserCanDraw)
+        {
+            MessageBox.Show("Nemas dozvolu za crtanje. Ne mozes ocistiti tablu.", "Board", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (_activeBoardId is null)
+        {
+            MessageBox.Show("Nema aktivnog board-a.", "Board", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (_currentUserId is null)
+        {
+            MessageBox.Show("Moras biti ulogovan.", "Board", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (MessageBox.Show("Da li si siguran da zelis da OBRISE SVE elemente sa table? Ova akcija ce obrisati podatke sa servera i obavestiti sve klijente!", 
+            "Clear Board", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        try
+        {
+            await PostAsync($"/api/diagram/{_activeBoardId}/clear", new { userId = _currentUserId.Value });
+            // ResetLocalBoard() ?e biti pozvan automatski iz SignalR event-a
+            BoardStatusText.Text = "Tabla je uspesno ociscena na serveru.";
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Clear Board", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void BoardCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (_selectedTool != "ClassBox")
         {
+            return;
+        }
+
+        if (!_currentUserCanDraw)
+        {
+            BoardStatusText.Text = "Nemas dozvolu za crtanje.";
             return;
         }
 
@@ -413,7 +462,15 @@ public partial class MainWindow : Window
             {
                 if (dx != 0 || dy != 0)
                 {
-                    await PostAsync($"/api/diagram/{_movingBox.Id}/move", new { dx, dy });
+                    if (_currentUserId is null)
+                    {
+                        MessageBox.Show("Nemas dozvolu za crtanje.", "Move", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        SetBoxPosition(_movingBox, _moveStartLeft, _moveStartTop);
+                        UpdateConnectedLines(_movingBox.Id);
+                        return;
+                    }
+
+                    await PostAsync($"/api/diagram/{_movingBox.Id}/move", new { userId = _currentUserId.Value, dx, dy });
                     BoardStatusText.Text = $"Pomeran ClassBox: {_movingBox.Id}";
                 }
             }
@@ -448,6 +505,14 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (_currentUserId is null)
+        {
+            BoardStatusText.Text = "Nemas dozvolu za crtanje. Prvo se uloguj.";
+            BoardCanvas.Children.Remove(_previewRectangle);
+            _previewRectangle = null;
+            return;
+        }
+
         var left = (int)Canvas.GetLeft(_previewRectangle);
         var top = (int)Canvas.GetTop(_previewRectangle);
         var side = (int)Math.Round(_previewRectangle.Width);
@@ -464,6 +529,7 @@ public partial class MainWindow : Window
         {
             var created = await PostAndReadAsync<ElementCreateResponse>($"/api/diagram/{_activeBoardId}/class-box", new
             {
+                userId = _currentUserId.Value,  // ? Šalji non-nullable Guid
                 x1 = left,
                 y1 = top,
                 x2 = left + side,
@@ -494,6 +560,12 @@ public partial class MainWindow : Window
 
     private async void CreateLineButton_Click(object sender, RoutedEventArgs e)
     {
+        if (!_currentUserCanDraw)
+        {
+            MessageBox.Show("Nemas dozvolu za crtanje.", "Line", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (_activeBoardId is null)
         {
             MessageBox.Show("Nema aktivnog board-a.", "Line", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -512,10 +584,17 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (_currentUserId is null)
+        {
+            MessageBox.Show("Nemas dozvolu za crtanje.", "Line", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         try
         {
             var created = await PostAndReadAsync<ElementCreateResponse>($"/api/diagram/{_activeBoardId}/line", new
             {
+                userId = _currentUserId.Value,  // ? Šalji non-nullable Guid
                 startBoxId = start.Id,
                 endBoxId = end.Id,
                 middleText = (string?)null,
@@ -567,6 +646,9 @@ public partial class MainWindow : Window
     {
         var participants = await GetAsync<IReadOnlyCollection<MeetingParticipantResponse>>($"/api/meetings/{meetingId}/participants");
         _meetingParticipants.Clear();
+        
+        _currentUserCanDraw = false; // Reset
+        
         foreach (var participant in participants)
         {
             _meetingParticipants.Add(new MeetingParticipantViewItem(
@@ -575,7 +657,17 @@ public partial class MainWindow : Window
                 participant.Role,
                 participant.CanDraw,
                 participant.JoinedAtUtc));
+            
+            // Check if current user has draw permission
+            if (participant.UserId == _currentUserId && participant.CanDraw)
+            {
+                _currentUserCanDraw = true;
+            }
         }
+        
+        BoardStatusText.Text = _currentUserCanDraw 
+            ? "Imas dozvolu za crtanje." 
+            : "Nemas dozvolu za crtanje.";
     }
 
     private void ResetLocalBoard()
@@ -650,6 +742,21 @@ public partial class MainWindow : Window
         await EnsureSuccess(response);
         var data = await response.Content.ReadFromJsonAsync<T>(JsonOptions);
         return data ?? throw new InvalidOperationException("Prazan odgovor sa servera.");
+    }
+
+    private async Task<T?> GetAsyncNullable<T>(string path) where T : class
+    {
+        using var client = CreateClient();
+        using var response = await client.GetAsync(path);
+        
+        if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+        {
+            return null;
+        }
+        
+        await EnsureSuccess(response);
+        var data = await response.Content.ReadFromJsonAsync<T>(JsonOptions);
+        return data;
     }
 
     private HttpClient CreateClient()
@@ -747,4 +854,226 @@ public partial class MainWindow : Window
     private sealed record MeetingStartedResponse(Guid MeetingId, Guid BoardId, Guid TeamId, DateTime StartedAtUtc);
     private sealed record MeetingParticipantResponse(Guid UserId, string Username, string Role, bool CanDraw, DateTime JoinedAtUtc);
     private sealed record ElementCreateResponse(Guid Id);
+
+    private async void MeetingTeamComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (MeetingTeamComboBox.SelectedItem is not TeamViewItem selectedTeam)
+        {
+            _meetings.Clear();
+            MeetingStatusText.Text = "Nema izabranog tima.";
+            return;
+        }
+
+        await RefreshActiveMeetingsForTeamAsync(selectedTeam.Id);
+    }
+
+    private async Task RefreshActiveMeetingsForTeamAsync(Guid teamId)
+    {
+        try
+        {
+            var meeting = await GetAsyncNullable<MeetingStartedResponse>($"/api/meetings/by-team/{teamId}/active");
+            
+            _meetings.Clear();
+            
+            if (meeting is not null)
+            {
+                _meetings.Add(new MeetingViewItem(meeting.MeetingId, meeting.TeamId, meeting.BoardId, meeting.StartedAtUtc));
+                MeetingStatusText.Text = $"Pronadjen aktivan miting za tim.";
+            }
+            else
+            {
+                MeetingStatusText.Text = "Nema aktivnih mitinga za ovaj tim.";
+            }
+            
+            MeetingsListBox.Items.Refresh();
+        }
+        catch (Exception ex)
+        {
+            _meetings.Clear();
+            MeetingStatusText.Text = $"Greska: {ex.Message}";
+        }
+    }
+
+    private async Task ConnectToSignalRAsync(Guid meetingId)
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.StopAsync();
+            await _hubConnection.DisposeAsync();
+        }
+
+        var baseUrl = ApiBaseUrlTextBox.Text.Trim().TrimEnd('/');
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{baseUrl}/diagramHub", options =>
+            {
+                if (!string.IsNullOrWhiteSpace(_jwtToken))
+                {
+                    options.AccessTokenProvider = () => Task.FromResult(_jwtToken)!;
+                }
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+        // Listen for ClassBox additions from other clients
+        _hubConnection.On<Guid, int, int, int, int>("ClassBoxAdded", (id, x1, y1, x2, y2) =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Check if already exists (to avoid duplicating our own boxes)
+                if (_boxesById.ContainsKey(id)) return;
+
+                var rect = new Rectangle
+                {
+                    Stroke = Brushes.Black,
+                    Fill = Brushes.White,
+                    StrokeThickness = 2,
+                    Width = x2 - x1,
+                    Height = y2 - y1
+                };
+                Canvas.SetLeft(rect, x1);
+                Canvas.SetTop(rect, y1);
+                Panel.SetZIndex(rect, 10);
+                BoardCanvas.Children.Add(rect);
+
+                var box = new BoxViewItem(id, x1, y1, x2, y2);
+                _boxes.Add(box);
+                _boxesById[id] = box;
+                _boxShapesById[id] = rect;
+                _shapeToBox[rect] = box;
+                StartBoxComboBox.Items.Refresh();
+                EndBoxComboBox.Items.Refresh();
+            });
+        });
+
+        // Listen for element moves from other clients
+        _hubConnection.On<Guid, int, int>("ElementMoved", (elementId, dx, dy) =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (_boxesById.TryGetValue(elementId, out var box))
+                {
+                    var newLeft = box.X1 + dx;
+                    var newTop = box.Y1 + dy;
+                    SetBoxPosition(box, newLeft, newTop);
+                    UpdateConnectedLines(elementId);
+                }
+            });
+        });
+
+        // Listen for line additions from other clients
+        _hubConnection.On<Guid, Guid, Guid, double, double, double, double>("LineAdded", (id, startBoxId, endBoxId, x1, y1, x2, y2) =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Check if already exists
+                if (_lineLinks.Any(l => l.Id == id)) return;
+
+                var line = new Line
+                {
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 3,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round,
+                    X1 = x1,
+                    Y1 = y1,
+                    X2 = x2,
+                    Y2 = y2
+                };
+                Panel.SetZIndex(line, 20);
+                BoardCanvas.Children.Add(line);
+                _lineLinks.Add(new LineViewItem(id, startBoxId, endBoxId, line));
+            });
+        });
+
+        // Listen for board clear from other clients
+        _hubConnection.On<Guid>("BoardCleared", (boardId) =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (_activeBoardId == boardId)
+                {
+                    ResetLocalBoard();
+                    BoardStatusText.Text = "Tabla je ociscena od strane drugog korisnika.";
+                }
+            });
+        });
+
+        await _hubConnection.StartAsync();
+        await _hubConnection.InvokeAsync("JoinMeeting", meetingId.ToString());
+        
+        // Load existing elements on the board
+        if (_activeBoardId.HasValue)
+        {
+            await LoadExistingElementsAsync(_activeBoardId.Value);
+        }
+        
+        BoardStatusText.Text = "Povezan na SignalR - real-time sinhronizacija aktivna!";
+    }
+
+    private async Task LoadExistingElementsAsync(Guid boardId)
+    {
+        try
+        {
+            var response = await GetAsync<BoardElementsResponse>($"/api/diagram/{boardId}/elements");
+            
+            // Load boxes
+            foreach (var boxData in response.Boxes)
+            {
+                if (_boxesById.ContainsKey(boxData.Id)) continue;
+
+                var rect = new Rectangle
+                {
+                    Stroke = Brushes.Black,
+                    Fill = Brushes.White,
+                    StrokeThickness = 2,
+                    Width = boxData.X2 - boxData.X1,
+                    Height = boxData.Y2 - boxData.Y1
+                };
+                Canvas.SetLeft(rect, boxData.X1);
+                Canvas.SetTop(rect, boxData.Y1);
+                Panel.SetZIndex(rect, 10);
+                BoardCanvas.Children.Add(rect);
+
+                var box = new BoxViewItem(boxData.Id, boxData.X1, boxData.Y1, boxData.X2, boxData.Y2);
+                _boxes.Add(box);
+                _boxesById[box.Id] = box;
+                _boxShapesById[box.Id] = rect;
+                _shapeToBox[rect] = box;
+            }
+
+            // Load lines
+            foreach (var lineData in response.Lines)
+            {
+                if (_lineLinks.Any(l => l.Id == lineData.Id)) continue;
+
+                var line = new Line
+                {
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 3,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round,
+                    X1 = lineData.X1,
+                    Y1 = lineData.Y1,
+                    X2 = lineData.X2,
+                    Y2 = lineData.Y2
+                };
+                Panel.SetZIndex(line, 20);
+                BoardCanvas.Children.Add(line);
+                _lineLinks.Add(new LineViewItem(lineData.Id, lineData.StartBoxId, lineData.EndBoxId, line));
+            }
+
+            StartBoxComboBox.Items.Refresh();
+            EndBoxComboBox.Items.Refresh();
+        }
+        catch (Exception ex)
+        {
+            BoardStatusText.Text = $"Greska pri ucitavanju elemenata: {ex.Message}";
+        }
+    }
+
+    private sealed record BoardElementsResponse(IReadOnlyCollection<BoxData> Boxes, IReadOnlyCollection<LineData> Lines);
+    private sealed record BoxData(Guid Id, int X1, int Y1, int X2, int Y2);
+    private sealed record LineData(Guid Id, Guid StartBoxId, Guid EndBoxId, double X1, double Y1, double X2, double Y2);
 }
+
+

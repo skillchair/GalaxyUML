@@ -1738,23 +1738,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Korisnik\\.nuget\\packages\\": {},
+    "C:\\Users\\strucnjak\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Data\\GalaxyUML.Data.csproj",
+      "projectUniqueName": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Data\\GalaxyUML.Data.csproj",
       "projectName": "GalaxyUML.Data",
-      "projectPath": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Data\\GalaxyUML.Data.csproj",
-      "packagesPath": "C:\\Users\\Korisnik\\.nuget\\packages\\",
-      "outputPath": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Data\\obj\\",
+      "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Data\\GalaxyUML.Data.csproj",
+      "packagesPath": "C:\\Users\\strucnjak\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Korisnik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\strucnjak\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1769,8 +1769,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
-              "projectPath": "D:\\AIPS projekat\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
+            "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj": {
+              "projectPath": "C:\\Users\\strucnjak\\FAKS\\AIPS\\GalaxyUML\\GalaxyUML.Core\\GalaxyUML.Core.csproj"
             }
           }
         }

@@ -1,0 +1,333 @@
+﻿using GalaxyUML.Core.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using GalaxyUML.Api.Hubs;
+using GalaxyUML.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace GalaxyUML.Api.Controllers;
+
+[ApiController]
+[Route("api/diagram")]
+public class DiagramController : ControllerBase
+{
+    private readonly DiagramService _svc;
+    private readonly IHubContext<DiagramHub> _hubContext;
+    private readonly AppDbContext _db;
+
+    public DiagramController(DiagramService svc, IHubContext<DiagramHub> hubContext, AppDbContext db)
+    {
+        _svc = svc;
+        _hubContext = hubContext;
+        _db = db;
+    }
+
+    [HttpPost("{id:guid}/move")]
+    public async Task<IActionResult> Move(Guid id, [FromBody] MoveDto dto)
+    {
+        // Check if user can draw
+        if (!await CanUserDrawAsync(dto.UserId, id))
+        {
+            return StatusCode(403, new { error = "User does not have draw permission" });
+        }
+
+        await _svc.MoveAsync(id, dto.Dx, dto.Dy);
+
+        // Broadcast to SignalR
+        var meetingId = await GetMeetingIdForElementAsync(id);
+        if (meetingId.HasValue)
+        {
+            await _hubContext.Clients.Group(meetingId.Value.ToString())
+                .SendAsync("ElementMoved", id, dto.Dx, dto.Dy);
+        }
+
+        return NoContent();
+    }
+
+    [HttpPost("{id:guid}/resize")]
+    public async Task<IActionResult> Resize(Guid id, [FromBody] ResizeDto dto)
+    { await _svc.ResizeAsync(id, dto.Width, dto.Height); return NoContent(); }
+
+    [HttpPost("{id:guid}/text")]
+    public async Task<IActionResult> EditText(Guid id, [FromBody] EditTextDto dto)
+    { await _svc.EditTextAsync(id, dto.Content, dto.FontSize, dto.Color, dto.Format); return NoContent(); }
+
+    [HttpPost("{id:guid}/class-box")]
+    public async Task<IActionResult> AddClassBox(Guid id, [FromBody] AddClassBoxDto dto)
+    {
+        try
+        {
+            // Check if user can draw
+            if (!await CanUserDrawInDiagramAsync(dto.UserId, id))
+            {
+                return StatusCode(403, new { error = "User does not have draw permission" });
+            }
+
+            var elementId = await _svc.AddClassBoxAsync(id, dto.X1, dto.Y1, dto.X2, dto.Y2, dto.Attributes, dto.Methods);
+
+            // Broadcast to SignalR
+            var meetingId = await GetMeetingIdForDiagramAsync(id);
+            if (meetingId.HasValue)
+            {
+                await _hubContext.Clients.Group(meetingId.Value.ToString())
+                    .SendAsync("ClassBoxAdded", elementId, dto.X1, dto.Y1, dto.X2, dto.Y2);
+            }
+
+            return Ok(new { id = elementId });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("{id:guid}/line")]
+    public async Task<IActionResult> AddLine(Guid id, [FromBody] AddLineDto dto)
+    {
+        try
+        {
+            // Check if user can draw
+            if (!await CanUserDrawInDiagramAsync(dto.UserId, id))
+            {
+                return StatusCode(403, new { error = "User does not have draw permission" });
+            }
+
+            var elementId = await _svc.AddLineAsync(id, dto.StartBoxId, dto.EndBoxId, dto.MiddleText, dto.Text1, dto.Text2);
+
+            // Broadcast to SignalR
+            var meetingId = await GetMeetingIdForDiagramAsync(id);
+            if (meetingId.HasValue)
+            {
+                var startBox = await _db.Boxes.FirstOrDefaultAsync(b => b.Id == dto.StartBoxId);
+                var endBox = await _db.Boxes.FirstOrDefaultAsync(b => b.Id == dto.EndBoxId);
+
+                if (startBox != null && endBox != null)
+                {
+                    await _hubContext.Clients.Group(meetingId.Value.ToString())
+                        .SendAsync("LineAdded", elementId, dto.StartBoxId, dto.EndBoxId,
+                            (startBox.X1 + startBox.X2) / 2d,
+                            (startBox.Y1 + startBox.Y2) / 2d,
+                            (endBox.X1 + endBox.X2) / 2d,
+                            (endBox.Y1 + endBox.Y2) / 2d);
+                }
+            }
+
+            return Ok(new { id = elementId });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    { await _svc.DeleteAsync(id); return NoContent(); }
+
+    [HttpDelete("{id:guid}/clear")]
+    public async Task<IActionResult> ClearBoard(Guid id, [FromBody] ClearBoardDto dto)
+    {
+        try
+        {
+            // Check if user can draw
+            if (!await CanUserDrawInDiagramAsync(dto.UserId, id))
+            {
+                return StatusCode(403, new { error = "User does not have draw permission" });
+            }
+
+            // Get all elements on this board
+            var elements = await _db.DiagramElements
+                .Where(e => e.ParentId == id && e.ObjectType != 0) // 0 = Diagram, don't delete the board itself
+                .ToListAsync();
+
+            if (elements.Any())
+            {
+                _db.DiagramElements.RemoveRange(elements);
+                await _db.SaveChangesAsync();
+
+                // Broadcast to SignalR
+                var meetingId = await GetMeetingIdForDiagramAsync(id);
+                if (meetingId.HasValue)
+                {
+                    await _hubContext.Clients.Group(meetingId.Value.ToString())
+                        .SendAsync("BoardCleared", id);
+                }
+            }
+
+            return Ok(new { deletedCount = elements.Count });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id:guid}/elements")]
+    public async Task<IActionResult> GetElements(Guid id)
+    {
+        try
+        {
+            var diagram = await _db.Diagrams
+                .Include(d => d.Children)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (diagram == null)
+                return NotFound();
+
+            var boxes = await _db.ClassBoxes
+                .Where(b => b.ParentId == id)
+                .Select(b => new
+                {
+                    id = b.Id,
+                    x1 = (int)b.X1,
+                    y1 = (int)b.Y1,
+                    x2 = (int)b.X2,
+                    y2 = (int)b.Y2
+                })
+                .ToListAsync();
+
+            var lines = await _db.Lines
+                .Where(l => l.ParentId == id)
+                .Select(l => new
+                {
+                    id = l.Id,
+                    startBoxId = l.StartBoxId,
+                    endBoxId = l.EndBoxId,
+                    x1 = l.X1,
+                    y1 = l.Y1,
+                    x2 = l.X2,
+                    y2 = l.Y2
+                })
+                .ToListAsync();
+
+            return Ok(new { boxes, lines });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    private async Task<Guid?> GetMeetingIdForDiagramAsync(Guid diagramId)
+    {
+        var diagram = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == diagramId);
+        return diagram?.MeetingId;
+    }
+
+    private async Task<Guid?> GetMeetingIdForElementAsync(Guid elementId)
+    {
+        var element = await _db.DiagramElements
+            .Where(e => e.Id == elementId)
+            .Select(e => e.Parent)
+            .FirstOrDefaultAsync();
+
+        if (element is Data.Entities.DiagramEntity diagram)
+        {
+            return diagram.MeetingId;
+        }
+
+        return null;
+    }
+
+    private async Task<bool> CanUserDrawInDiagramAsync(Guid userId, Guid diagramId)
+    {
+        Console.WriteLine($"[CanDraw] Checking userId={userId}, diagramId={diagramId}");
+        
+        var diagram = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == diagramId);
+        
+        if (diagram == null)
+        {
+            Console.WriteLine($"[CanDraw] Diagram {diagramId} NOT FOUND in database");
+            return false;
+        }
+        
+        Console.WriteLine($"[CanDraw] Diagram found: Id={diagram.Id}, MeetingId={diagram.MeetingId}");
+        
+        if (diagram.MeetingId == null)
+        {
+            Console.WriteLine($"[CanDraw] Diagram {diagramId} has NULL MeetingId!");
+            return false;
+        }
+
+        var meeting = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == diagram.MeetingId);
+        if (meeting == null)
+        {
+            Console.WriteLine($"[CanDraw] Meeting {diagram.MeetingId} not found");
+            return false;
+        }
+
+        Console.WriteLine($"[CanDraw] Meeting found: Id={meeting.Id}, TeamId={meeting.TeamId}");
+
+        var teamMember = await _db.TeamMembers
+            .FirstOrDefaultAsync(tm => tm.UserId == userId && tm.TeamId == meeting.TeamId);
+
+        if (teamMember == null)
+        {
+            Console.WriteLine($"[CanDraw] TeamMember not found for UserId={userId}, TeamId={meeting.TeamId}");
+            return false;
+        }
+
+        Console.WriteLine($"[CanDraw] TeamMember found: Id={teamMember.Id}");
+
+        var participant = await _db.MeetingParticipants
+            .FirstOrDefaultAsync(p => p.MeetingId == diagram.MeetingId && p.TeamMemberId == teamMember.Id);
+
+        if (participant == null)
+        {
+            Console.WriteLine($"[CanDraw] Participant not found for MeetingId={diagram.MeetingId}, TeamMemberId={teamMember.Id}");
+            return false;
+        }
+
+        Console.WriteLine($"[CanDraw] SUCCESS! UserId={userId}, CanDraw={participant.CanDraw}");
+        return participant.CanDraw;
+    }
+
+    private async Task<bool> CanUserDrawAsync(Guid userId, Guid elementId)
+    {
+        var element = await _db.DiagramElements
+            .Where(e => e.Id == elementId)
+            .Select(e => e.Parent)
+            .FirstOrDefaultAsync();
+
+        if (element is not Data.Entities.DiagramEntity diagram || diagram.MeetingId == null)
+        {
+            Console.WriteLine($"[CanDraw] Element {elementId} not found or parent is not Diagram with MeetingId");
+            return false;
+        }
+
+        var meeting = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == diagram.MeetingId);
+        if (meeting == null)
+        {
+            Console.WriteLine($"[CanDraw] Meeting {diagram.MeetingId} not found");
+            return false;
+        }
+
+        var teamMember = await _db.TeamMembers
+            .FirstOrDefaultAsync(tm => tm.UserId == userId && tm.TeamId == meeting.TeamId);
+
+        if (teamMember == null)
+        {
+            Console.WriteLine($"[CanDraw] TeamMember not found for UserId={userId}, TeamId={meeting.TeamId}");
+            return false;
+        }
+
+        var participant = await _db.MeetingParticipants
+            .FirstOrDefaultAsync(p => p.MeetingId == diagram.MeetingId && p.TeamMemberId == teamMember.Id);
+
+        if (participant == null)
+        {
+            Console.WriteLine($"[CanDraw] Participant not found for MeetingId={diagram.MeetingId}, TeamMemberId={teamMember.Id}");
+            return false;
+        }
+
+        Console.WriteLine($"[CanDraw] UserId={userId}, CanDraw={participant.CanDraw}");
+        return participant.CanDraw;
+    }
+}
+
+public record MoveDto(Guid UserId, int Dx, int Dy);
+public record ResizeDto(int Width, int Height);
+public record EditTextDto(string Content, int FontSize, string Color, string? Format);
+public record AddClassBoxDto(Guid UserId, int X1, int Y1, int X2, int Y2, IReadOnlyCollection<string>? Attributes, IReadOnlyCollection<string>? Methods);
+public record AddLineDto(Guid UserId, Guid StartBoxId, Guid EndBoxId, string? MiddleText, string? Text1, string? Text2);
+public record ClearBoardDto(Guid UserId);
