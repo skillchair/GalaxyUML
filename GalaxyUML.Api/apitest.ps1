@@ -36,7 +36,7 @@ Write-Host "Koristi se host: $myhost" -ForegroundColor Cyan
 # Definicija testova
 $tests = @(
     @{ name="Health"; method="GET";  url="$myhost/swagger/index.html"; body=$null },
-    @{ name="CreateUser"; method="POST"; url="$myhost/api/users"; body='{"firstName":"Ana","lastName":"Test","username":"ana1","email":"ana@test.com","password":"Passw0rd!"}' }
+    @{ name="CreateUser"; method="POST"; url="$myhost/api/auth/register"; body='{"firstName":"Ana","lastName":"Test","username":"ana1","email":"ana@test.com","password":"Passw0rd!"}' }
 )
 
 foreach ($t in $tests) {

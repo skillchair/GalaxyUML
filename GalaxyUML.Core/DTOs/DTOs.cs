@@ -3,22 +3,20 @@ namespace GalaxyUML.Core.Models.DTOs;
 public record CreateUserDto(string FirstName, string LastName, string Username, string Email, string Password);
 public record UserDto(Guid Id, string FirstName, string LastName, string Username, string Email);
 
-public record CreateTeamDto(string TeamName, Guid OwnerId);
+public record CreateTeamDto(string TeamName);
 public record TeamDto(Guid Id, string TeamName, string TeamCode, Guid OwnerId,
     IReadOnlyCollection<TeamMemberDto> Members, IReadOnlyCollection<BannedUserDto> Bans);
 public record TeamMemberDto(Guid UserId, string Role, DateTime JoinedAt);
 public record BannedUserDto(Guid UserId, DateTime BannedAt, string? Reason);
 
-public record JoinTeamDto(Guid UserId, string JoinCode);
-public record ChangeRoleDto(Guid ActorId, Guid TargetUserId, string Role);
+public record JoinTeamDto(string JoinCode);
+public record ChangeRoleDto(Guid TargetUserId, string Role);
 
-public record CreateMeetingDto(Guid TeamId, Guid OrganizerId);
+public record CreateMeetingDto(Guid TeamId);
 public record MeetingDto(Guid Id, Guid TeamId, Guid OrganizedBy, DiagramDto Board,
     IReadOnlyCollection<MeetingParticipantDto> Participants, ChatDto Chat);
 public record MeetingParticipantDto(Guid UserId, bool CanDraw, DateTime JoinedAt);
-public record GrantDrawDto(Guid ActorId, Guid TargetId, bool CanDraw);
-public record LeaveMeetingDto(Guid UserId);
-public record JoinMeetingDto(Guid UserId);
+public record GrantDrawDto(Guid TargetId, bool CanDraw);
 
 public record ChatDto(IReadOnlyCollection<MessageDto> Messages);
 public record MessageDto(Guid Id, Guid SenderId, string Content, DateTime SentAt);

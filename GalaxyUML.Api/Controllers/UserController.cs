@@ -1,27 +1,28 @@
+// exposes the authenticated user's public profile.
+
+using GalaxyUML.Api.Security;
 using GalaxyUML.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GalaxyUML.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/users")]
-public class UsersController : ControllerBase
+public class UsersController(UserService users, ICurrentUser currentUser) : ControllerBase
 {
-    private readonly UserService _svc;
-    public UsersController(UserService svc) => _svc = svc;
-
-    [HttpPost]
-    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrent()
     {
-        var id = await _svc.RegisterAsync(dto.FirstName, dto.LastName, dto.Username, dto.Email, dto.Password);
-        return Ok(id);
-    }
+        var user = await users.GetAsync(currentUser.Id);
+        if (user is null)
+        {
+            return NotFound();
+        }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        var user = await _svc.GetAsync(id);
-        return user is null ? NotFound() : Ok(user);
+        return Ok(new UserResponse(user.IdUser, user.FirstName, user.LastName, user.Username, user.Email));
     }
 }
 
+public record UserResponse(Guid Id, string FirstName, string LastName, string Username, string Email);

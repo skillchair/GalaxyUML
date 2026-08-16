@@ -1,3 +1,20 @@
+# local tooling
 continue/
-bin/
-obj/
+
+# build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+TestResults/
+*.nupkg
+*.snupkg
+*.trx
+coverage/
+coverage.*
+
+# visual studio user state
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

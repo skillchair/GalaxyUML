@@ -1,22 +1,24 @@
+// exposes authenticated team operations.
+
+using GalaxyUML.Api.Security;
 using GalaxyUML.Core.Models;
 using GalaxyUML.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GalaxyUML.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/teams")]
-public class TeamsController : ControllerBase
+public class TeamsController(TeamService teams, ICurrentUser currentUser) : ControllerBase
 {
-    private readonly TeamService _svc;
-    public TeamsController(TeamService svc) => _svc = svc;
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTeamDto dto)
     {
         try
         {
-            var team = await _svc.CreateAsync(dto.TeamName, dto.OwnerId);
+            var team = await teams.CreateAsync(dto.TeamName, currentUser.Id);
             return Ok(team);
         }
         catch (InvalidOperationException ex)
@@ -30,7 +32,7 @@ public class TeamsController : ControllerBase
     {
         try
         {
-            await _svc.JoinAsync(id, dto.UserId, dto.JoinCode);
+            await teams.JoinAsync(id, currentUser.Id, dto.JoinCode);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -42,17 +44,17 @@ public class TeamsController : ControllerBase
     [HttpGet("by-code/{code}")]
     public async Task<IActionResult> FindByCode(string code)
     {
-        var team = await _svc.FindByCodeAsync(code);
+        var team = await teams.FindByCodeAsync(code);
         return team is null ? NotFound() : Ok(team);
     }
 
-    [HttpGet("by-user/{userId:guid}")]
-    public async Task<IActionResult> GetByUser(Guid userId)
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUserTeams()
     {
         try
         {
-            var teams = await _svc.GetUserTeamsAsync(userId);
-            return Ok(teams);
+            var userTeams = await teams.GetUserTeamsAsync(currentUser.Id);
+            return Ok(userTeams);
         }
         catch (InvalidOperationException ex)
         {
@@ -65,7 +67,7 @@ public class TeamsController : ControllerBase
     {
         try
         {
-            var team = await _svc.JoinByCodeAsync(dto.UserId, dto.JoinCode);
+            var team = await teams.JoinByCodeAsync(currentUser.Id, dto.JoinCode);
             return Ok(team);
         }
         catch (InvalidOperationException ex)
@@ -75,38 +77,48 @@ public class TeamsController : ControllerBase
     }
 
     [HttpPost("{id:guid}/leave")]
-    public async Task<IActionResult> Leave(Guid id, [FromBody] UserIdDto dto)
+    public async Task<IActionResult> Leave(Guid id)
     {
-        await _svc.LeaveAsync(id, dto.UserId);
+        await teams.LeaveAsync(id, currentUser.Id);
         return NoContent();
     }
 
     [HttpPost("{id:guid}/role")]
     public async Task<IActionResult> ChangeRole(Guid id, [FromBody] ChangeRoleDto dto)
     {
-        var role = Enum.Parse<RoleEnum>(dto.Role, true);
-        await _svc.ChangeRoleAsync(id, dto.ActorId, dto.TargetUserId, role);
+        if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var role))
+        {
+            return BadRequest(new { error = "Unknown team role" });
+        }
+
+        await teams.ChangeRoleAsync(id, currentUser.Id, dto.TargetUserId, role);
         return NoContent();
     }
 
     [HttpPost("{id:guid}/ban")]
     public async Task<IActionResult> Ban(Guid id, [FromBody] BanDto dto)
     {
-        await _svc.BanAsync(id, dto.ActorId, dto.TargetUserId, dto.Reason);
+        await teams.BanAsync(id, currentUser.Id, dto.TargetUserId, dto.Reason);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, [FromBody] UserIdDto dto)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        await _svc.DeleteAsync(id, dto.UserId);
-        return NoContent();
+        try
+        {
+            await teams.DeleteAsync(id, currentUser.Id);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }
 
-public record CreateTeamDto(string TeamName, Guid OwnerId);
-public record JoinTeamDto(Guid UserId, string JoinCode);
-public record JoinByCodeDto(Guid UserId, string JoinCode);
-public record ChangeRoleDto(Guid ActorId, Guid TargetUserId, string Role);
-public record BanDto(Guid ActorId, Guid TargetUserId, string? Reason);
-public record UserIdDto(Guid UserId);
+public record CreateTeamDto(string TeamName);
+public record JoinTeamDto(string JoinCode);
+public record JoinByCodeDto(string JoinCode);
+public record ChangeRoleDto(Guid TargetUserId, string Role);
+public record BanDto(Guid TargetUserId, string? Reason);

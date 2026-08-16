@@ -1,15 +1,20 @@
+// exposes anonymous registration and login endpoints.
+
 using GalaxyUML.Api.Services;
 using GalaxyUML.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GalaxyUML.Api.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly UserService _users;
     private readonly TokenService _tokens;
+
     public AuthController(UserService users, TokenService tokens)
     {
         _users = users;
@@ -27,7 +32,11 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         var user = await _users.ValidateAsync(dto.Username, dto.Password);
-        if (user is null) return Unauthorized();
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
         var token = _tokens.Create(user);
         return Ok(new { token, user = new { user.IdUser, user.Username, user.Email } });
     }

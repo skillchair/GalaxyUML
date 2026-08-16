@@ -1,21 +1,23 @@
+// exposes authenticated meeting operations.
+
+using GalaxyUML.Api.Security;
 using GalaxyUML.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GalaxyUML.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/meetings")]
-public class MeetingController : ControllerBase
+public class MeetingController(MeetingService meetings, ICurrentUser currentUser) : ControllerBase
 {
-    private readonly MeetingService _svc;
-    public MeetingController(MeetingService svc) => _svc = svc;
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateMeetingDto dto)
     {
         try
         {
-            var created = await _svc.CreateAsync(dto.TeamId, dto.OrganizerId);
+            var created = await meetings.CreateAsync(dto.TeamId, currentUser.Id);
             return Ok(created);
         }
         catch (InvalidOperationException ex)
@@ -25,11 +27,11 @@ public class MeetingController : ControllerBase
     }
 
     [HttpPost("{id:guid}/join")]
-    public async Task<IActionResult> Join(Guid id, [FromBody] UserIdDto dto)
+    public async Task<IActionResult> Join(Guid id)
     {
         try
         {
-            await _svc.JoinAsync(id, dto.UserId);
+            await meetings.JoinAsync(id, currentUser.Id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -39,11 +41,11 @@ public class MeetingController : ControllerBase
     }
 
     [HttpPost("{id:guid}/leave")]
-    public async Task<IActionResult> Leave(Guid id, [FromBody] UserIdDto dto)
+    public async Task<IActionResult> Leave(Guid id)
     {
         try
         {
-            await _svc.LeaveAsync(id, dto.UserId);
+            await meetings.LeaveAsync(id, currentUser.Id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -55,23 +57,37 @@ public class MeetingController : ControllerBase
     [HttpPost("{id:guid}/grant-draw")]
     public async Task<IActionResult> Grant(Guid id, [FromBody] GrantDrawDto dto)
     {
-        await _svc.GrantDrawAsync(id, dto.ActorId, dto.TargetId, dto.CanDraw);
-        return NoContent();
+        try
+        {
+            await meetings.GrantDrawAsync(id, currentUser.Id, dto.TargetId, dto.CanDraw);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/message")]
     public async Task<IActionResult> Message(Guid id, [FromBody] SendMessageDto dto)
     {
-        await _svc.AddMessageAsync(id, dto.SenderId, dto.Content);
-        return NoContent();
+        try
+        {
+            await meetings.AddMessageAsync(id, currentUser.Id, dto.Content);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/end")]
-    public async Task<IActionResult> End(Guid id, [FromBody] UserIdDto dto)
+    public async Task<IActionResult> End(Guid id)
     {
         try
         {
-            await _svc.EndAsync(id, dto.UserId);
+            await meetings.EndAsync(id, currentUser.Id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -85,7 +101,7 @@ public class MeetingController : ControllerBase
     {
         try
         {
-            var participants = await _svc.GetParticipantsAsync(id);
+            var participants = await meetings.GetParticipantsAsync(id);
             return Ok(participants);
         }
         catch (InvalidOperationException ex)
@@ -97,19 +113,25 @@ public class MeetingController : ControllerBase
     [HttpGet("by-team/{teamId:guid}/active")]
     public async Task<IActionResult> ActiveMeeting(Guid teamId)
     {
-        var meeting = await _svc.GetByTeamIfActiveAsync(teamId);
-        if (meeting is null) return NoContent();
-        return Ok(meeting);
+        var meeting = await meetings.GetByTeamIfActiveAsync(teamId);
+        return meeting is null ? NoContent() : Ok(meeting);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _svc.DeleteAsync(id);
-        return NoContent();
+        try
+        {
+            await meetings.DeleteAsync(id, currentUser.Id);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 }
 
-public record CreateMeetingDto(Guid TeamId, Guid OrganizerId);
-public record GrantDrawDto(Guid ActorId, Guid TargetId, bool CanDraw);
-public record SendMessageDto(Guid SenderId, string Content);
+public record CreateMeetingDto(Guid TeamId);
+public record GrantDrawDto(Guid TargetId, bool CanDraw);
+public record SendMessageDto(string Content);

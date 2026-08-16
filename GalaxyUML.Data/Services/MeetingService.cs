@@ -157,20 +157,26 @@ public class MeetingService
     public async Task AddMessageAsync(Guid meetingId, Guid senderId, string content)
     {
         var meeting = await _meetings.GetByIdAsync(meetingId) ?? throw new InvalidOperationException("Meeting not found");
+        if (!meeting.Participants.Any(participant => participant.UserId == senderId))
+            throw new InvalidOperationException("Only meeting participants can send messages");
+
         meeting.AddMessage(senderId, content);
         await _meetings.SaveAsync();
     }
 
-    public async Task DeleteAsync(Guid meetingId)
+    public async Task DeleteAsync(Guid meetingId, Guid actorUserId)
     {
-        var meeting = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == meetingId);
-        if (meeting is not null)
+        var meeting = await _db.Meetings
+            .Include(m => m.Team)
+            .FirstOrDefaultAsync(m => m.Id == meetingId)
+            ?? throw new InvalidOperationException("Meeting not found");
+
+        if (meeting.Team.OwnerId != actorUserId)
+            throw new InvalidOperationException("Only team owner can delete meeting");
+
+        if (meeting.Team.CurrentMeetingId == meetingId)
         {
-            var team = await _db.Teams.FirstOrDefaultAsync(t => t.Id == meeting.TeamId);
-            if (team?.CurrentMeetingId == meetingId)
-            {
-                team.CurrentMeetingId = null;
-            }
+            meeting.Team.CurrentMeetingId = null;
         }
 
         await _meetings.RemoveAsync(meetingId);

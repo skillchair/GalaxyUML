@@ -128,7 +128,7 @@ public partial class MainWindow : Window
 
         try
         {
-            var created = await PostAndReadAsync<TeamResponse>("/api/teams", new { teamName, ownerId = _currentUserId.Value });
+            var created = await PostAndReadAsync<TeamResponse>("/api/teams", new { teamName });
             CreateTeamNameTextBox.Clear();
             TeamStatusText.Text = $"Kreiran tim '{created.TeamName}'. Kod: {created.TeamCode}";
             await RefreshLoggedInUserTeamsAsync();
@@ -176,7 +176,7 @@ public partial class MainWindow : Window
 
         try
         {
-            var joined = await PostAndReadAsync<TeamResponse>("/api/teams/join-by-code", new { userId = _currentUserId.Value, joinCode = code });
+            var joined = await PostAndReadAsync<TeamResponse>("/api/teams/join-by-code", new { joinCode = code });
             TeamStatusText.Text = $"Uclanjen u tim '{joined.TeamName}' po kodu '{joined.TeamCode}'.";
             await RefreshLoggedInUserTeamsAsync();
         }
@@ -204,8 +204,7 @@ public partial class MainWindow : Window
         {
             var created = await PostAndReadAsync<MeetingStartedResponse>("/api/meetings", new
             {
-                teamId = selectedTeam.Id,
-                organizerId = _currentUserId.Value
+                teamId = selectedTeam.Id
             });
 
             _activeBoardId = created.BoardId;
@@ -243,7 +242,7 @@ public partial class MainWindow : Window
 
         try
         {
-            await PostAsync($"/api/meetings/{selectedMeeting.Id}/join", new { userId = _currentUserId.Value });
+            await PostAsync($"/api/meetings/{selectedMeeting.Id}/join", new { });
             _activeMeetingId = selectedMeeting.Id;
             _activeBoardId = selectedMeeting.BoardId;
             BoardInfoText.Text = $"Board ID: {selectedMeeting.BoardId}";
@@ -273,7 +272,7 @@ public partial class MainWindow : Window
 
         try
         {
-            await PostAsync($"/api/meetings/{selectedMeeting.Id}/end", new { userId = _currentUserId.Value });
+            await PostAsync($"/api/meetings/{selectedMeeting.Id}/end", new { });
             _meetings.Remove(selectedMeeting);
 
             if (_activeMeetingId == selectedMeeting.Id)
@@ -365,7 +364,7 @@ public partial class MainWindow : Window
 
         try
         {
-            await PostAsync($"/api/diagram/{_activeBoardId}/clear", new { userId = _currentUserId.Value });
+            await PostAsync($"/api/diagram/{_activeBoardId}/clear", new { });
             // ResetLocalBoard() ?e biti pozvan automatski iz SignalR event-a
             BoardStatusText.Text = "Tabla je uspesno ociscena na serveru.";
         }
@@ -470,7 +469,7 @@ public partial class MainWindow : Window
                         return;
                     }
 
-                    await PostAsync($"/api/diagram/{_movingBox.Id}/move", new { userId = _currentUserId.Value, dx, dy });
+                    await PostAsync($"/api/diagram/{_movingBox.Id}/move", new { dx, dy });
                     BoardStatusText.Text = $"Pomeran ClassBox: {_movingBox.Id}";
                 }
             }
@@ -529,7 +528,6 @@ public partial class MainWindow : Window
         {
             var created = await PostAndReadAsync<ElementCreateResponse>($"/api/diagram/{_activeBoardId}/class-box", new
             {
-                userId = _currentUserId.Value,  // ? Šalji non-nullable Guid
                 x1 = left,
                 y1 = top,
                 x2 = left + side,
@@ -594,7 +592,6 @@ public partial class MainWindow : Window
         {
             var created = await PostAndReadAsync<ElementCreateResponse>($"/api/diagram/{_activeBoardId}/line", new
             {
-                userId = _currentUserId.Value,  // ? Šalji non-nullable Guid
                 startBoxId = start.Id,
                 endBoxId = end.Id,
                 middleText = (string?)null,
@@ -631,7 +628,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        var teams = await GetAsync<IReadOnlyCollection<TeamResponse>>($"/api/teams/by-user/{_currentUserId.Value}");
+        var teams = await GetAsync<IReadOnlyCollection<TeamResponse>>("/api/teams/me");
         _teams.Clear();
         foreach (var team in teams)
         {
@@ -999,7 +996,7 @@ public partial class MainWindow : Window
         });
 
         await _hubConnection.StartAsync();
-        await _hubConnection.InvokeAsync("JoinMeeting", meetingId.ToString());
+        await _hubConnection.InvokeAsync("JoinMeeting", meetingId);
         
         // Load existing elements on the board
         if (_activeBoardId.HasValue)

@@ -1,4 +1,5 @@
 using GalaxyUML.Api.Services;
+using GalaxyUML.Api.Security;
 using GalaxyUML.Core.Services;
 using GalaxyUML.Data;
 using GalaxyUML.Data.Repositories;
@@ -29,6 +30,8 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<DiagramService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, HttpCurrentUser>();
 
 builder.Services.AddControllers();
 
@@ -42,6 +45,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -50,6 +54,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    context.HttpContext.Request.Path.StartsWithSegments("/diagramHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 builder.Services.AddAuthorization();
@@ -78,3 +96,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<DiagramHub>("/diagramHub");
 app.Run();
+
+public partial class Program;
