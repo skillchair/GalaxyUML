@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\GalaxyUML.Core\GalaxyUML.Core.csproj" />
+    <ProjectReference Include="..\..\src\GalaxyUML.Core\GalaxyUML.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

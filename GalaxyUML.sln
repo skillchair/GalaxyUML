@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11505.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Core", "GalaxyUML.Core\GalaxyUML.Core.csproj", "{5F6FAEAA-7E73-7602-B122-7365A1D78224}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Core", "src\GalaxyUML.Core\GalaxyUML.Core.csproj", "{5F6FAEAA-7E73-7602-B122-7365A1D78224}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Data", "GalaxyUML.Data\GalaxyUML.Data.csproj", "{FAAFE4A4-DC0A-A85A-CD02-B7EF7CFECA43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Data", "src\GalaxyUML.Data\GalaxyUML.Data.csproj", "{FAAFE4A4-DC0A-A85A-CD02-B7EF7CFECA43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.UI", "GalaxyUML.UI\GalaxyUML.UI.csproj", "{776676A3-A63C-3884-F07A-A62B9F3900AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.UI", "client\GalaxyUML.UI\GalaxyUML.UI.csproj", "{776676A3-A63C-3884-F07A-A62B9F3900AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Api", "GalaxyUML.Api\GalaxyUML.Api.csproj", "{81AD6B93-5851-C59B-14AD-45A3AE8E2304}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Api", "src\GalaxyUML.Api\GalaxyUML.Api.csproj", "{81AD6B93-5851-C59B-14AD-45A3AE8E2304}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Api.Tests", "GalaxyUML.Api.Tests\GalaxyUML.Api.Tests.csproj", "{C53E89B6-D185-4AA4-BAEE-5938573D76BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalaxyUML.Api.Tests", "tests\GalaxyUML.Api.Tests\GalaxyUML.Api.Tests.csproj", "{C53E89B6-D185-4AA4-BAEE-5938573D76BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GalaxyUML.Api\GalaxyUML.Api.csproj" />
+    <ProjectReference Include="..\..\src\GalaxyUML.Api\GalaxyUML.Api.csproj" />
   </ItemGroup>
 
 </Project>
