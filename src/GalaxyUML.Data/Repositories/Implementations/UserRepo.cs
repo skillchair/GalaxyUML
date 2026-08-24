@@ -17,6 +17,10 @@ public class UserRepo : IUserRepo
         (await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username))
         is var e && e != null ? UserMapper.ToDomain(e) : null;
 
+    public async Task<User?> GetByEmailAsync(string email) =>
+        (await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email))
+        is var e && e != null ? UserMapper.ToDomain(e) : null;
+
     public async Task AddAsync(User user)
     {
         _db.Users.Add(UserMapper.ToEntity(user));

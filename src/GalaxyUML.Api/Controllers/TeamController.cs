@@ -79,8 +79,15 @@ public class TeamsController(TeamService teams, ICurrentUser currentUser) : Cont
     [HttpPost("{id:guid}/leave")]
     public async Task<IActionResult> Leave(Guid id)
     {
-        await teams.LeaveAsync(id, currentUser.Id);
-        return NoContent();
+        try
+        {
+            await teams.LeaveAsync(id, currentUser.Id);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/role")]
@@ -91,15 +98,29 @@ public class TeamsController(TeamService teams, ICurrentUser currentUser) : Cont
             return BadRequest(new { error = "Unknown team role" });
         }
 
-        await teams.ChangeRoleAsync(id, currentUser.Id, dto.TargetUserId, role);
-        return NoContent();
+        try
+        {
+            await teams.ChangeRoleAsync(id, currentUser.Id, dto.TargetUserId, role);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/ban")]
     public async Task<IActionResult> Ban(Guid id, [FromBody] BanDto dto)
     {
-        await teams.BanAsync(id, currentUser.Id, dto.TargetUserId, dto.Reason);
-        return NoContent();
+        try
+        {
+            await teams.BanAsync(id, currentUser.Id, dto.TargetUserId, dto.Reason);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpDelete("{id:guid}")]

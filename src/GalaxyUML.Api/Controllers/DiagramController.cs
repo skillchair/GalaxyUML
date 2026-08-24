@@ -2,6 +2,7 @@
 
 using GalaxyUML.Api.Hubs;
 using GalaxyUML.Api.Security;
+using GalaxyUML.Core.Models;
 using GalaxyUML.Core.Services;
 using GalaxyUML.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -160,86 +161,105 @@ public class DiagramController(
     [HttpPost("{id:guid}/clear")]
     public async Task<IActionResult> ClearBoard(Guid id)
     {
-        try
+        if (!await CanCurrentUserDrawDiagramAsync(id))
         {
-            if (!await CanCurrentUserDrawDiagramAsync(id))
-            {
-                return Forbid();
-            }
-
-            var elements = await db.DiagramElements
-                .Where(element => element.ParentId == id && element.ObjectType != 0)
-                .ToListAsync();
-
-            if (elements.Count > 0)
-            {
-                db.DiagramElements.RemoveRange(elements);
-                await db.SaveChangesAsync();
-
-                var meetingId = await GetMeetingIdForDiagramAsync(id);
-                if (meetingId.HasValue)
-                {
-                    await hubContext.Clients.Group(meetingId.Value.ToString())
-                        .SendAsync("BoardCleared", id);
-                }
-            }
-
-            return Ok(new { deletedCount = elements.Count });
+            return Forbid();
         }
-        catch (Exception ex)
+
+        var elements = await db.DiagramElements
+            .Where(element => element.ParentId == id && element.ObjectType != 0)
+            .ToListAsync();
+
+        if (elements.Count > 0)
         {
-            return BadRequest(new { error = ex.Message });
+            db.DiagramElements.RemoveRange(elements);
+            await db.SaveChangesAsync();
+
+            var meetingId = await GetMeetingIdForDiagramAsync(id);
+            if (meetingId.HasValue)
+            {
+                await hubContext.Clients.Group(meetingId.Value.ToString())
+                    .SendAsync("BoardCleared", id);
+            }
         }
+
+        return Ok(new { deletedCount = elements.Count });
     }
 
     [HttpGet("{id:guid}/elements")]
     public async Task<IActionResult> GetElements(Guid id)
     {
-        try
+        if (!await CanCurrentUserViewDiagramAsync(id))
         {
-            if (!await CanCurrentUserViewDiagramAsync(id))
-            {
-                return Forbid();
-            }
-
-            var diagramExists = await db.Diagrams.AnyAsync(diagram => diagram.Id == id);
-            if (!diagramExists)
-            {
-                return NotFound();
-            }
-
-            var boxes = await db.ClassBoxes
-                .Where(box => box.ParentId == id)
-                .Select(box => new
-                {
-                    id = box.Id,
-                    x1 = (int)box.X1,
-                    y1 = (int)box.Y1,
-                    x2 = (int)box.X2,
-                    y2 = (int)box.Y2
-                })
-                .ToListAsync();
-
-            var lines = await db.Lines
-                .Where(line => line.ParentId == id)
-                .Select(line => new
-                {
-                    id = line.Id,
-                    startBoxId = line.StartBoxId,
-                    endBoxId = line.EndBoxId,
-                    x1 = line.X1,
-                    y1 = line.Y1,
-                    x2 = line.X2,
-                    y2 = line.Y2
-                })
-                .ToListAsync();
-
-            return Ok(new { boxes, lines });
+            return Forbid();
         }
-        catch (Exception ex)
+
+        var diagramExists = await db.Diagrams.AnyAsync(diagram => diagram.Id == id);
+        if (!diagramExists)
         {
-            return BadRequest(new { error = ex.Message });
+            return NotFound();
         }
+
+        var boxes = await db.Boxes
+            .Where(box => box.ParentId == id && box.ObjectType == ObjectType.Box)
+            .Select(box => new
+            {
+                id = box.Id,
+                x1 = (int)box.X1,
+                y1 = (int)box.Y1,
+                x2 = (int)box.X2,
+                y2 = (int)box.Y2
+            })
+            .ToListAsync();
+
+        var classBoxes = await db.ClassBoxes
+            .Where(box => box.ParentId == id)
+            .Select(box => new
+            {
+                id = box.Id,
+                x1 = (int)box.X1,
+                y1 = (int)box.Y1,
+                x2 = (int)box.X2,
+                y2 = (int)box.Y2,
+                attributes = box.Attributes.Select(a => a.Name).ToList(),
+                methods = box.Methods.Select(m => m.Signature).ToList()
+            })
+            .ToListAsync();
+
+        var texts = await db.Texts
+            .Where(text => text.ParentId == id)
+            .Select(text => new
+            {
+                id = text.Id,
+                x1 = (int)text.X1,
+                y1 = (int)text.Y1,
+                x2 = (int)text.X2,
+                y2 = (int)text.Y2,
+                content = text.Content,
+                fontSize = text.FontSize,
+                color = text.Color,
+                format = text.Format
+            })
+            .ToListAsync();
+
+        var lines = await db.Lines
+            .Where(line => line.ParentId == id)
+            .Select(line => new
+            {
+                id = line.Id,
+                startBoxId = line.StartBoxId,
+                endBoxId = line.EndBoxId,
+                x1 = line.X1,
+                y1 = line.Y1,
+                x2 = line.X2,
+                y2 = line.Y2,
+                middleText = line.MiddleText,
+                text1 = line.Text1,
+                text2 = line.Text2
+            })
+            .ToListAsync();
+
+        return Ok(new { boxes, classBoxes, texts, lines });
     }
 
     private async Task<Guid?> GetMeetingIdForDiagramAsync(Guid diagramId)

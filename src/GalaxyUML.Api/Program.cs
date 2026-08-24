@@ -22,7 +22,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ITeamRepo, TeamRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IMeetingRepo, MeetingRepo>();
-builder.Services.AddScoped<IDiagramRepo, DiagramRepo>();
 
 // Services
 builder.Services.AddScoped<TeamService>();

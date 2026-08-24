@@ -1,6 +1,7 @@
 using GalaxyUML.Core.Models;
 using GalaxyUML.Data.Repositories;
 using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace GalaxyUML.Core.Services;
 
@@ -11,9 +12,24 @@ public class UserService
 
     public async Task<Guid> RegisterAsync(string first, string last, string username, string email, string password)
     {
+        if (await _users.GetByUsernameAsync(username) is not null)
+            throw new InvalidOperationException("Username is already taken");
+
+        if (await _users.GetByEmailAsync(email) is not null)
+            throw new InvalidOperationException("Email is already registered");
+
         var hash = BCrypt.Net.BCrypt.HashPassword(password);
         var user = new User(Guid.NewGuid(), first, last, username, email, hash);
-        await _users.AddAsync(user);
+
+        try
+        {
+            await _users.AddAsync(user);
+        }
+        catch (DbUpdateException)
+        {
+            throw new InvalidOperationException("Username or email is already in use");
+        }
+
         return user.IdUser;
     }
 

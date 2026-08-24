@@ -29,6 +29,13 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(b);
 
+        // USER
+        b.Entity<UserEntity>(e =>
+        {
+            e.HasIndex(x => x.Username).IsUnique();
+            e.HasIndex(x => x.Email).IsUnique();
+        });
+
         // TEAM MEMBER
         b.Entity<TeamMemberEntity>(e =>
         {

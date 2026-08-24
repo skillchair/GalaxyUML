@@ -1,4 +1,3 @@
-using System.Reflection;
 using GalaxyUML.Core.Models;
 using GalaxyUML.Data.Repositories;
 using GalaxyUML.Data;
@@ -35,61 +34,29 @@ public class MeetingService
         var organizerMember = team.Members.FirstOrDefault(m => m.UserId == organizerId)
             ?? throw new InvalidOperationException("Organizer is not a team member");
 
-        var meetingId = Guid.NewGuid();
-        team.CurrentMeetingId = meetingId;
-
         var meeting = Meeting.Create(teamId, organizerId);
-        // force same Id as reserved in team
-        typeof(Meeting).GetField("<Id>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)!
-                       .SetValue(meeting, meetingId);
+        team.CurrentMeetingId = meeting.Id;
 
-        // Add meeting to repository (this will handle the domain model)
         await _meetings.AddAsync(meeting);
 
-        // Verify meeting was saved to database
-        var meetingEntity = await _db.Meetings.FirstOrDefaultAsync(m => m.Id == meetingId);
-        if (meetingEntity == null)
-        {
-            throw new InvalidOperationException($"Meeting {meetingId} was not saved to database after AddAsync");
-        }
-
-        // CRITICAL FIX: Set MeetingId on Board entity
-        var boardEntity = await _db.Diagrams.FirstOrDefaultAsync(d => d.Id == meetingEntity.BoardId);
-        if (boardEntity != null && boardEntity.MeetingId == null)
-        {
-            boardEntity.MeetingId = meetingId;
-            await _db.SaveChangesAsync();
-            Console.WriteLine($"[MeetingService] Fixed Board MeetingId: BoardId={boardEntity.Id}, MeetingId={meetingId}");
-        }
-
-        // Check if participant already exists (to avoid duplicate key error)
         var participantExists = await _db.MeetingParticipants
-            .AnyAsync(p => p.MeetingId == meetingId && p.TeamMemberId == organizerMember.Id);
+            .AnyAsync(p => p.MeetingId == meeting.Id && p.TeamMemberId == organizerMember.Id);
 
         if (!participantExists)
         {
             _db.MeetingParticipants.Add(new MeetingParticipantEntity
             {
                 Id = Guid.NewGuid(),
-                MeetingId = meetingId,
+                MeetingId = meeting.Id,
                 TeamMemberId = organizerMember.Id,
                 CanDraw = true,
                 JoinedAt = DateTime.UtcNow
             });
 
             await _db.SaveChangesAsync();
-
-            // Verify participant was saved
-            var savedParticipant = await _db.MeetingParticipants
-                .FirstOrDefaultAsync(p => p.MeetingId == meetingId && p.TeamMemberId == organizerMember.Id);
-            
-            if (savedParticipant == null || !savedParticipant.CanDraw)
-            {
-                throw new InvalidOperationException($"Owner participant not saved correctly. TeamMemberId: {organizerMember.Id}, MeetingId: {meetingId}");
-            }
         }
 
-        return new MeetingStartedDto(meetingId, meeting.Board.Id, teamId, DateTime.UtcNow);
+        return new MeetingStartedDto(meeting.Id, meeting.Board.Id, teamId, DateTime.UtcNow);
     }
 
     public async Task JoinAsync(Guid meetingId, Guid userId)

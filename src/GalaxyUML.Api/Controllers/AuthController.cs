@@ -1,5 +1,6 @@
 // exposes anonymous registration and login endpoints.
 
+using System.ComponentModel.DataAnnotations;
 using GalaxyUML.Api.Services;
 using GalaxyUML.Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -24,8 +25,15 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        var id = await _users.RegisterAsync(dto.FirstName, dto.LastName, dto.Username, dto.Email, dto.Password);
-        return Ok(id);
+        try
+        {
+            var id = await _users.RegisterAsync(dto.FirstName, dto.LastName, dto.Username, dto.Email, dto.Password);
+            return Ok(id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("login")]
@@ -42,5 +50,13 @@ public class AuthController : ControllerBase
     }
 }
 
-public record RegisterDto(string FirstName, string LastName, string Username, string Email, string Password);
-public record LoginDto(string Username, string Password);
+public record RegisterDto(
+    [Required, MinLength(1), MaxLength(80)] string FirstName,
+    [Required, MinLength(1), MaxLength(80)] string LastName,
+    [Required, MinLength(3), MaxLength(80)] string Username,
+    [Required, EmailAddress, MaxLength(200)] string Email,
+    [Required, MinLength(8), MaxLength(200)] string Password);
+
+public record LoginDto(
+    [Required] string Username,
+    [Required] string Password);
