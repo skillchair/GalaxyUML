@@ -164,6 +164,99 @@ public sealed class AuthorizationFlowTests
         Assert.DoesNotContain("hash", json, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task Team_members_and_role_and_ban_and_leave_flow()
+    {
+        using var factory = new GalaxyApiFactory();
+        var owner = await CreateAuthenticatedUserAsync(factory, "owner");
+        var member = await CreateAuthenticatedUserAsync(factory, "member");
+        var team = await CreateTeamAsync(owner, "cool team");
+        await JoinTeamAsync(member, team.TeamCode);
+
+        // Get members
+        using var membersResponse = await owner.Client.GetAsync($"/api/teams/{team.Id}/members");
+        membersResponse.EnsureSuccessStatusCode();
+        var members = await membersResponse.Content.ReadFromJsonAsync<IReadOnlyCollection<TeamMemberDetailResponse>>();
+        Assert.NotNull(members);
+        Assert.Equal(2, members.Count);
+
+        // Change role
+        using var roleResponse = await owner.Client.PostAsJsonAsync($"/api/teams/{team.Id}/role", new
+        {
+            targetUserId = member.Id,
+            role = "Organizer"
+        });
+        Assert.Equal(HttpStatusCode.NoContent, roleResponse.StatusCode);
+
+        // Ban user
+        using var banResponse = await owner.Client.PostAsJsonAsync($"/api/teams/{team.Id}/ban", new
+        {
+            targetUserId = member.Id,
+            reason = "Test ban"
+        });
+        Assert.Equal(HttpStatusCode.NoContent, banResponse.StatusCode);
+
+        // Verify banned member cannot join again
+        using var reJoinResponse = await member.Client.PostAsJsonAsync("/api/teams/join-by-code", new { joinCode = team.TeamCode });
+        Assert.Equal(HttpStatusCode.BadRequest, reJoinResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task Meeting_chat_and_grant_draw_flow()
+    {
+        using var factory = new GalaxyApiFactory();
+        var owner = await CreateAuthenticatedUserAsync(factory, "owner");
+        var member = await CreateAuthenticatedUserAsync(factory, "member");
+        var team = await CreateTeamAsync(owner, "meeting team");
+        await JoinTeamAsync(member, team.TeamCode);
+        var meeting = await CreateMeetingAsync(owner, team.Id);
+
+        // Member joins meeting
+        using var joinResponse = await member.Client.PostAsJsonAsync($"/api/meetings/{meeting.MeetingId}/join", new { });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Send chat message
+        using var msgResponse = await member.Client.PostAsJsonAsync($"/api/meetings/{meeting.MeetingId}/message", new
+        {
+            content = "Hello team!"
+        });
+        msgResponse.EnsureSuccessStatusCode();
+
+        // Get chat messages
+        using var getMsgsResponse = await owner.Client.GetAsync($"/api/meetings/{meeting.MeetingId}/messages");
+        getMsgsResponse.EnsureSuccessStatusCode();
+        var messages = await getMsgsResponse.Content.ReadFromJsonAsync<IReadOnlyCollection<ChatMessageResponse>>();
+        Assert.NotNull(messages);
+        Assert.Single(messages);
+        Assert.Equal("Hello team!", messages.First().Content);
+
+        // Grant draw permission to member
+        using var grantResponse = await owner.Client.PostAsJsonAsync($"/api/meetings/{meeting.MeetingId}/grant-draw", new
+        {
+            targetId = member.Id,
+            canDraw = true
+        });
+        Assert.Equal(HttpStatusCode.NoContent, grantResponse.StatusCode);
+
+        // Now member CAN create a classbox
+        using var boxResponse = await member.Client.PostAsJsonAsync($"/api/diagram/{meeting.BoardId}/class-box", new
+        {
+            x1 = 20,
+            y1 = 30,
+            x2 = 120,
+            y2 = 130,
+            attributes = new[] { "id: int" },
+            methods = new[] { "run(): void" }
+        });
+        boxResponse.EnsureSuccessStatusCode();
+        var box = await boxResponse.Content.ReadFromJsonAsync<ElementResponse>();
+        Assert.NotNull(box);
+
+        // Delete class box
+        using var deleteResponse = await member.Client.DeleteAsync($"/api/diagram/{box.Id}");
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+    }
+
     private static async Task<AuthenticatedUser> CreateAuthenticatedUserAsync(
         GalaxyApiFactory factory,
         string prefix)
@@ -230,4 +323,6 @@ public sealed class AuthorizationFlowTests
     private sealed record TeamResponse(Guid Id, string TeamName, string TeamCode, Guid OwnerId, int MemberCount);
     private sealed record MeetingResponse(Guid MeetingId, Guid BoardId, Guid TeamId, DateTime StartedAtUtc);
     private sealed record ElementResponse(Guid Id);
+    private sealed record TeamMemberDetailResponse(Guid UserId, string Username, string Email, string FirstName, string LastName, string Role, DateTime JoinedAt);
+    private sealed record ChatMessageResponse(Guid Id, Guid SenderId, string SenderUsername, string Content, DateTime SentAtUtc);
 }

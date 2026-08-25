@@ -1,6 +1,9 @@
 <Solution>
-  <Project Path="src/GalaxyUML.Api/GalaxyUML.Api.csproj" />
   <Project Path="src/GalaxyUML.Core/GalaxyUML.Core.csproj" />
   <Project Path="src/GalaxyUML.Data/GalaxyUML.Data.csproj" />
+  <Project Path="src/GalaxyUML.Api/GalaxyUML.Api.csproj" />
+  <Project Path="src/GalaxyUML.Client.Shared/GalaxyUML.Client.Shared.csproj" />
   <Project Path="client/GalaxyUML.UI/GalaxyUML.UI.csproj" />
+  <Project Path="client/GalaxyUML.UI.Avalonia/GalaxyUML.UI.Avalonia.csproj" />
+  <Project Path="tests/GalaxyUML.Api.Tests/GalaxyUML.Api.Tests.csproj" />
 </Solution>

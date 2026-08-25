@@ -62,6 +62,20 @@ public class TeamsController(TeamService teams, ICurrentUser currentUser) : Cont
         }
     }
 
+    [HttpGet("{id:guid}/members")]
+    public async Task<IActionResult> GetMembers(Guid id)
+    {
+        try
+        {
+            var members = await teams.GetMembersAsync(id, currentUser.Id);
+            return Ok(members);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
     [HttpPost("join-by-code")]
     public async Task<IActionResult> JoinByCode([FromBody] JoinByCodeDto dto)
     {

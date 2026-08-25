@@ -116,19 +116,85 @@ public class MeetingService
 
     public async Task GrantDrawAsync(Guid meetingId, Guid actorId, Guid targetId, bool canDraw)
     {
-        var meeting = await _meetings.GetByIdAsync(meetingId) ?? throw new InvalidOperationException("Meeting not found");
-        meeting.GrantDraw(actorId, targetId, canDraw);
-        await _meetings.SaveAsync();
+        var meeting = await _db.Meetings
+            .Include(m => m.Team)
+            .FirstOrDefaultAsync(m => m.Id == meetingId)
+            ?? throw new InvalidOperationException("Meeting not found");
+
+        if (meeting.OrganizedById != actorId && meeting.Team.OwnerId != actorId)
+            throw new InvalidOperationException("Only organizer or team owner can grant drawing rights");
+
+        var participant = await _db.MeetingParticipants
+            .Include(p => p.TeamMember)
+            .FirstOrDefaultAsync(p => p.MeetingId == meetingId && p.TeamMember.UserId == targetId)
+            ?? throw new InvalidOperationException("Participant not found");
+
+        participant.CanDraw = canDraw;
+        await _db.SaveChangesAsync();
     }
 
-    public async Task AddMessageAsync(Guid meetingId, Guid senderId, string content)
+    public async Task<ChatMessageDto> AddMessageAsync(Guid meetingId, Guid senderId, string content)
     {
-        var meeting = await _meetings.GetByIdAsync(meetingId) ?? throw new InvalidOperationException("Meeting not found");
-        if (!meeting.Participants.Any(participant => participant.UserId == senderId))
-            throw new InvalidOperationException("Only meeting participants can send messages");
+        if (string.IsNullOrWhiteSpace(content))
+            throw new InvalidOperationException("Message content cannot be empty");
 
-        meeting.AddMessage(senderId, content);
-        await _meetings.SaveAsync();
+        var meeting = await _db.Meetings
+            .Include(m => m.Chat)
+            .FirstOrDefaultAsync(m => m.Id == meetingId)
+            ?? throw new InvalidOperationException("Meeting not found");
+
+        if (!meeting.IsActive)
+            throw new InvalidOperationException("Meeting is not active");
+
+        var senderParticipant = await _db.MeetingParticipants
+            .Include(p => p.TeamMember.User)
+            .FirstOrDefaultAsync(p => p.MeetingId == meetingId && p.TeamMember.UserId == senderId)
+            ?? throw new InvalidOperationException("Only meeting participants can send messages");
+
+        var messageEntity = new MessageEntity
+        {
+            Id = Guid.NewGuid(),
+            ChatId = meeting.ChatId,
+            SenderId = senderId,
+            Content = content.Trim(),
+            SentAt = DateTime.UtcNow
+        };
+
+        _db.Messages.Add(messageEntity);
+        await _db.SaveChangesAsync();
+
+        return new ChatMessageDto(
+            messageEntity.Id,
+            senderId,
+            senderParticipant.TeamMember.User.Username,
+            messageEntity.Content,
+            messageEntity.SentAt);
+    }
+
+    public async Task<IReadOnlyCollection<ChatMessageDto>> GetMessagesAsync(Guid meetingId, Guid userId)
+    {
+        var meeting = await _db.Meetings
+            .Include(m => m.Chat)
+            .FirstOrDefaultAsync(m => m.Id == meetingId)
+            ?? throw new InvalidOperationException("Meeting not found");
+
+        var isParticipant = await _db.MeetingParticipants
+            .AnyAsync(p => p.MeetingId == meetingId && p.TeamMember.UserId == userId);
+
+        if (!isParticipant)
+            throw new InvalidOperationException("Only meeting participants can view chat messages");
+
+        return await _db.Messages
+            .Where(m => m.ChatId == meeting.ChatId)
+            .Include(m => m.Sender)
+            .OrderBy(m => m.SentAt)
+            .Select(m => new ChatMessageDto(
+                m.Id,
+                m.SenderId,
+                m.Sender.Username,
+                m.Content,
+                m.SentAt))
+            .ToListAsync();
     }
 
     public async Task DeleteAsync(Guid meetingId, Guid actorUserId)
@@ -214,3 +280,4 @@ public class MeetingService
 
 public record MeetingStartedDto(Guid MeetingId, Guid BoardId, Guid TeamId, DateTime StartedAtUtc);
 public record MeetingParticipantSummaryDto(Guid UserId, string Username, string Role, bool CanDraw, DateTime JoinedAtUtc);
+public record ChatMessageDto(Guid Id, Guid SenderId, string SenderUsername, string Content, DateTime SentAtUtc);

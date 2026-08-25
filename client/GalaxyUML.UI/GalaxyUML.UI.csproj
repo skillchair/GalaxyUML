@@ -2,10 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\GalaxyUML.Core\GalaxyUML.Core.csproj" />
+    <ProjectReference Include="..\..\src\GalaxyUML.Client.Shared\GalaxyUML.Client.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.3" />
   </ItemGroup>
 
   <PropertyGroup>

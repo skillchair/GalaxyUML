@@ -1,144 +1,15 @@
-<Window x:Class="GalaxyUML.UI.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="GalaxyUML" Height="820" Width="1400" MinHeight="720" MinWidth="1100"
+        mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="820"
+        x:Class="GalaxyUML.UI.Avalonia.MainWindow"
+        Title="GalaxyUML"
+        Width="1400" Height="820" MinWidth="1100" MinHeight="720"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI, Tahoma, Geneva, Verdana, Arial, sans-serif"
         FontSize="13"
         Foreground="#000000">
-    <Window.Resources>
-        <!-- Classic HTML Button Styles -->
-        <Style TargetType="Button">
-            <Setter Property="Padding" Value="10,4" />
-            <Setter Property="Background" Value="#E5E5E5" />
-            <Setter Property="Foreground" Value="#000000" />
-            <Setter Property="FontWeight" Value="Normal" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#D0D0D0" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#B0B0B0" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#EFEFEF" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="#CCCCCC" />
-                                <Setter Property="Foreground" Value="#888888" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Padding" Value="10,4" />
-            <Setter Property="Background" Value="#000000" />
-            <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#333333" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#111111" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#EFEFEF" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="#CCCCCC" />
-                                <Setter Property="Foreground" Value="#888888" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="DangerButton" TargetType="Button">
-            <Setter Property="Padding" Value="10,4" />
-            <Setter Property="Background" Value="#CC0000" />
-            <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#990000" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#770000" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="TextBox">
-            <Setter Property="Padding" Value="6,4" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Background" Value="#FFFFFF" />
-            <Setter Property="Foreground" Value="#000000" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-
-        <Style TargetType="PasswordBox">
-            <Setter Property="Padding" Value="6,4" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Background" Value="#FFFFFF" />
-            <Setter Property="Foreground" Value="#000000" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-
-        <Style TargetType="ComboBox">
-            <Setter Property="Padding" Value="6,4" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Background" Value="#F0F0F0" />
-            <Setter Property="Foreground" Value="#000000" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-
-        <Style TargetType="ListBox">
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#000000" />
-            <Setter Property="Background" Value="#FFFFFF" />
-            <Setter Property="Foreground" Value="#000000" />
-        </Style>
-    </Window.Resources>
 
     <Grid Background="#FFFFFF">
         <Grid.RowDefinitions>
@@ -168,7 +39,7 @@
                     <Border x:Name="UserBadgeBorder" Background="#FFFFFF" BorderBrush="#000000" BorderThickness="1" Padding="10,4" Margin="0,0,10,0" VerticalAlignment="Center">
                         <TextBlock x:Name="SessionStatusText" Text="Niste prijavljeni" Foreground="#000000" FontWeight="Bold" VerticalAlignment="Center" FontSize="12" />
                     </Border>
-                    <Button x:Name="LogoutButton" Content="[ Odjavi se ]" Height="28" Padding="10,2" Visibility="Collapsed" Click="LogoutButton_Click" />
+                    <Button x:Name="LogoutButton" Content="[ Odjavi se ]" Height="28" Padding="10,2" IsVisible="False" Click="LogoutButton_Click" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -205,9 +76,9 @@
                                 <TextBox x:Name="LoginUsernameTextBox" Margin="0,0,0,14" KeyDown="LoginInput_KeyDown" />
 
                                 <TextBlock Text="Lozinka:" FontWeight="Bold" Foreground="#000000" Margin="0,0,0,4" FontSize="12" />
-                                <PasswordBox x:Name="LoginPasswordBox" Margin="0,0,0,20" KeyDown="LoginInput_KeyDown" />
+                                <TextBox x:Name="LoginPasswordBox" PasswordChar="●" Margin="0,0,0,20" KeyDown="LoginInput_KeyDown" />
 
-                                <Button Content="Prijavi se" Style="{StaticResource PrimaryButton}" Height="34" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="LoginButton_Click" />
+                                <Button Content="Prijavi se" Classes="primary" Height="34" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="LoginButton_Click" />
                             </StackPanel>
                         </Border>
 
@@ -239,7 +110,7 @@
                                 <TextBox x:Name="RegisterEmailTextBox" Margin="0,0,0,10" />
 
                                 <TextBlock Text="Lozinka (min. 8 karaktera):" FontWeight="Bold" Foreground="#000000" Margin="0,0,0,4" FontSize="12" />
-                                <PasswordBox x:Name="RegisterPasswordBox" Margin="0,0,0,18" />
+                                <TextBox x:Name="RegisterPasswordBox" PasswordChar="●" Margin="0,0,0,18" />
 
                                 <Button Content="Registruj se" Height="34" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="RegisterButton_Click" />
                             </StackPanel>
@@ -267,16 +138,16 @@
                                 <TextBlock Text="Kreiraj novi tim" FontWeight="Bold" FontSize="14" Foreground="#000000" Margin="0,0,0,10" />
                                 <TextBlock Text="Naziv tima:" FontWeight="Bold" Foreground="#000000" Margin="0,0,0,4" FontSize="12" />
                                 <TextBox x:Name="CreateTeamNameTextBox" Margin="0,0,0,10" />
-                                <Button Content="Kreiraj tim" Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="CreateTeamButton_Click" />
+                                <Button Content="Kreiraj tim" Classes="primary" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="CreateTeamButton_Click" />
                             </StackPanel>
                         </Border>
 
                         <!-- Join by Code Box -->
                         <Border Background="#FFFFFF" BorderBrush="#000000" BorderThickness="1" Padding="14">
                             <StackPanel>
-                                <TextBlock Text="Učlanjenje preko koda" FontWeight="Bold" FontSize="14" Foreground="#000000" Margin="0,0,10,0" />
+                                <TextBlock Text="Učlanjenje preko koda" FontWeight="Bold" FontSize="14" Foreground="#000000" Margin="0,0,0,10" />
                                 <TextBlock Text="Kod tima (6 karaktera):" FontWeight="Bold" Foreground="#000000" Margin="0,0,0,4" FontSize="12" />
-                                <TextBox x:Name="JoinCodeTextBox" CharacterCasing="Upper" MaxLength="6" FontFamily="Consolas, monospace" Margin="0,0,0,10" />
+                                <TextBox x:Name="JoinCodeTextBox" MaxLength="6" FontFamily="Consolas, monospace" Margin="0,0,0,10" />
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -284,7 +155,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" Content="Pronađi" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="FindTeamByCodeButton_Click" />
-                                    <Button Grid.Column="2" Content="Učlani se" Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="JoinByCodeButton_Click" />
+                                    <Button Grid.Column="2" Content="Učlani se" Classes="primary" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="JoinByCodeButton_Click" />
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -338,7 +209,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Button Grid.Column="0" Content="Napusti tim" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="LeaveTeamButton_Click" />
-                                <Button Grid.Column="2" Content="Obriši tim" Style="{StaticResource DangerButton}" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="DeleteTeamButton_Click" />
+                                <Button Grid.Column="2" Content="Obriši tim" Classes="danger" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="DeleteTeamButton_Click" />
                             </Grid>
                         </Grid>
                     </Border>
@@ -401,8 +272,8 @@
                                             <ColumnDefinition Width="8" />
                                             <ColumnDefinition Width="90" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="BanReasonTextBox" Grid.Column="0" Height="30" />
-                                        <Button Grid.Column="2" Content="Banuj" Style="{StaticResource DangerButton}" Height="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="BanMemberButton_Click" />
+                                        <TextBox x:Name="BanReasonTextBox" Grid.Column="0" Height="30" Watermark="Razlog banovanja (opciono)" />
+                                        <Button Grid.Column="2" Content="Banuj" Classes="danger" Height="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="BanMemberButton_Click" />
                                     </Grid>
                                 </StackPanel>
                             </Border>
@@ -438,7 +309,7 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
 
-                            <Button Content="Pokreni novi sastanak" Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="StartMeetingButton_Click" Margin="0,0,0,14" />
+                            <Button Content="Pokreni novi sastanak" Classes="primary" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="StartMeetingButton_Click" Margin="0,0,0,14" />
 
                             <DockPanel LastChildFill="False" Margin="0,0,0,8">
                                 <TextBlock Text="Aktivni sastanci" FontWeight="Bold" FontSize="13" Foreground="#000000" DockPanel.Dock="Left" VerticalAlignment="Center" />
@@ -464,8 +335,8 @@
                                     <ColumnDefinition Width="8" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Content="Pridruži se" Style="{StaticResource PrimaryButton}" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="JoinMeetingButton_Click" />
-                                <Button Grid.Column="2" Content="Završi sastanak" Style="{StaticResource DangerButton}" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="EndMeetingButton_Click" />
+                                <Button Grid.Column="0" Content="Pridruži se" Classes="primary" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="JoinMeetingButton_Click" />
+                                <Button Grid.Column="2" Content="Završi sastanak" Classes="danger" Height="32" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="EndMeetingButton_Click" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -481,7 +352,7 @@
 
                             <Border Grid.Row="0" Background="#F9F9F9" BorderBrush="#000000" BorderThickness="1" Padding="10,8" Margin="0,0,0,10">
                                 <DockPanel LastChildFill="True">
-                                    <Button DockPanel.Dock="Right" Content="[ Otvori tablu ]" Style="{StaticResource PrimaryButton}" Height="30" Padding="14,2" Click="SwitchToDiagramTabButton_Click" />
+                                    <Button DockPanel.Dock="Right" Content="[ Otvori tablu ]" Classes="primary" Height="30" Padding="14,2" Click="SwitchToDiagramTabButton_Click" />
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock x:Name="MeetingStatusText" Text="Nema aktivnog sastanka." FontWeight="Bold" Foreground="#000000" FontSize="13" />
                                         <TextBlock x:Name="BoardInfoText" Text="Tabla: Nije aktivna" Foreground="#444444" FontSize="12" Margin="0,2,0,0" />
@@ -521,7 +392,7 @@
                                             <ColumnDefinition Width="8" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" Content="Dozvoli crtanje" Style="{StaticResource PrimaryButton}" Height="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="GrantDrawButton_Click" />
+                                        <Button Grid.Column="0" Content="Dozvoli crtanje" Classes="primary" Height="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="GrantDrawButton_Click" />
                                         <Button Grid.Column="2" Content="Oduzmi crtanje" Height="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="RevokeDrawButton_Click" />
                                     </Grid>
                                 </StackPanel>
@@ -552,7 +423,7 @@
                                         <ComboBoxItem Content="Pomeri" />
                                     </ComboBox>
 
-                                    <Button Content="Obriši" Style="{StaticResource DangerButton}" Height="28" Padding="10,2" Margin="0,0,6,0" Click="DeleteSelectedElementButton_Click" />
+                                    <Button Content="Obriši" Classes="danger" Height="28" Padding="10,2" Margin="0,0,6,0" Click="DeleteSelectedElementButton_Click" />
                                     <Button Content="Očisti tablu" Height="28" Padding="10,2" Margin="0,0,6,0" Click="ClearBoardButton_Click" />
                                     <Button Content="[ Osveži ]" Height="28" Padding="10,2" Click="RefreshBoardButton_Click" />
                                 </StackPanel>
@@ -578,11 +449,11 @@
                                 <TextBlock Text="Metode:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#000000" Margin="0,0,4,0" FontSize="12" />
                                 <TextBox x:Name="NewClassMethodsTextBox" Width="220" Text="+ login(): bool, + logout(): void" Margin="0,0,10,0" Height="28" FontFamily="Consolas, monospace" />
 
-                                <Button Content="Dodaj ClassBox" Style="{StaticResource PrimaryButton}" Height="28" Padding="10,2" Click="AddClassBoxDirectButton_Click" Margin="0,0,8,0" />
+                                <Button Content="Dodaj ClassBox" Classes="primary" Height="28" Padding="10,2" Click="AddClassBoxDirectButton_Click" Margin="0,0,8,0" />
                                 <TextBlock Text="(ili prevucite mišem po tabli)" Foreground="#666666" VerticalAlignment="Center" FontSize="11" />
                             </StackPanel>
 
-                            <StackPanel x:Name="LineControlsWrap" Orientation="Horizontal" Margin="0,2,0,0" Visibility="Collapsed">
+                            <StackPanel x:Name="LineControlsWrap" Orientation="Horizontal" Margin="0,2,0,0" IsVisible="False">
                                 <TextBlock Text="Početna klasa:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#000000" Margin="0,0,4,0" FontSize="12" />
                                 <ComboBox x:Name="StartBoxComboBox" Width="160" Margin="0,0,10,0" Height="28">
                                     <ComboBox.ItemTemplate>
@@ -604,7 +475,7 @@
                                 <TextBlock Text="Oznaka veze:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#000000" Margin="0,0,4,0" FontSize="12" />
                                 <TextBox x:Name="LineMiddleTextTextBox" Width="120" Margin="0,0,10,0" Height="28" FontFamily="Consolas, monospace" />
 
-                                <Button Content="Poveži linijom" Style="{StaticResource PrimaryButton}" Height="28" Padding="10,2" Click="CreateLineButton_Click" />
+                                <Button Content="Poveži linijom" Classes="primary" Height="28" Padding="10,2" Click="CreateLineButton_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -620,9 +491,9 @@
                         <Border Grid.Column="0" BorderBrush="#000000" BorderThickness="1" Background="#FFFFFF" ClipToBounds="True">
                             <Canvas x:Name="BoardCanvas"
                                     Background="#FFFFFF"
-                                    MouseLeftButtonDown="BoardCanvas_MouseLeftButtonDown"
-                                    MouseMove="BoardCanvas_MouseMove"
-                                    MouseLeftButtonUp="BoardCanvas_MouseLeftButtonUp" />
+                                    PointerPressed="BoardCanvas_PointerPressed"
+                                    PointerMoved="BoardCanvas_PointerMoved"
+                                    PointerReleased="BoardCanvas_PointerReleased" />
                         </Border>
 
                         <!-- Real-Time Chat Pane (Classic Raw HTML / IRC Web Chat) -->
@@ -664,7 +535,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="ChatMessageInputTextBox" Grid.Column="0" Height="30" KeyDown="ChatMessageInputTextBox_KeyDown" />
-                                    <Button Grid.Column="2" Content="Pošalji" Style="{StaticResource PrimaryButton}" Height="30" Width="68" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="SendChatMessageButton_Click" />
+                                    <Button Grid.Column="2" Content="Pošalji" Classes="primary" Height="30" Width="68" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="SendChatMessageButton_Click" />
                                 </Grid>
                             </Grid>
                         </Border>

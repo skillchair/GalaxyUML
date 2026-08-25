@@ -82,25 +82,76 @@ public class TeamService
 
     public async Task LeaveAsync(Guid teamId, Guid userId)
     {
-        var team = await _teams.GetByIdAsync(teamId) ?? throw new InvalidOperationException("Team not found");
-        team.Leave(userId);
-        await _teams.SaveAsync();
+        var team = await _db.Teams.FirstOrDefaultAsync(t => t.Id == teamId) ?? throw new InvalidOperationException("Team not found");
+        if (team.OwnerId == userId) throw new InvalidOperationException("Owner cannot leave team. Delete the team instead.");
+
+        var member = await _db.TeamMembers.FirstOrDefaultAsync(m => m.TeamId == teamId && m.UserId == userId)
+            ?? throw new InvalidOperationException("User is not a team member");
+
+        _db.TeamMembers.Remove(member);
+        await _db.SaveChangesAsync();
     }
 
     public async Task ChangeRoleAsync(Guid teamId, Guid actorId, Guid targetUserId, RoleEnum role)
     {
-        var team = await _teams.GetByIdAsync(teamId) ?? throw new InvalidOperationException("Team not found");
-        team.ChangeRole(actorId, targetUserId, role);
-        await _teams.SaveAsync();
+        var team = await _db.Teams.FirstOrDefaultAsync(t => t.Id == teamId) ?? throw new InvalidOperationException("Team not found");
+        if (team.OwnerId != actorId) throw new InvalidOperationException("Only owner can change roles");
+        if (targetUserId == actorId) throw new InvalidOperationException("Cannot change owner's role");
+
+        var member = await _db.TeamMembers.FirstOrDefaultAsync(m => m.TeamId == teamId && m.UserId == targetUserId)
+            ?? throw new InvalidOperationException("Member not found");
+
+        member.Role = role;
+        await _db.SaveChangesAsync();
     }
 
     public async Task BanAsync(Guid teamId, Guid actorId, Guid targetUserId, string? reason = null)
     {
-        var team = await _teams.GetByIdAsync(teamId) ?? throw new InvalidOperationException("Team not found");
-        team.Ban(actorId, targetUserId, reason);
-        await _teams.SaveAsync();
+        var team = await _db.Teams.FirstOrDefaultAsync(t => t.Id == teamId) ?? throw new InvalidOperationException("Team not found");
+        if (team.OwnerId != actorId) throw new InvalidOperationException("Only owner can ban members");
+        if (targetUserId == actorId) throw new InvalidOperationException("Cannot ban owner");
+
+        var member = await _db.TeamMembers.FirstOrDefaultAsync(m => m.TeamId == teamId && m.UserId == targetUserId);
+        if (member is not null)
+        {
+            _db.TeamMembers.Remove(member);
+        }
+
+        var isAlreadyBanned = await _db.BannedUsers.AnyAsync(b => b.TeamId == teamId && b.UserId == targetUserId);
+        if (!isAlreadyBanned)
+        {
+            _db.BannedUsers.Add(new BannedUserEntity
+            {
+                Id = Guid.NewGuid(),
+                TeamId = teamId,
+                UserId = targetUserId,
+                BannedAt = DateTime.UtcNow,
+                Reason = reason
+            });
+        }
+
+        await _db.SaveChangesAsync();
     }
 
+    public async Task<IReadOnlyCollection<TeamMemberDetailDto>> GetMembersAsync(Guid teamId, Guid actorUserId)
+    {
+        var isMember = await _db.TeamMembers.AnyAsync(tm => tm.TeamId == teamId && tm.UserId == actorUserId);
+        if (!isMember) throw new InvalidOperationException("Only team members can view the member list");
+
+        return await _db.TeamMembers
+            .Where(tm => tm.TeamId == teamId)
+            .Include(tm => tm.User)
+            .AsNoTracking()
+            .Select(tm => new TeamMemberDetailDto(
+                tm.UserId,
+                tm.User.Username,
+                tm.User.Email,
+                tm.User.FirstName,
+                tm.User.LastName,
+                tm.Role.ToString(),
+                tm.JoinedAt))
+            .ToListAsync();
+    }
     public async Task DeleteAsync(Guid teamId, Guid actorId)
     {
         var team = await _teams.GetByIdAsync(teamId) ?? throw new InvalidOperationException("Team not found");
@@ -155,3 +206,4 @@ public class TeamService
 }
 
 public record TeamSummaryDto(Guid Id, string TeamName, string TeamCode, Guid OwnerId, int MemberCount);
+public record TeamMemberDetailDto(Guid UserId, string Username, string Email, string FirstName, string LastName, string Role, DateTime JoinedAt);

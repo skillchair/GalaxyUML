@@ -88,9 +88,8 @@ public class DiagramController(
             if (meetingId.HasValue)
             {
                 await hubContext.Clients.Group(meetingId.Value.ToString())
-                    .SendAsync("ClassBoxAdded", elementId, dto.X1, dto.Y1, dto.X2, dto.Y2);
+                    .SendAsync("ClassBoxAdded", elementId, dto.X1, dto.Y1, dto.X2, dto.Y2, dto.Attributes ?? Array.Empty<string>(), dto.Methods ?? Array.Empty<string>());
             }
-
             return Ok(new { id = elementId });
         }
         catch (InvalidOperationException ex)
@@ -131,13 +130,9 @@ public class DiagramController(
                             elementId,
                             dto.StartBoxId,
                             dto.EndBoxId,
-                            (startBox.X1 + startBox.X2) / 2d,
-                            (startBox.Y1 + startBox.Y2) / 2d,
-                            (endBox.X1 + endBox.X2) / 2d,
-                            (endBox.Y1 + endBox.Y2) / 2d);
+                            dto.MiddleText);
                 }
             }
-
             return Ok(new { id = elementId });
         }
         catch (InvalidOperationException ex)
@@ -154,7 +149,16 @@ public class DiagramController(
             return Forbid();
         }
 
+        var meetingId = await GetMeetingIdForElementAsync(id);
+
         await diagrams.DeleteAsync(id);
+
+        if (meetingId.HasValue)
+        {
+            await hubContext.Clients.Group(meetingId.Value.ToString())
+                .SendAsync("ElementDeleted", id);
+        }
+
         return NoContent();
     }
 
@@ -264,9 +268,9 @@ public class DiagramController(
 
     private async Task<Guid?> GetMeetingIdForDiagramAsync(Guid diagramId)
     {
-        return await db.Diagrams
-            .Where(diagram => diagram.Id == diagramId)
-            .Select(diagram => diagram.MeetingId)
+        return await db.Meetings
+            .Where(meeting => meeting.BoardId == diagramId)
+            .Select(meeting => (Guid?)meeting.Id)
             .FirstOrDefaultAsync();
     }
 

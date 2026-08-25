@@ -1,16 +1,18 @@
 // exposes authenticated meeting operations.
 
+using GalaxyUML.Api.Hubs;
 using GalaxyUML.Api.Security;
 using GalaxyUML.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace GalaxyUML.Api.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/meetings")]
-public class MeetingController(MeetingService meetings, ICurrentUser currentUser) : ControllerBase
+public class MeetingController(MeetingService meetings, IHubContext<DiagramHub> hubContext, ICurrentUser currentUser) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateMeetingDto dto)
@@ -32,6 +34,7 @@ public class MeetingController(MeetingService meetings, ICurrentUser currentUser
         try
         {
             await meetings.JoinAsync(id, currentUser.Id);
+            await hubContext.Clients.Group(id.ToString()).SendAsync("ParticipantsUpdated", id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -46,6 +49,7 @@ public class MeetingController(MeetingService meetings, ICurrentUser currentUser
         try
         {
             await meetings.LeaveAsync(id, currentUser.Id);
+            await hubContext.Clients.Group(id.ToString()).SendAsync("ParticipantsUpdated", id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -60,6 +64,8 @@ public class MeetingController(MeetingService meetings, ICurrentUser currentUser
         try
         {
             await meetings.GrantDrawAsync(id, currentUser.Id, dto.TargetId, dto.CanDraw);
+            await hubContext.Clients.Group(id.ToString()).SendAsync("DrawPermissionChanged", dto.TargetId, dto.CanDraw);
+            await hubContext.Clients.Group(id.ToString()).SendAsync("ParticipantsUpdated", id);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -73,8 +79,24 @@ public class MeetingController(MeetingService meetings, ICurrentUser currentUser
     {
         try
         {
-            await meetings.AddMessageAsync(id, currentUser.Id, dto.Content);
-            return NoContent();
+            var msg = await meetings.AddMessageAsync(id, currentUser.Id, dto.Content);
+            await hubContext.Clients.Group(id.ToString())
+                .SendAsync("ChatMessageReceived", msg.Id, msg.SenderId, msg.SenderUsername, msg.Content, msg.SentAtUtc);
+            return Ok(msg);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id:guid}/messages")]
+    public async Task<IActionResult> GetMessages(Guid id)
+    {
+        try
+        {
+            var messagesList = await meetings.GetMessagesAsync(id, currentUser.Id);
+            return Ok(messagesList);
         }
         catch (InvalidOperationException ex)
         {
@@ -88,6 +110,7 @@ public class MeetingController(MeetingService meetings, ICurrentUser currentUser
         try
         {
             await meetings.EndAsync(id, currentUser.Id);
+            await hubContext.Clients.Group(id.ToString()).SendAsync("MeetingEnded", id);
             return NoContent();
         }
         catch (InvalidOperationException ex)

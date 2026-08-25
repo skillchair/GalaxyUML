@@ -20,6 +20,21 @@ public class DiagramService
         el.Y1 += dy;
         el.X2 += dx;
         el.Y2 += dy;
+
+        var outgoingLines = await _db.Lines.Where(l => l.StartBoxId == id).ToListAsync();
+        foreach (var line in outgoingLines)
+        {
+            line.X1 += dx;
+            line.Y1 += dy;
+        }
+
+        var incomingLines = await _db.Lines.Where(l => l.EndBoxId == id).ToListAsync();
+        foreach (var line in incomingLines)
+        {
+            line.X2 += dx;
+            line.Y2 += dy;
+        }
+
         await _db.SaveChangesAsync();
     }
 
@@ -124,6 +139,12 @@ public class DiagramService
     {
         var entity = await _db.DiagramElements.FirstOrDefaultAsync(e => e.Id == id)
             ?? throw new InvalidOperationException("Diagram element not found");
+
+        var connectedLines = await _db.Lines.Where(l => l.StartBoxId == id || l.EndBoxId == id).ToListAsync();
+        if (connectedLines.Count > 0)
+        {
+            _db.Lines.RemoveRange(connectedLines);
+        }
 
         _db.DiagramElements.Remove(entity);
         await _db.SaveChangesAsync();

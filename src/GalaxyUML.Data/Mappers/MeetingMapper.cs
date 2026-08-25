@@ -46,9 +46,8 @@ public static class MeetingMapper
         IReadOnlyDictionary<Guid, Guid> teamMemberIdByUserId)
     {
         var board = (DiagramEntity)DiagramMapper.ToEntity(d.Board);
-        board.MeetingId = d.Id;
+        board.MeetingId = null;
         var chat = ChatMapper.ToEntity(d.Id, d.Chat);
-
         var entity = new MeetingEntity
         {
             Id = d.Id,
