@@ -18,3 +18,8 @@ coverage.*
 *.suo
 *.userosscache
 *.sln.docstates
+
+# node / frontend
+node_modules/
+dist/
+.vite/
