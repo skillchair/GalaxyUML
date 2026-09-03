@@ -822,8 +822,8 @@ public partial class MainWindow : Window
         });
 
         // 3. Line Added
-        _hubConnection.On<Guid, Guid, Guid, string?>(
-            "LineAdded", (id, startBoxId, endBoxId, middleText) =>
+        _hubConnection.On<Guid, Guid, Guid, string?, string?, string?>(
+            "LineAdded", (id, startBoxId, endBoxId, middleText, _, _) =>
         {
             Dispatcher.Invoke(() =>
             {

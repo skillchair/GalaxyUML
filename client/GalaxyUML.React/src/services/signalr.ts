@@ -13,7 +13,14 @@ export type SignalREventHandlers = {
     methods: string[]
   ) => void;
   onElementMoved?: (elementId: string, dx: number, dy: number) => void;
-  onLineAdded?: (id: string, startBoxId: string, endBoxId: string, middleText: string | null) => void;
+  onLineAdded?: (
+    id: string,
+    startBoxId: string,
+    endBoxId: string,
+    middleText: string | null,
+    startPort: string | null,
+    endPort: string | null
+  ) => void;
   onElementDeleted?: (elementId: string) => void;
   onBoardCleared?: (boardId: string) => void;
   onChatMessageReceived?: (
@@ -114,8 +121,15 @@ export class SignalRService {
 
     conn.on(
       'LineAdded',
-      (id: string, startBoxId: string, endBoxId: string, middleText: string | null) => {
-        this.handlers.onLineAdded?.(id, startBoxId, endBoxId, middleText);
+      (
+        id: string,
+        startBoxId: string,
+        endBoxId: string,
+        middleText: string | null,
+        startPort: string | null,
+        endPort: string | null
+      ) => {
+        this.handlers.onLineAdded?.(id, startBoxId, endBoxId, middleText, startPort, endPort);
       }
     );
 

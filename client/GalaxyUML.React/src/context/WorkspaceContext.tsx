@@ -240,8 +240,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       onElementMoved: (elementId, dx, dy) => {
         dispatchDiagramEvent('ElementMoved', { elementId, dx, dy });
       },
-      onLineAdded: (id, startBoxId, endBoxId, middleText) => {
-        dispatchDiagramEvent('LineAdded', { id, startBoxId, endBoxId, middleText });
+      onLineAdded: (id, startBoxId, endBoxId, middleText, startPort, endPort) => {
+        dispatchDiagramEvent('LineAdded', { id, startBoxId, endBoxId, middleText, text1: startPort, text2: endPort });
       },
       onElementDeleted: (elementId) => {
         dispatchDiagramEvent('ElementDeleted', { elementId });

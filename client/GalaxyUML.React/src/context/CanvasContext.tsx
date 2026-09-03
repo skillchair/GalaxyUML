@@ -78,6 +78,7 @@ export const CanvasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isLoadingBoard, setIsLoadingBoard] = useState(false);
   const pendingMovesRef = useRef<Map<string, { dx: number; dy: number }>>(new Map());
   const outgoingMoveEchoesRef = useRef<Map<string, Array<{ dx: number; dy: number; time: number }>>>(new Map());
+  const finishingConnectionRef = useRef(false);
 
   // Determine boardId from activeMeeting
   useEffect(() => {
@@ -486,6 +487,10 @@ export const CanvasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const finishConnectingLine = useCallback(
     async (endBoxId: string, endPort: PortSide | null = null, middleText?: string) => {
+      // Pointer down/up/click can all fire for one connection gesture. Keep the
+      // request single-flight so one gesture cannot create several lines.
+      if (finishingConnectionRef.current) return null;
+
       if (!boardId || !connectingStartBoxId || !canCurrentUserDraw) {
         setConnectingStartBoxId(null);
         setConnectingStartPort(null);
@@ -500,25 +505,36 @@ export const CanvasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return null;
       }
 
+      finishingConnectionRef.current = true;
+      const startBoxId = connectingStartBoxId;
+      const startPort = connectingStartPort;
+
       try {
         const res = await ApiService.addLine(boardId, {
-          startBoxId: connectingStartBoxId,
+          startBoxId,
           endBoxId,
           middleText: middleText || null,
-          text1: connectingStartPort || null,
+          text1: startPort || null,
           text2: endPort || null,
         });
 
         const newLine: LineItem = {
           id: res.id,
-          startBoxId: connectingStartBoxId,
+          startBoxId,
           endBoxId,
           middleText: middleText || null,
-          text1: connectingStartPort || null,
+          text1: startPort || null,
           text2: endPort || null,
         };
 
-        setLines((prev) => [...prev, newLine]);
+        // The server broadcasts LineAdded before the POST response reaches this
+        // client. Merge with that event instead of appending the same line.
+        setLines((prev) => {
+          const existingIndex = prev.findIndex((line) => line.id.toLowerCase() === res.id.toLowerCase());
+          if (existingIndex === -1) return [...prev, newLine];
+
+          return prev.map((line, index) => (index === existingIndex ? { ...line, ...newLine } : line));
+        });
         setConnectingStartBoxId(null);
         setConnectingStartPort(null);
         setHoveredTargetPort(null);
@@ -530,6 +546,8 @@ export const CanvasProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setConnectingStartPort(null);
         setHoveredTargetPort(null);
         throw err;
+      } finally {
+        finishingConnectionRef.current = false;
       }
     },
     [boardId, connectingStartBoxId, connectingStartPort, canCurrentUserDraw]

@@ -11,7 +11,7 @@ public class DiagramHubClient
     // Events
     public event Action<Guid, int, int, int, int, IReadOnlyCollection<string>, IReadOnlyCollection<string>>? OnClassBoxAdded;
     public event Action<Guid, int, int>? OnElementMoved;
-    public event Action<Guid, Guid, Guid, string?>? OnLineAdded;
+    public event Action<Guid, Guid, Guid, string?, string?, string?>? OnLineAdded;
     public event Action<Guid>? OnElementDeleted;
     public event Action<Guid>? OnBoardCleared;
     public event Action<Guid, Guid, string, string, DateTime>? OnChatMessageReceived;
@@ -46,10 +46,11 @@ public class DiagramHubClient
             OnElementMoved?.Invoke(elementId, dx, dy);
         });
 
-        _hubConnection.On<Guid, Guid, Guid, string?>("LineAdded", (id, startBoxId, endBoxId, middleText) =>
-        {
-            OnLineAdded?.Invoke(id, startBoxId, endBoxId, middleText);
-        });
+        _hubConnection.On<Guid, Guid, Guid, string?, string?, string?>(
+            "LineAdded", (id, startBoxId, endBoxId, middleText, startPort, endPort) =>
+            {
+                OnLineAdded?.Invoke(id, startBoxId, endBoxId, middleText, startPort, endPort);
+            });
 
         _hubConnection.On<Guid>("ElementDeleted", (elementId) =>
         {

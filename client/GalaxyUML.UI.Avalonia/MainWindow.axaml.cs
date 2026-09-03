@@ -117,7 +117,7 @@ public partial class MainWindow : Window
         };
 
         // 3. Line Added
-        _hub.OnLineAdded += (id, startBoxId, endBoxId, middleText) =>
+        _hub.OnLineAdded += (id, startBoxId, endBoxId, middleText, _, _) =>
         {
             Dispatcher.UIThread.Post(() =>
             {

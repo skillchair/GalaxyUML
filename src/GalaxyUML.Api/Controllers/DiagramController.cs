@@ -130,7 +130,9 @@ public class DiagramController(
                             elementId,
                             dto.StartBoxId,
                             dto.EndBoxId,
-                            dto.MiddleText);
+                            dto.MiddleText,
+                            dto.Text1,
+                            dto.Text2);
                 }
             }
             return Ok(new { id = elementId });

@@ -14,14 +14,18 @@ export const ExportDiagramModal: React.FC<ExportDiagramModalProps> = ({ isOpen, 
   const [format, setFormat] = useState<'svg' | 'png'>('svg');
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     setIsExporting(true);
     try {
       const svgElement = document.getElementById('galaxy-uml-canvas');
       if (!svgElement) return;
 
       const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
-      
+
+      // Controls are SVG foreignObjects so they can use regular HTML buttons.
+      // They are useful on the board but are not part of the diagram artwork.
+      svgClone.querySelectorAll('foreignObject').forEach((element) => element.remove());
+
       // Compute bounds of all boxes
       let minX = 0;
       let minY = 0;
@@ -54,31 +58,48 @@ export const ExportDiagramModal: React.FC<ExportDiagramModalProps> = ({ isOpen, 
         a.click();
         URL.revokeObjectURL(url);
       } else {
-        // PNG export via Canvas
+        // Render the clean SVG into a 2x bitmap without creating a huge data URL.
         const img = new Image();
         const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
         const url = URL.createObjectURL(svgBlob);
 
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = width * 2; // 2x high dpi
-          canvas.height = height * 2;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.scale(2, 2);
-            ctx.drawImage(img, 0, 0);
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error('Unable to render the diagram as PNG'));
+          img.src = url;
+        });
 
-            const pngUrl = canvas.toDataURL('image/png');
-            const a = document.createElement('a');
-            a.href = pngUrl;
-            a.download = `GalaxyUML-Diagram-${Date.now()}.png`;
-            a.click();
+        try {
+          const scale = 2;
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.ceil(width * scale);
+          canvas.height = Math.ceil(height * scale);
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            throw new Error('Unable to create a PNG canvas');
           }
+
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.scale(scale, scale);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const pngBlob = await new Promise<Blob | null>((resolve) =>
+            canvas.toBlob(resolve, 'image/png')
+          );
+          if (!pngBlob) {
+            throw new Error('Unable to encode the diagram as PNG');
+          }
+
+          const pngUrl = URL.createObjectURL(pngBlob);
+          const a = document.createElement('a');
+          a.href = pngUrl;
+          a.download = `GalaxyUML-Diagram-${Date.now()}.png`;
+          a.click();
+          URL.revokeObjectURL(pngUrl);
+        } finally {
           URL.revokeObjectURL(url);
-        };
-        img.src = url;
+        }
       }
 
       onClose();
